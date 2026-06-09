@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voyage Mathieu — 11 mois en Asie</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0f0f11;
+    --bg2: #17171a;
+    --bg3: #1e1e22;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e8ea;
+    --muted: #7a7a85;
+    --accent: #4ade80;
+    --accent2: #22d3ee;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Inter', sans-serif;
+    --green: #16a34a;
+    --green-bg: rgba(22,163,74,0.18);
+    --yellow: #ca8a04;
+    --yellow-bg: rgba(202,138,4,0.18);
+    --orange: #ea580c;
+    --orange-bg: rgba(234,88,12,0.18);
+    --red: #dc2626;
+    --red-bg: rgba(220,38,38,0.18);
+    --gray-bg: rgba(120,120,130,0.15);
+  }
+
+  html.light {
+    --bg: #f8f8f6;
+    --bg2: #ffffff;
+    --bg3: #f0f0ee;
+    --border: rgba(0,0,0,0.09);
+    --border2: rgba(0,0,0,0.15);
+    --text: #18181a;
+    --muted: #6b6b75;
+    --accent: #16a34a;
+    --accent2: #0891b2;
+    --green-bg: rgba(22,163,74,0.10);
+    --yellow-bg: rgba(202,138,4,0.12);
+    --orange-bg: rgba(234,88,12,0.10);
+    --red-bg: rgba(220,38,38,0.10);
+    --gray-bg: rgba(120,120,130,0.09);
+  }
+
+  *, *::before, *::after {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2.5rem 1.5rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .header-left h1 {
+    font-family: var(--mono);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .header-left .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: right;
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .toggle-track {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  html.light .toggle-track { background: #d1fae5; border-color: #6ee7b7; }
+  html.light .toggle-thumb { background: var(--accent); transform: translateX(16px); }
+
+  /* NAV */
+  nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    overflow-x: auto;
+  }
+
+  nav button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  nav button.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  nav button:hover:not(.active) {
+    color: var(--text);
+  }
+
+  /* MAIN */
+  main {
+    padding: 2rem 2.5rem;
+    max-width: 1400px;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* TABLE WRAPPER */
+  .table-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+  }
+
+  thead th {
+    background: var(--bg3);
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  thead th.month-col {
+    text-align: center;
+    min-width: 38px;
+    padding: 0.6rem 0.3rem;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  tbody td {
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+  }
+
+  /* Country separator row */
+  .country-row td {
+    background: var(--bg3);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  /* Step number */
+  .step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    width: 24px;
+  }
+
+  /* City name */
+  .city-name {
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .city-flag { margin-right: 6px; }
+
+  /* Nights badge */
+  .nights-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    white-space: nowrap;
+  }
+
+  /* Transport */
+  .transport {
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Visa pill */
+  .visa-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .visa-free { background: var(--green-bg); color: #4ade80; }
+  .visa-voa { background: var(--yellow-bg); color: #fbbf24; }
+  .visa-evisa { background: rgba(34,211,238,0.15); color: var(--accent2); }
+  .visa-required { background: var(--red-bg); color: #f87171; }
+
+  /* Budget */
+  .budget-cell {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Health alert */
+  .health-tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .health-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .health-dengue { background: var(--orange-bg); color: #fb923c; }
+  .health-malaria { background: var(--red-bg); color: #f87171; }
+  .health-altitude { background: rgba(168,85,247,0.18); color: #c084fc; }
+  .health-ok { background: var(--green-bg); color: #4ade80; }
+
+  /* Month cells */
+  .m-cell {
+    width: 38px;
+    min-width: 38px;
+    height: 36px;
+    text-align: center;
+    padding: 0 !important;
+    position: relative;
+  }
+
+  .m-inner {
+    width: 100%;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .m-green { background: rgba(22,163,74,0.35); color: #4ade80; }
+  .m-yellow { background: rgba(202,138,4,0.30); color: #fbbf24; }
+  .m-orange { background: rgba(234,88,12,0.30); color: #fb923c; }
+  .m-red { background: rgba(220,38,38,0.30); color: #f87171; }
+  .m-gray { background: var(--gray-bg); color: var(--muted); }
+  .m-active { outline: 2px solid rgba(255,255,255,0.5); outline-offset: -2px; z-index:1; }
+
+  /* VISA TAB */
+  .visa-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .visa-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .visa-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+  }
+
+  .visa-card-title {
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .visa-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .status-todo { background: var(--yellow-bg); color: #fbbf24; }
+  .status-done { background: var(--green-bg); color: #4ade80; }
+
+  .visa-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .visa-detail-item {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .visa-detail-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+
+  .visa-detail-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  .visa-steps {
+    margin-top: 0.75rem;
+  }
+
+  .visa-step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .visa-step:last-child { border-bottom: none; }
+
+  .visa-step-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent2);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .visa-warning {
+    background: var(--orange-bg);
+    border: 1px solid rgba(234,88,12,0.3);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 12px;
+    color: #fb923c;
+    margin-top: 0.75rem;
+  }
+
+  /* BUDGET TAB */
+  .budget-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .budget-stat {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .budget-stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .budget-stat-value {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .budget-stat-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .budget-country-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .budget-country-table th {
+    background: var(--bg3);
+    padding: 0.6rem 1rem;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .budget-country-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .budget-country-table tr:last-child td { border-bottom: none; }
+
+  .budget-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .budget-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+  }
+
+  /* CHECKLIST TAB */
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .checklist-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .checklist-card-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .checklist-progress {
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .checklist-item:last-child { border-bottom: none; }
+
+  .checklist-item input[type="checkbox"] {
+    margin-top: 2px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+
+  .checklist-item label {
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    line-height: 1.5;
+  }
+
+  .checklist-item.checked label {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  /* PHRASES TAB */
+  .phrases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .phrases-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .phrases-card-header {
+    background: var(--bg3);
+    padding: 0.75rem 1.1rem;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .phrases-lang {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-left: auto;
+    text-transform: uppercase;
+  }
+
+  .phrase-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0.5rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+
+  .phrase-row:last-child { border-bottom: none; }
+
+  .phrase-fr { color: var(--muted); }
+  .phrase-local {
+    font-weight: 500;
+    color: var(--accent2);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  /* METEO DETAILS TAB */
+  .meteo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1rem;
+  }
+
+  .meteo-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .meteo-card-header {
+    background: var(--bg3);
+    padding: 0.85rem 1.25rem;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .meteo-month-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0;
+  }
+
+  .meteo-month-cell {
+    padding: 0.5rem 0.25rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+
+  .meteo-month-cell:last-child { border-right: none; }
+
+  .meteo-month-name {
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .meteo-temp {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .meteo-rain {
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .meteo-bar-wrap {
+    height: 30px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 2px;
+    margin: 4px 0;
+  }
+
+  .meteo-bar {
+    width: 100%;
+    border-radius: 2px;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.25rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 11px;
+    font-family: var(--mono);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    header, nav, main, footer { padding-left: 1rem; padding-right: 1rem; }
+    .header-stats { gap: 1rem; }
+    .stat { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>// VOYAGE.MATHIEU</h1>
+    <div class="subtitle">11 mois · Asie · Départ 28 déc. 2026</div>
+  </div>
+  <div class="header-stats">
+    <div class="stat">
+      <div class="stat-value">7</div>
+      <div class="stat-label">Pays Phase 1</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">~210</div>
+      <div class="stat-label">Nuits planifiées</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">10 000 €</div>
+      <div class="stat-label">Budget cible</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="days-counter">—</div>
+      <div class="stat-label">Jours avant départ</div>
+    </div>
+    <div class="theme-toggle" onclick="toggleTheme()" title="Basculer le thème">
+      <span class="theme-toggle-label" id="theme-label">Dark</span>
+      <div class="toggle-track">
+        <div class="toggle-thumb"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="switchTab('itineraire', this)">Itinéraire & météo</button>
+  <button onclick="switchTab('visas', this)">Visas</button>
+  <button onclick="switchTab('budget', this)">Budget</button>
+  <button onclick="switchTab('checklist', this)">Checklist</button>
+  <button onclick="switchTab('meteo', this)">Météo détaillée</button>
+  <button onclick="switchTab('phrases', this)">Phrases clés</button>
+</nav>
+
+<main>
+
+<!-- ===== TAB: ITINERAIRE ===== -->
+<div id="tab-itineraire" class="tab-content active">
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(22,163,74,0.5)"></div> Idéal</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(202,138,4,0.45)"></div> Acceptable</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(234,88,12,0.45)"></div> Mitigé</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(220,38,38,0.45)"></div> Déconseillé</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(120,120,130,0.3)"></div> Non concerné</div>
+    <div class="legend-item"><div class="legend-dot" style="border:2px solid rgba(255,255,255,0.5);background:transparent"></div> Période de présence</div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Étape</th>
+          <th>Nuits</th>
+          <th>Transport</th>
+          <th>Visa</th>
+          <th>Budget est.</th>
+          <th>Santé</th>
+          <th class="month-col">Jan</th>
+          <th class="month-col">Fév</th>
+          <th class="month-col">Mar</th>
+          <th class="month-col">Avr</th>
+          <th class="month-col">Mai</th>
+          <th class="month-col">Jun</th>
+          <th class="month-col">Jul</th>
+          <th class="month-col">Aoû</th>
+          <th class="month-col">Sep</th>
+          <th class="month-col">Oct</th>
+          <th class="month-col">Nov</th>
+          <th class="month-col">Déc</th>
+        </tr>
+      </thead>
+      <tbody id="itinerary-body">
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== TAB: VISAS ===== -->
+<div id="tab-visas" class="tab-content">
+  <div class="section-title">Situation visa par pays</div>
+  <div class="visa-grid" id="visa-grid"></div>
+</div>
+
+<!-- ===== TAB: BUDGET ===== -->
+<div id="tab-budget" class="tab-content">
+  <div class="section-title">Vue globale</div>
+  <div class="budget-overview">
+    <div class="budget-stat">
+      <div class="budget-stat-label">Enveloppe totale</div>
+      <div class="budget-stat-value">10 000€</div>
+      <div class="budget-stat-sub">+ réserve si besoin</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Budget / jour cible</div>
+      <div class="budget-stat-value">40–70€</div>
+      <div class="budget-stat-sub">moyenne pondérée</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Hébergement / nuit</div>
+      <div class="budget-stat-value">8–25€</div>
+      <div class="budget-stat-sub">hostel / hôtel simple</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Nourriture / jour</div>
+      <div class="budget-stat-value">5–15€</div>
+      <div class="budget-stat-sub">street food prioritaire</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Transition TW→Laos</div>
+      <div class="budget-stat-value">~180€</div>
+      <div class="budget-stat-sub">vol + train nuit + visa</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Trek Népal</div>
+      <div class="budget-stat-value">300–800€</div>
+      <div class="budget-stat-sub">décision en attente ❓</div>
+    </div>
+  </div>
+
+  <div class="section-title">Estimation par pays</div>
+  <div class="table-wrapper">
+    <table class="budget-country-table">
+      <thead>
+        <tr>
+          <th>Pays</th>
+          <th>Durée</th>
+          <th>Coût/jour est.</th>
+          <th>Total estimé</th>
+          <th>Dont visa</th>
+          <th>Postes principaux</th>
+          <th>Part du budget</th>
+        </tr>
+      </thead>
+      <tbody id="budget-body"></tbody>
+    </table>
+  </div>
+  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort. Hors vols internationaux et trek Népal.</p>
+</div>
+
+<!-- ===== TAB: CHECKLIST ===== -->
+<div id="tab-checklist" class="tab-content">
+  <div class="section-title">Avant le départ</div>
+  <div class="checklist-grid" id="checklist-grid"></div>
+</div>
+
+<!-- ===== TAB: METEO ===== -->
+<div id="tab-meteo" class="tab-content">
+  <div class="section-title">Températures moyennes & précipitations par pays</div>
+  <div class="meteo-grid" id="meteo-grid"></div>
+</div>
+
+<!-- ===== TAB: PHRASES ===== -->
+<div id="tab-phrases" class="tab-content">
+  <div class="section-title">Phrases essentielles par pays</div>
+  <div class="phrases-grid" id="phrases-grid"></div>
+</div>
+
+</main>
+
+<footer>
+  <span>VOYAGE_MASTER_DOC v1.0 · Avril 2026</span>
+  <span id="last-updated">Mis à jour : juin 2026</span>
+</footer>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+
+// G=green, Y=yellow, O=orange, R=red, X=not concerned
+// Météo qualitative par étape × 12 mois (Jan→Déc)
+const ITINERARY = [
+  { country: '🇹🇼 Taïwan', steps: [
+    { num:1, city:'Taipei', flag:'🇹🇼', nights:4, transport:'—', visa:'exempt', budget:'40–55€', health:['ok'],
+      meteo:['G','G','G','G','Y','O','R','R','O','Y','G','G'], active:[0] },
+    { num:2, city:'Ruifang', flag:'🇹🇼', nights:2, transport:'Train · 54 min', visa:'exempt', budget:'35–50€', health:['ok'],
+      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0] },
+    { num:3, city:'Yuchi (Sun Moon Lake)', flag:'🇹🇼', nights:2, transport:'Train · 2h45', visa:'exempt', budget:'40–55€', health:['ok'],
+      meteo:['G','G','G','G','Y','Y','O','O','Y','G','G','G'], active:[0] },
+    { num:4, city:'Alishan', flag:'🇹🇼', nights:2, transport:'Train · 3h32', visa:'exempt', budget:'35–50€', health:['ok'],
+      meteo:['G','G','G','Y','O','O','R','R','O','G','G','G'], active:[0] },
+    { num:5, city:'Tainan', flag:'🇹🇼', nights:2, transport:'Train · 5h17', visa:'exempt', budget:'35–50€', health:['ok'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','G','G','G'], active:[0] },
+    { num:6, city:'Kaohsiung', flag:'🇹🇼', nights:1, transport:'Train · 1h42', visa:'exempt', budget:'40–55€', health:['ok'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','G','G','G'], active:[0] },
+    { num:7, city:'Hengchun', flag:'🇹🇼', nights:2, transport:'Bus · 1h45', visa:'exempt', budget:'35–50€', health:['ok'],
+      meteo:['G','G','G','G','G','Y','Y','Y','Y','G','G','G'], active:[0] },
+    { num:8, city:'Hualien City', flag:'🇹🇼', nights:3, transport:'Train · 4h55', visa:'exempt', budget:'40–55€', health:['ok'],
+      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0] },
+    { num:9, city:'Dulan', flag:'🇹🇼', nights:3, transport:'Train · 4h34', visa:'exempt', budget:'30–45€', health:['ok'],
+      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0] },
+  ]},
+  { country: '🔀 Transit', steps: [
+    { num:10, city:'Bangkok (transit)', flag:'🇹🇭', nights:0, transport:'Train nuit → Nong Khai', visa:'exempt 30j', budget:'—', health:['dengue'],
+      meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[] },
+  ]},
+  { country: '🇱🇦 Laos', steps: [
+    { num:11, city:'Vientiane', flag:'🇱🇦', nights:5, transport:'Bus · Pont Amitié', visa:'VoA 40$', budget:'30–45€', health:['dengue','malaria'],
+      meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[1] },
+    { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Bus / avion', visa:'VoA', budget:'30–45€', health:['dengue','malaria'],
+      meteo:['G','G','G','Y','O','R','R','R','O','O','G','G'], active:[1] },
+    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:3, transport:'Bus · 3h', visa:'VoA', budget:'25–40€', health:['dengue','malaria'],
+      meteo:['G','G','G','Y','R','R','R','R','R','O','G','G'], active:[1] },
+    { num:14, city:'Pakse + Plateau des Bolavens', flag:'🇱🇦', nights:5, transport:'Bus nuit', visa:'VoA', budget:'25–35€', health:['dengue','malaria'],
+      meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1] },
+  ]},
+  { country: '🇰🇭 Cambodge', steps: [
+    { num:15, city:'Phnom Penh', flag:'🇰🇭', nights:4, transport:'Bus terrestre', visa:'eVisa 36$', budget:'30–45€', health:['dengue','malaria'],
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2] },
+    { num:16, city:'Siem Reap (Angkor)', flag:'🇰🇭', nights:5, transport:'Bus · 6h', visa:'eVisa', budget:'35–50€', health:['dengue'],
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2] },
+    { num:17, city:'Îles (Koh Rong / Kep)', flag:'🇰🇭', nights:5, transport:'Bus + ferry', visa:'eVisa', budget:'30–45€', health:['dengue'],
+      meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2] },
+  ]},
+  { country: '🇻🇳 Vietnam', steps: [
+    { num:18, city:'Hanoï', flag:'🇻🇳', nights:4, transport:'Vol · 1h30', visa:'eVisa 90j 25$', budget:'35–50€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3] },
+    { num:19, city:'Baie d\'Halong', flag:'🇻🇳', nights:3, transport:'Bus · 3h30', visa:'eVisa', budget:'50–80€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3] },
+    { num:20, city:'Hội An', flag:'🇻🇳', nights:5, transport:'Train · 14h', visa:'eVisa', budget:'35–50€', health:['dengue'],
+      meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3] },
+    { num:21, city:'Hô Chi Minh-Ville', flag:'🇻🇳', nights:4, transport:'Avion · 1h20', visa:'eVisa', budget:'35–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3] },
+  ]},
+  { country: '🇵🇭 Philippines', steps: [
+    { num:22, city:'Manille / Cebu', flag:'🇵🇭', nights:4, transport:'Vol · 2h', visa:'exempt 30j', budget:'40–55€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4] },
+    { num:23, city:'Palawan (El Nido)', flag:'🇵🇭', nights:8, transport:'Vol domestique', visa:'exempt', budget:'45–65€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4] },
+    { num:24, city:'Siargao', flag:'🇵🇭', nights:5, transport:'Vol domestique', visa:'exempt', budget:'40–55€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4] },
+  ]},
+  { country: '🇳🇵 Népal', steps: [
+    { num:25, city:'Katmandou', flag:'🇳🇵', nights:4, transport:'Vol long courrier', visa:'VoA 30$ · 30j', budget:'35–50€', health:['altitude'],
+      meteo:['G','G','G','G','G','R','R','R','G','G','G','G'], active:[5] },
+    { num:26, city:'Trek (Annapurna / EBC)', flag:'🇳🇵', nights:14, transport:'Bus / avion Pokhara', visa:'VoA', budget:'30–45€', health:['altitude'],
+      meteo:['G','G','G','G','G','R','R','R','G','G','G','G'], active:[5] },
+  ]},
+  { country: '🇮🇩 Indonésie', steps: [
+    { num:27, city:'Bali', flag:'🇮🇩', nights:8, transport:'Vol via hub', visa:'VoA gratuit 30j', budget:'35–55€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[6] },
+    { num:28, city:'Java (Yogyakarta)', flag:'🇮🇩', nights:5, transport:'Ferry + bus', visa:'VoA', budget:'30–45€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[6] },
+    { num:29, city:'Lombok / Gili', flag:'🇮🇩', nights:6, transport:'Avion / ferry', visa:'VoA', budget:'35–50€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[6] },
+  ]},
+];
+
+const METEO_COLOR = { G:'m-green', Y:'m-yellow', O:'m-orange', R:'m-red', X:'m-gray' };
+const METEO_LABELS = { G:'✓', Y:'~', O:'!', R:'✗', X:'' };
+
+// ============================================================
+// RENDER ITINERARY
+// ============================================================
+function renderItinerary() {
+  const body = document.getElementById('itinerary-body');
+  let html = '';
+  ITINERARY.forEach(group => {
+    html += `<tr class="country-row"><td colspan="20">${group.country}</td></tr>`;
+    group.steps.forEach(step => {
+      const visaClass = step.visa.includes('exempt') ? 'visa-free' :
+                        step.visa.includes('eVisa') ? 'visa-evisa' :
+                        step.visa.includes('VoA') ? 'visa-voa' : 'visa-required';
+      const healthHtml = step.health.map(h => {
+        if(h==='ok') return `<span class="health-tag health-ok">RAS</span>`;
+        if(h==='dengue') return `<span class="health-tag health-dengue">Dengue</span>`;
+        if(h==='malaria') return `<span class="health-tag health-malaria">Paludisme</span>`;
+        if(h==='altitude') return `<span class="health-tag health-altitude">Altitude</span>`;
+        return '';
+      }).join('');
+
+      const monthCells = step.meteo.map((m,i) => {
+        const cls = METEO_COLOR[m] || 'm-gray';
+        const activeCls = step.active && step.active.includes && false ? 'm-active' : '';
+        return `<td class="m-cell"><div class="m-inner ${cls}">${METEO_LABELS[m]||''}</div></td>`;
+      }).join('');
+
+      html += `
+        <tr>
+          <td class="step-num">${step.num}</td>
+          <td><span class="city-flag">${step.flag}</span><span class="city-name">${step.city}</span></td>
+          <td><span class="nights-badge">${step.nights > 0 ? step.nights + ' n.' : 'Transit'}</span></td>
+          <td class="transport">${step.transport}</td>
+          <td><span class="visa-pill ${visaClass}">${step.visa}</span></td>
+          <td class="budget-cell">${step.budget}</td>
+          <td><div class="health-tags">${healthHtml}</div></td>
+          ${monthCells}
+        </tr>`;
+    });
+  });
+  body.innerHTML = html;
+}
+
+// ============================================================
+// VISA DATA & RENDER
+// ============================================================
+const VISAS = [
+  {
+    country: '🇹🇼 Taïwan', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '90 jours', status: 'todo',
+    steps: ['Passeport valide 6 mois au-delà du séjour', 'Billet retour ou onward ticket exigé', 'Preuve de fonds suffisants peut être demandée'],
+    warning: 'Durée exacte à confirmer pour passeport français — vérifier avant départ.'
+  },
+  {
+    country: '🇱🇦 Laos', type: 'voa', typeLabel: 'Visa on Arrival', cost: '40$ US', duration: '30 jours', status: 'todo',
+    steps: ['40$ US en billets impeccables (non froissés)', '2 photos d\'identité format passeport', 'Formulaire rempli sur place', 'Passeport valide 6 mois minimum', 'Passage au Pont de l\'Amitié (Nong Khai → Vientiane)'],
+    warning: 'Prévoir cash USD. Les DAB du côté laotien sont peu fiables.'
+  },
+  {
+    country: '🇰🇭 Cambodge', type: 'evisa', typeLabel: 'e-Visa', cost: '36$', duration: '30 jours', status: 'todo',
+    steps: ['Faire la demande sur evisa.gov.kh 3–7j avant', 'Paiement carte bancaire en ligne', 'Imprimer ou avoir le QR code sur le téléphone', 'Valable pour entrée terrestre + aérien'],
+    warning: null
+  },
+  {
+    country: '🇻🇳 Vietnam', type: 'evisa', typeLabel: 'e-Visa', cost: '25$', duration: '90 jours', status: 'todo',
+    steps: ['Demande sur evisa.xuatnhapcanh.gov.vn', 'Délai traitement : 3 jours ouvrés', 'Multi-entrées possible', 'Valable 90 jours — largement suffisant'],
+    warning: null
+  },
+  {
+    country: '🇵🇭 Philippines', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '30 jours', status: 'todo',
+    steps: ['Entrée libre sans visa pour français', 'Extension possible sur place (Bureau d\'Immigration)', 'Billet de sortie du territoire requis'],
+    warning: 'Durée séjour et extension à confirmer. ❓ Décision ouverte dans le doc.'
+  },
+  {
+    country: '🇳🇵 Népal', type: 'voa', typeLabel: 'Visa on Arrival', cost: '30$', duration: '30 jours', status: 'todo',
+    steps: ['Formulaire en ligne sur nepaliport.gov.np (recommandé avant)', 'Paiement sur place en cash USD ou carte', 'Photo d\'identité ou appareil photo à l\'aéroport', 'Possible à l\'aéroport de Katmandou (TIA)'],
+    warning: 'Prévoir cash. File d\'attente longue selon les vols. Pré-remplir le formulaire en ligne.'
+  },
+  {
+    country: '🇮🇩 Indonésie', type: 'voa', typeLabel: 'Visa on Arrival', cost: 'Gratuit', duration: '30 jours', status: 'todo',
+    steps: ['Exemption VoA gratuite pour passeport français', 'Valable pour entrée à Bali (DPS), Jakarta (CGK), etc.', 'Extension 30j possible sur place (250 000 IDR)'],
+    warning: null
+  },
+];
+
+function renderVisas() {
+  const grid = document.getElementById('visa-grid');
+  grid.innerHTML = VISAS.map(v => {
+    const typeClass = v.type === 'exempt' ? 'visa-free' : v.type === 'evisa' ? 'visa-evisa' : 'visa-voa';
+    const stepsHtml = v.steps.map((s,i) => `
+      <div class="visa-step">
+        <span class="visa-step-num">${String(i+1).padStart(2,'0')}</span>
+        <span>${s}</span>
+      </div>`).join('');
+    return `
+      <div class="visa-card">
+        <div class="visa-card-header">
+          <div class="visa-card-title">${v.country}</div>
+          <span class="visa-status-badge status-todo">À faire</span>
+        </div>
+        <div class="visa-details">
+          <div class="visa-detail-item">
+            <div class="visa-detail-label">Type</div>
+            <div class="visa-detail-value"><span class="visa-pill ${typeClass}" style="font-size:10px;">${v.typeLabel}</span></div>
+          </div>
+          <div class="visa-detail-item">
+            <div class="visa-detail-label">Coût</div>
+            <div class="visa-detail-value">${v.cost}</div>
+          </div>
+          <div class="visa-detail-item">
+            <div class="visa-detail-label">Durée séjour</div>
+            <div class="visa-detail-value">${v.duration}</div>
+          </div>
+        </div>
+        <div class="visa-steps">${stepsHtml}</div>
+        ${v.warning ? `<div class="visa-warning">⚠ ${v.warning}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+// ============================================================
+// BUDGET RENDER
+// ============================================================
+const BUDGET_DATA = [
+  { country:'🇹🇼 Taïwan', flag:'🇹🇼', nights:21, daily:'45–55€', total:'950–1 150€', visa:'0€', notes:'Transport train inclus, hébergement + cher qu\'ASE' },
+  { country:'🇱🇦 Laos', flag:'🇱🇦', nights:21, daily:'30–40€', total:'630–840€', visa:'40$', notes:'Très bon marché, peu d\'ATM — prévoir cash' },
+  { country:'🇰🇭 Cambodge', flag:'🇰🇭', nights:14, daily:'35–45€', total:'490–630€', visa:'36$', notes:'Angkor Wat : pass 37$/j — budget activités à part' },
+  { country:'🇻🇳 Vietnam', flag:'🇻🇳', nights:18, daily:'35–50€', total:'630–900€', visa:'25$', notes:'Train longue distance confortable et pas cher' },
+  { country:'🇵🇭 Philippines', flag:'🇵🇭', nights:17, daily:'45–65€', total:'765–1 105€', visa:'0€', notes:'Vols domestiques à prévoir (+50–100€ total)' },
+  { country:'🇳🇵 Népal', flag:'🇳🇵', nights:21, daily:'35–45€', total:'735–945€', visa:'30$', notes:'Trek : 300–800€ en plus selon option choisie ❓' },
+  { country:'🇮🇩 Indonésie', flag:'🇮🇩', nights:21, daily:'35–55€', total:'735–1 155€', visa:'0€', notes:'Bali plus cher que Lombok/Java' },
+];
+
+function renderBudget() {
+  const total = 10000;
+  const body = document.getElementById('budget-body');
+  body.innerHTML = BUDGET_DATA.map(d => {
+    const low = parseInt(d.total.replace(/[^0-9–]/g,'').split('–')[0].replace(/\s/g,''));
+    const pct = Math.round((low / total) * 100);
+    return `
+      <tr>
+        <td style="font-weight:500">${d.country}</td>
+        <td style="color:var(--muted);font-family:var(--mono)">${d.nights} nuits</td>
+        <td style="font-family:var(--mono)">${d.daily}</td>
+        <td style="font-family:var(--mono);font-weight:500;color:var(--accent2)">${d.total}</td>
+        <td style="font-family:var(--mono);color:var(--muted)">${d.visa}</td>
+        <td style="color:var(--muted);font-size:12px">${d.notes}</td>
+        <td style="min-width:80px">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:3px">${pct}%</div>
+          <div class="budget-bar"><div class="budget-bar-fill" style="width:${pct}%"></div></div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// CHECKLIST
+// ============================================================
+const CHECKLIST_DATA = [
+  {
+    title: '📄 Documents',
+    items: [
+      'Passeport valide jusqu\'en 2034 ✓',
+      'Photocopies passeport × 5',
+      'Scan passeport sur Google Drive',
+      'Permis de conduire international',
+      'Photos d\'identité × 10 (visas VoA)',
+      'Assurance voyage souscrire ❓',
+      'Carnet de vaccination à jour',
+    ]
+  },
+  {
+    title: '💉 Santé & Vaccins',
+    items: [
+      'Hépatite A — à confirmer',
+      'Hépatite B — à confirmer',
+      'Typhoïde — à confirmer',
+      'Rage — optionnel ❓',
+      'Antipaludéen (Laos / Cambodge rural)',
+      'Trousse de premiers secours complète',
+      'Répulsif DEET 50% (dengue)',
+      'Diarrhée du voyageur : traitement',
+      'Assurance rapatriement médicale',
+    ]
+  },
+  {
+    title: '💰 Finances',
+    items: [
+      'Carte bancaire sans frais (ex: Revolut, Wise)',
+      'Carte de secours (2ème banque)',
+      'Cash USD 200$ pour visas VoA',
+      'Notifier banque des pays visités',
+      'Compte Wise ou Revolut ouvert',
+    ]
+  },
+  {
+    title: '📱 Tech & Connectivité',
+    items: [
+      'Téléphone débloqué pour SIM locales',
+      'Applications : Maps.me, XE Currency, iOverlander',
+      'Batterie externe 20 000 mAh',
+      'Adaptateur universel',
+      'Backup photos : cloud auto-sync',
+      'VPN (accès Chine éventuelle + sécurité)',
+    ]
+  },
+  {
+    title: '🎒 Équipement',
+    items: [
+      'Forclaz Travel 900 50+6L ✓',
+      'Cadenas TSA',
+      'Sac de couchage léger (Népal)',
+      'Vêtements trek + chaud (Népal)',
+      'Sandales + chaussures de marche',
+      'Serviette microfibre',
+      'Gourde filtrante',
+    ]
+  },
+  {
+    title: '✈️ Réservations à anticiper',
+    items: [
+      'Vol Paris → Taipei (28/12/26) ❓',
+      'Vol Taipei → Bangkok (fin Taiwan)',
+      'Train Bangkok → Nong Khai (nuit) — réserver 30–90j avant',
+      'Hébergement Taipei nuit 1',
+      'eVisa Cambodge (3–7j avant entrée)',
+      'eVisa Vietnam (3j ouvrés avant)',
+    ]
+  },
+];
+
+function renderChecklist() {
+  const grid = document.getElementById('checklist-grid');
+  grid.innerHTML = CHECKLIST_DATA.map((cat, ci) => {
+    const items = cat.items.map((item, ii) => {
+      const id = `chk-${ci}-${ii}`;
+      const done = localStorage.getItem(id) === '1';
+      return `
+        <div class="checklist-item ${done ? 'checked' : ''}" id="item-${id}">
+          <input type="checkbox" id="${id}" ${done ? 'checked' : ''} onchange="toggleCheck('${id}')">
+          <label for="${id}">${item}</label>
+        </div>`;
+    }).join('');
+    const total = cat.items.length;
+    return `
+      <div class="checklist-card">
+        <div class="checklist-card-title">
+          ${cat.title}
+          <span class="checklist-progress" id="prog-${ci}">0 / ${total}</span>
+        </div>
+        ${items}
+      </div>`;
+  }).join('');
+  updateAllProgress();
+}
+
+function toggleCheck(id) {
+  const cb = document.getElementById(id);
+  const item = document.getElementById('item-' + id);
+  localStorage.setItem(id, cb.checked ? '1' : '0');
+  item.classList.toggle('checked', cb.checked);
+  updateAllProgress();
+}
+
+function updateAllProgress() {
+  CHECKLIST_DATA.forEach((cat, ci) => {
+    let done = 0;
+    cat.items.forEach((_, ii) => {
+      if(localStorage.getItem(`chk-${ci}-${ii}`) === '1') done++;
+    });
+    const el = document.getElementById(`prog-${ci}`);
+    if(el) el.textContent = `${done} / ${cat.items.length}`;
+  });
+}
+
+// ============================================================
+// METEO DÉTAILLÉE
+// ============================================================
+const METEO_DETAIL = [
+  { country:'🇹🇼 Taïwan', lang:'Mandarin',
+    months: [
+      {t:'17°',r:'75mm',q:'G'},{t:'17°',r:'65mm',q:'G'},{t:'19°',r:'80mm',q:'G'},{t:'23°',r:'110mm',q:'G'},
+      {t:'27°',r:'200mm',q:'Y'},{t:'30°',r:'220mm',q:'O'},{t:'32°',r:'250mm',q:'R'},{t:'32°',r:'230mm',q:'R'},
+      {t:'29°',r:'180mm',q:'O'},{t:'26°',r:'130mm',q:'Y'},{t:'22°',r:'80mm',q:'G'},{t:'18°',r:'70mm',q:'G'},
+    ]},
+  { country:'🇱🇦 Laos', lang:'Lao',
+    months: [
+      {t:'25°',r:'8mm',q:'G'},{t:'28°',r:'12mm',q:'G'},{t:'32°',r:'25mm',q:'G'},{t:'34°',r:'70mm',q:'Y'},
+      {t:'32°',r:'200mm',q:'O'},{t:'30°',r:'280mm',q:'R'},{t:'29°',r:'290mm',q:'R'},{t:'29°',r:'280mm',q:'R'},
+      {t:'29°',r:'230mm',q:'R'},{t:'28°',r:'100mm',q:'O'},{t:'26°',r:'30mm',q:'G'},{t:'24°',r:'10mm',q:'G'},
+    ]},
+  { country:'🇰🇭 Cambodge', lang:'Khmer',
+    months: [
+      {t:'28°',r:'10mm',q:'G'},{t:'29°',r:'12mm',q:'G'},{t:'31°',r:'35mm',q:'G'},{t:'33°',r:'80mm',q:'G'},
+      {t:'32°',r:'130mm',q:'Y'},{t:'30°',r:'190mm',q:'R'},{t:'29°',r:'200mm',q:'R'},{t:'29°',r:'210mm',q:'R'},
+      {t:'29°',r:'260mm',q:'R'},{t:'28°',r:'270mm',q:'O'},{t:'27°',r:'120mm',q:'Y'},{t:'27°',r:'35mm',q:'G'},
+    ]},
+  { country:'🇻🇳 Vietnam', lang:'Vietnamien',
+    months: [
+      {t:'20°',r:'20mm',q:'G'},{t:'21°',r:'25mm',q:'G'},{t:'24°',r:'40mm',q:'G'},{t:'28°',r:'55mm',q:'G'},
+      {t:'31°',r:'95mm',q:'Y'},{t:'32°',r:'100mm',q:'O'},{t:'32°',r:'110mm',q:'O'},{t:'32°',r:'130mm',q:'O'},
+      {t:'30°',r:'200mm',q:'Y'},{t:'27°',r:'210mm',q:'O'},{t:'24°',r:'110mm',q:'O'},{t:'21°',r:'35mm',q:'G'},
+    ]},
+  { country:'🇵🇭 Philippines', lang:'Filipino / Anglais',
+    months: [
+      {t:'27°',r:'35mm',q:'G'},{t:'27°',r:'25mm',q:'G'},{t:'28°',r:'30mm',q:'G'},{t:'30°',r:'45mm',q:'G'},
+      {t:'31°',r:'120mm',q:'G'},{t:'30°',r:'190mm',q:'Y'},{t:'29°',r:'220mm',q:'O'},{t:'29°',r:'230mm',q:'O'},
+      {t:'29°',r:'210mm',q:'O'},{t:'28°',r:'180mm',q:'Y'},{t:'28°',r:'120mm',q:'Y'},{t:'27°',r:'60mm',q:'G'},
+    ]},
+  { country:'🇳🇵 Népal', lang:'Népalais',
+    months: [
+      {t:'8°',r:'15mm',q:'G'},{t:'10°',r:'20mm',q:'G'},{t:'15°',r:'35mm',q:'G'},{t:'20°',r:'60mm',q:'G'},
+      {t:'23°',r:'120mm',q:'G'},{t:'23°',r:'240mm',q:'R'},{t:'23°',r:'320mm',q:'R'},{t:'23°',r:'290mm',q:'R'},
+      {t:'21°',r:'180mm',q:'G'},{t:'17°',r:'55mm',q:'G'},{t:'12°',r:'20mm',q:'G'},{t:'8°',r:'12mm',q:'G'},
+    ]},
+  { country:'🇮🇩 Indonésie (Bali)', lang:'Indonésien / Balinais',
+    months: [
+      {t:'27°',r:'300mm',q:'Y'},{t:'27°',r:'280mm',q:'Y'},{t:'27°',r:'180mm',q:'G'},{t:'28°',r:'90mm',q:'G'},
+      {t:'28°',r:'80mm',q:'G'},{t:'28°',r:'70mm',q:'G'},{t:'27°',r:'55mm',q:'G'},{t:'27°',r:'45mm',q:'G'},
+      {t:'27°',r:'65mm',q:'G'},{t:'27°',r:'110mm',q:'Y'},{t:'27°',r:'170mm',q:'Y'},{t:'27°',r:'250mm',q:'Y'},
+    ]},
+];
+
+function renderMeteo() {
+  const maxRain = 320;
+  const grid = document.getElementById('meteo-grid');
+  grid.innerHTML = METEO_DETAIL.map(c => {
+    const cells = c.months.map((m, i) => {
+      const rainH = Math.round((parseInt(m.r) / maxRain) * 30);
+      const rainColor = m.q==='G'?'#16a34a':m.q==='Y'?'#ca8a04':m.q==='O'?'#ea580c':'#dc2626';
+      const tempColor = m.q==='G'?'#4ade80':m.q==='Y'?'#fbbf24':m.q==='O'?'#fb923c':'#f87171';
+      return `
+        <div class="meteo-month-cell">
+          <div class="meteo-month-name">${MONTHS[i]}</div>
+          <div class="meteo-bar-wrap">
+            <div class="meteo-bar" style="height:${rainH}px;background:${rainColor};opacity:0.6;"></div>
+          </div>
+          <div class="meteo-temp" style="color:${tempColor}">${m.t}</div>
+          <div class="meteo-rain">${m.r}</div>
+        </div>`;
+    }).join('');
+    return `
+      <div class="meteo-card">
+        <div class="meteo-card-header">${c.country} <span style="font-size:11px;color:var(--muted);margin-left:auto">${c.lang}</span></div>
+        <div class="meteo-month-grid">${cells}</div>
+      </div>`;
+  }).join('');
+}
+
+// ============================================================
+// PHRASES CLÉS
+// ============================================================
+const PHRASES_DATA = [
+  { country:'🇹🇼 Taïwan', lang:'Mandarin (chinois traditionnel)', phrases:[
+    ['Bonjour','Nǐ hǎo (你好)'],['Merci','Xièxie (謝謝)'],['Combien ?','Duōshǎo qián? (多少錢?)'],
+    ['Trop cher','Tài guì le (太貴了)'],['Toilettes','Cèsuǒ (廁所)'],['Où est… ?','…zài nǎlǐ? (在哪裡?)'],
+    ['Eau','Shuǐ (水)'],['Hôpital','Yīyuàn (醫院)'],['Pas épicé','Bù là (不辣)'],['Au revoir','Zàijiàn (再見)'],
+  ]},
+  { country:'🇱🇦 Laos', lang:'Laotien', phrases:[
+    ['Bonjour','Sabaidee (ສະບາຍດີ)'],['Merci','Khop chai (ຂອບໃຈ)'],['Combien ?','Tao dai? (ເທົ່າໃດ?)'],
+    ['Trop cher','Phaeng lai (ແພງຫຼາຍ)'],['Toilettes','Hong suam (ຫ້ອງນ້ຳ)'],['Eau','Nam (ນ້ຳ)'],
+    ['Non épicé','Bo phet (ບໍ່ເຜັດ)'],['Hôpital','Hong maw (ໂຮງໝໍ)'],['Oui','Mèn (ແມ່ນ)'],['Non','Bor (ບໍ່)'],
+  ]},
+  { country:'🇰🇭 Cambodge', lang:'Khmer', phrases:[
+    ['Bonjour','Chum reap suor (ជំរាបសួរ)'],['Merci','Aw koun (អរគុណ)'],['Combien ?','Thlai ponmaan? (ថ្លៃប៉ុន្មាន?)'],
+    ['Trop cher','Thlai nas (ថ្លៃណាស់)'],['Toilettes','Bantob tuk (បន្ទប់ទឹក)'],['Eau','Tuk (ទឹក)'],
+    ['Hôpital','Moom pét (មន្ទីរពេទ្យ)'],['Oui','Baat / Jah'],['Non','Te (ទេ)'],['À l\'aide !','Juoy phong! (ជួយផង!)'],
+  ]},
+  { country:'🇻🇳 Vietnam', lang:'Vietnamien', phrases:[
+    ['Bonjour','Xin chào'],['Merci','Cảm ơn'],['Combien ?','Bao nhiêu tiền?'],
+    ['Trop cher','Đắt quá'],['Toilettes','Nhà vệ sinh'],['Eau','Nước'],
+    ['Non épicé','Không cay'],['Hôpital','Bệnh viện'],['Oui','Vâng'],['Non','Không'],
+  ]},
+  { country:'🇵🇭 Philippines', lang:'Filipino / Anglais', phrases:[
+    ['Bonjour','Magandang araw'],['Merci','Salamat'],['Combien ?','Magkano?'],
+    ['Trop cher','Mahal na mahal'],['Toilettes','CR (Comfort Room)'],['Eau','Tubig'],
+    ['Hôpital','Ospital'],['Oui','Oo'],['Non','Hindi'],['Bonne cuisine','Masarap!'],
+  ]},
+  { country:'🇳🇵 Népal', lang:'Népalais', phrases:[
+    ['Bonjour','Namaste (नमस्ते)'],['Merci','Dhanyabad (धन्यवाद)'],['Combien ?','Kati ho? (कति हो?)'],
+    ['Trop cher','Mahahgo (महँगो)'],['Toilettes','Sauchalay (शौचालय)'],['Eau','Pani (पानी)'],
+    ['Altitude','Uchaai (उचाइ)'],['Hôpital','Aspatal (अस्पताल)'],['Oui','Hunchha (हुन्छ)'],['Non','Hudaina (हुँदैन)'],
+  ]},
+  { country:'🇮🇩 Indonésie', lang:'Bahasa Indonesia', phrases:[
+    ['Bonjour','Selamat pagi/siang'],['Merci','Terima kasih'],['Combien ?','Berapa harganya?'],
+    ['Trop cher','Terlalu mahal'],['Toilettes','Kamar mandi / WC'],['Eau','Air'],
+    ['Non épicé','Tidak pedas'],['Hôpital','Rumah sakit'],['Oui','Ya'],['Non','Tidak / Bukan'],
+  ]},
+];
+
+function renderPhrases() {
+  const grid = document.getElementById('phrases-grid');
+  grid.innerHTML = PHRASES_DATA.map(c => {
+    const rows = c.phrases.map(p => `
+      <div class="phrase-row">
+        <div class="phrase-fr">${p[0]}</div>
+        <div class="phrase-local">${p[1]}</div>
+      </div>`).join('');
+    return `
+      <div class="phrases-card">
+        <div class="phrases-card-header">
+          ${c.country}
+          <span class="phrases-lang">${c.lang}</span>
+        </div>
+        ${rows}
+      </div>`;
+  }).join('');
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ============================================================
+// COUNTDOWN
+// ============================================================
+function updateCountdown() {
+  const depart = new Date('2026-12-28');
+  const now = new Date();
+  const diff = Math.ceil((depart - now) / (1000 * 60 * 60 * 24));
+  document.getElementById('days-counter').textContent = diff > 0 ? diff + 'j' : 'Parti !';
+}
+
+// ============================================================
+// THEME TOGGLE
+// ============================================================
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  document.getElementById('theme-label').textContent = isLight ? 'Light' : 'Dark';
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.documentElement.classList.add('light');
+    document.getElementById('theme-label').textContent = 'Light';
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+initTheme();
+renderItinerary();
+renderVisas();
+renderBudget();
+renderChecklist();
+renderMeteo();
+renderPhrases();
+updateCountdown();
+</script>
+</body>
+</html>
