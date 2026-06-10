@@ -912,11 +912,11 @@
   </div>
   <div class="header-stats">
     <div class="stat">
-      <div class="stat-value">7</div>
+      <div class="stat-value">6</div>
       <div class="stat-label">Pays Phase 1</div>
     </div>
     <div class="stat">
-      <div class="stat-value">~210</div>
+      <div class="stat-value">~176</div>
       <div class="stat-label">Nuits planifiées</div>
     </div>
     <div class="stat">
@@ -1029,8 +1029,6 @@
       <div class="budget-stat-sub">vol + train nuit + visa</div>
     </div>
     <div class="budget-stat">
-      <div class="budget-stat-label">Trek Népal</div>
-      <div class="budget-stat-value">300–800€</div>
       <div class="budget-stat-sub">décision en attente ❓</div>
     </div>
   </div>
@@ -1052,7 +1050,7 @@
       <tbody id="budget-body"></tbody>
     </table>
   </div>
-  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort. Hors vols internationaux et trek Népal.</p>
+  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort. Hors vols internationaux.</p>
 </div>
 
 <!-- ===== TAB: CHECKLIST ===== -->
@@ -1156,19 +1154,14 @@ const ITINERARY = [
     { num:24, city:'Siargao', flag:'🇵🇭', nights:5, transport:'Vol domestique', visa:'exempt', budget:'40–55€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4] },
   ]},
-  { country: '🇳🇵 Népal', steps: [
-    { num:25, city:'Katmandou', flag:'🇳🇵', nights:4, transport:'Vol long courrier', visa:'VoA 30$ · 30j', budget:'35–50€', health:['altitude'],
-      meteo:['G','G','G','G','G','R','R','R','G','G','G','G'], active:[5] },
-    { num:26, city:'Trek (Annapurna / EBC)', flag:'🇳🇵', nights:14, transport:'Bus / avion Pokhara', visa:'VoA', budget:'30–45€', health:['altitude'],
-      meteo:['G','G','G','G','G','R','R','R','G','G','G','G'], active:[5] },
-  ]},
+
   { country: '🇮🇩 Indonésie', steps: [
     { num:27, city:'Bali', flag:'🇮🇩', nights:8, transport:'Vol via hub', visa:'VoA gratuit 30j', budget:'35–55€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[6] },
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5] },
     { num:28, city:'Java (Yogyakarta)', flag:'🇮🇩', nights:5, transport:'Ferry + bus', visa:'VoA', budget:'30–45€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[6] },
-    { num:29, city:'Lombok / Gili', flag:'🇮🇩', nights:6, transport:'Avion / ferry', visa:'VoA', budget:'35–50€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[6] },
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5] },
+    { num:27, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:5, transport:'Avion retour Bali', visa:'VoA', budget:'35–50€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5] },
   ]},
 ];
 
@@ -1687,11 +1680,7 @@ const VISAS = [
     steps: ['Entrée libre sans visa pour français', 'Extension possible sur place (Bureau d\'Immigration)', 'Billet de sortie du territoire requis'],
     warning: 'Durée séjour et extension à confirmer. ❓ Décision ouverte dans le doc.'
   },
-  {
-    country: '🇳🇵 Népal', type: 'voa', typeLabel: 'Visa on Arrival', cost: '30$', duration: '30 jours', status: 'todo',
-    steps: ['Formulaire en ligne sur nepaliport.gov.np (recommandé avant)', 'Paiement sur place en cash USD ou carte', 'Photo d\'identité ou appareil photo à l\'aéroport', 'Possible à l\'aéroport de Katmandou (TIA)'],
-    warning: 'Prévoir cash. File d\'attente longue selon les vols. Pré-remplir le formulaire en ligne.'
-  },
+  
   {
     country: '🇮🇩 Indonésie', type: 'voa', typeLabel: 'Visa on Arrival', cost: 'Gratuit', duration: '30 jours', status: 'todo',
     steps: ['Exemption VoA gratuite pour passeport français', 'Valable pour entrée à Bali (DPS), Jakarta (CGK), etc.', 'Extension 30j possible sur place (250 000 IDR)'],
@@ -1738,13 +1727,12 @@ function renderVisas() {
 // BUDGET RENDER
 // ============================================================
 const BUDGET_DATA = [
-  { country:'🇹🇼 Taïwan', flag:'🇹🇼', nights:21, daily:'45–55€', total:'950–1 150€', visa:'0€', notes:'Transport train inclus, hébergement + cher qu\'ASE' },
-  { country:'🇱🇦 Laos', flag:'🇱🇦', nights:21, daily:'30–40€', total:'630–840€', visa:'40$', notes:'Très bon marché, peu d\'ATM — prévoir cash' },
-  { country:'🇰🇭 Cambodge', flag:'🇰🇭', nights:14, daily:'35–45€', total:'490–630€', visa:'36$', notes:'Angkor Wat : pass 37$/j — budget activités à part' },
-  { country:'🇻🇳 Vietnam', flag:'🇻🇳', nights:18, daily:'35–50€', total:'630–900€', visa:'25$', notes:'Train longue distance confortable et pas cher' },
-  { country:'🇵🇭 Philippines', flag:'🇵🇭', nights:17, daily:'45–65€', total:'765–1 105€', visa:'0€', notes:'Vols domestiques à prévoir (+50–100€ total)' },
-  { country:'🇳🇵 Népal', flag:'🇳🇵', nights:21, daily:'35–45€', total:'735–945€', visa:'30$', notes:'Trek : 300–800€ en plus selon option choisie ❓' },
-  { country:'🇮🇩 Indonésie', flag:'🇮🇩', nights:21, daily:'35–55€', total:'735–1 155€', visa:'0€', notes:'Bali plus cher que Lombok/Java' },
+  { country:'🇹🇼 Taïwan', flag:'🇹🇼', nights:35, daily:'45–55€', total:'1 575–1 925€', visa:'0€', notes:'Transport train inclus, hébergement + cher qu\'ASE' },
+  { country:'🇱🇦 Laos', flag:'🇱🇦', nights:25, daily:'30–40€', total:'750–1 000€', visa:'40$', notes:'Très bon marché, peu d\'ATM — prévoir cash. Bus terrestre depuis Pakse.' },
+  { country:'🇰🇭 Cambodge', flag:'🇰🇭', nights:25, daily:'35–45€', total:'875–1 125€', visa:'36$', notes:'Angkor Wat : pass 37$/j. Bus terrestre depuis Phnom Penh.' },
+  { country:'🇻🇳 Vietnam', flag:'🇻🇳', nights:36, daily:'35–50€', total:'1 260–1 800€', visa:'25$', notes:'Sens Sud→Nord. Ha Giang Loop incluse. Train Reunification Express.' },
+  { country:'🇵🇭 Philippines', flag:'🇵🇭', nights:30, daily:'45–65€', total:'1 350–1 950€', visa:'0€', notes:'Croisière El Nido↔Coron incluse (~80€). Vols domestiques.' },
+  { country:'🇮🇩 Indonésie', flag:'🇮🇩', nights:25, daily:'35–55€', total:'875–1 375€', visa:'0€', notes:'Road trip Lombok→Flores inclus (~30€ ferries). Bali + cher.' },
 ];
 
 function renderBudget() {
@@ -1825,8 +1813,6 @@ const CHECKLIST_DATA = [
     items: [
       'Forclaz Travel 900 50+6L ✓',
       'Cadenas TSA',
-      'Sac de couchage léger (Népal)',
-      'Vêtements trek + chaud (Népal)',
       'Sandales + chaussures de marche',
       'Serviette microfibre',
       'Gourde filtrante',
@@ -1923,12 +1909,7 @@ const METEO_DETAIL = [
       {t:'31°',r:'120mm',q:'G'},{t:'30°',r:'190mm',q:'Y'},{t:'29°',r:'220mm',q:'O'},{t:'29°',r:'230mm',q:'O'},
       {t:'29°',r:'210mm',q:'O'},{t:'28°',r:'180mm',q:'Y'},{t:'28°',r:'120mm',q:'Y'},{t:'27°',r:'60mm',q:'G'},
     ]},
-  { country:'🇳🇵 Népal', lang:'Népalais',
-    months: [
-      {t:'8°',r:'15mm',q:'G'},{t:'10°',r:'20mm',q:'G'},{t:'15°',r:'35mm',q:'G'},{t:'20°',r:'60mm',q:'G'},
-      {t:'23°',r:'120mm',q:'G'},{t:'23°',r:'240mm',q:'R'},{t:'23°',r:'320mm',q:'R'},{t:'23°',r:'290mm',q:'R'},
-      {t:'21°',r:'180mm',q:'G'},{t:'17°',r:'55mm',q:'G'},{t:'12°',r:'20mm',q:'G'},{t:'8°',r:'12mm',q:'G'},
-    ]},
+
   { country:'🇮🇩 Indonésie (Bali)', lang:'Indonésien / Balinais',
     months: [
       {t:'27°',r:'300mm',q:'Y'},{t:'27°',r:'280mm',q:'Y'},{t:'27°',r:'180mm',q:'G'},{t:'28°',r:'90mm',q:'G'},
@@ -1992,12 +1973,7 @@ const PHRASES_DATA = [
     ['Trop cher','Mahal na mahal'],['Toilettes','CR (Comfort Room)'],['Eau','Tubig'],
     ['Hôpital','Ospital'],['Oui','Oo'],['Non','Hindi'],['Bonne cuisine','Masarap!'],
   ]},
-  { country:'🇳🇵 Népal', lang:'Népalais', phrases:[
-    ['Bonjour','Namaste (नमस्ते)'],['Merci','Dhanyabad (धन्यवाद)'],['Combien ?','Kati ho? (कति हो?)'],
-    ['Trop cher','Mahahgo (महँगो)'],['Toilettes','Sauchalay (शौचालय)'],['Eau','Pani (पानी)'],
-    ['Altitude','Uchaai (उचाइ)'],['Hôpital','Aspatal (अस्पताल)'],['Oui','Hunchha (हुन्छ)'],['Non','Hudaina (हुँदैन)'],
-  ]},
-  { country:'🇮🇩 Indonésie', lang:'Bahasa Indonesia', phrases:[
+    { country:'🇮🇩 Indonésie', lang:'Bahasa Indonesia', phrases:[
     ['Bonjour','Selamat pagi/siang'],['Merci','Terima kasih'],['Combien ?','Berapa harganya?'],
     ['Trop cher','Terlalu mahal'],['Toilettes','Kamar mandi / WC'],['Eau','Air'],
     ['Non épicé','Tidak pedas'],['Hôpital','Rumah sakit'],['Oui','Ya'],['Non','Tidak / Bukan'],
@@ -2042,7 +2018,7 @@ const APPS_DATA = [
     cat: '✈️ Vols & transports longue distance', apps: [
       { icon: '🔍', name: 'Google Flights', badge: 'reco', desc: 'Meilleur pour explorer les dates et comparer. Alertes de prix très utiles.' },
       { icon: '🔍', name: 'Skyscanner', badge: 'reco', desc: 'Excellent pour les vols "partout" ou "mois entier". Complémentaire à Google Flights.' },
-      { icon: '🔀', name: 'Kiwi.com', badge: 'reco', desc: 'Spécialiste des combinaisons complexes (Philippines → Népal). Trouve des liaisons introuvables ailleurs.' },
+      { icon: '🔀', name: 'Kiwi.com', badge: 'reco', desc: 'Spécialiste des combinaisons complexes (Philippines → Indonésie). Trouve des liaisons introuvables ailleurs.' },
       { icon: '🚌', name: 'Rome2rio', badge: 'have', desc: 'Compare tous les modes de transport A→B (bus, train, ferry, vol). Indispensable en Asie.' },
       { icon: '🌏', name: 'Trip.com', badge: 'have', desc: 'Trains & bus réservables en Asie. Fort sur le réseau chinois et vietnamien.' },
     ]
@@ -2071,7 +2047,7 @@ const APPS_DATA = [
   },
   {
     cat: '🗺 Navigation & maps', apps: [
-      { icon: '🗺', name: 'Maps.me', badge: 'have', desc: 'Cartes hors-ligne précises. Indispensable dans les zones rurales (Laos, Népal).' },
+      { icon: '🗺', name: 'Maps.me', badge: 'have', desc: 'Cartes hors-ligne précises. Indispensable dans les zones rurales (Laos, Indonésie).' },
       { icon: '🌍', name: 'Google Maps', badge: 'reco', desc: 'Incontournable en ville. Télécharger les zones offline. Complément à Maps.me.' },
     ]
   },
