@@ -1751,9 +1751,12 @@ function renderItinerary() {
     const estHigh = allHigh.length ? allHigh.reduce((a,b)=>a+b,0) : 0;
     const budgetEst = estLow ? `~${estLow*totalNights/allLow.length|0}–${estHigh*totalNights/allHigh.length|0}€` : '';
     html += `<tr class="country-row">
-      <td colspan="6">${group.country}</td>
-      <td colspan="2" style="text-align:right;font-size:12px;opacity:0.75;">${totalNights} nuits</td>
-      <td colspan="12" style="font-size:12px;opacity:0.75;padding-left:8px;">${budgetEst}</td>
+      <td></td>
+      <td>${group.country}</td>
+      <td><span class="nights-badge">${totalNights} n.</span></td>
+      <td colspan="2"></td>
+      <td style="font-size:12px;opacity:0.8;font-family:var(--mono);">${budgetEst}</td>
+      <td colspan="12"></td>
     </tr>`;
     group.steps.forEach(step => {
       const visaClass = step.visa.includes('exempt') ? 'visa-free' :
