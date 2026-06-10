@@ -793,6 +793,83 @@
     border-radius: 2px;
   }
 
+  /* APPS TAB */
+  .apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .apps-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .apps-card-header {
+    background: var(--bg3);
+    padding: 0.75rem 1.1rem;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+
+  .app-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0.6rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .app-row:last-child { border-bottom: none; }
+
+  .app-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+    margin-top: 1px;
+  }
+
+  .app-info { flex: 1; min-width: 0; }
+
+  .app-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .app-badge {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .badge-have { background: var(--green-bg); color: #4ade80; }
+  .badge-reco { background: rgba(34,211,238,0.12); color: var(--accent2); }
+  .badge-key  { background: var(--yellow-bg); color: #fbbf24; }
+
+  .app-desc {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+
   /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
@@ -855,6 +932,7 @@
   <button onclick="switchTab('checklist', this)">Checklist</button>
   <button onclick="switchTab('meteo', this)">Météo détaillée</button>
   <button onclick="switchTab('phrases', this)">Phrases clés</button>
+  <button onclick="switchTab('apps', this)">Apps & outils</button>
   <a href="https://www.polarsteps.com/CestLeMath/20559043-mon-tour-d-asie?s=84885f78-8190-4092-ad9e-ee02d51e1fdc" target="_blank" class="nav-polarsteps">📍 Polarsteps ↗</a>
 </nav>
 
@@ -981,6 +1059,12 @@
 <div id="tab-phrases" class="tab-content">
   <div class="section-title">Phrases essentielles par pays</div>
   <div class="phrases-grid" id="phrases-grid"></div>
+</div>
+
+<!-- ===== TAB: APPS ===== -->
+<div id="tab-apps" class="tab-content">
+  <div class="section-title">Applications & outils du voyage</div>
+  <div class="apps-grid" id="apps-grid"></div>
 </div>
 
 </main>
@@ -1487,6 +1571,108 @@ function renderPhrases() {
 }
 
 // ============================================================
+// APPS & OUTILS
+// ============================================================
+const APPS_DATA = [
+  {
+    cat: '🏨 Hébergement', apps: [
+      { icon: '🏠', name: 'Airbnb', badge: 'have', desc: 'Appartements & logements chez l\'habitant. Idéal pour les séjours longs.' },
+      { icon: '🏨', name: 'Booking.com', badge: 'have', desc: 'Large choix hôtels + guesthouses. Annulation gratuite souvent disponible.' },
+      { icon: '🛏', name: 'HostelWorld', badge: 'have', desc: 'Référence mondiale pour les hostels. Dortoirs & privés, avis fiables.' },
+      { icon: '🛏', name: 'Hostel.com', badge: 'have', desc: 'Alternative à HostelWorld, bonnes promos parfois.' },
+      { icon: '🌏', name: 'Agoda', badge: 'have', desc: 'Souvent moins cher que Booking en Asie du Sud-Est. Incontournable pour Laos/Cambodge.' },
+      { icon: '✈️', name: 'Trip.com', badge: 'have', desc: 'Hébergement + vols + trains. Fort sur l\'Asie, bons prix.' },
+      { icon: '⭐', name: 'TripAdvisor', badge: 'have', desc: 'Avis et recommandations. Utile pour vérifier la réputation d\'un hébergement.' },
+    ]
+  },
+  {
+    cat: '✈️ Vols & transports longue distance', apps: [
+      { icon: '🔍', name: 'Google Flights', badge: 'reco', desc: 'Meilleur pour explorer les dates et comparer. Alertes de prix très utiles.' },
+      { icon: '🔍', name: 'Skyscanner', badge: 'reco', desc: 'Excellent pour les vols "partout" ou "mois entier". Complémentaire à Google Flights.' },
+      { icon: '🔀', name: 'Kiwi.com', badge: 'reco', desc: 'Spécialiste des combinaisons complexes (Philippines → Népal). Trouve des liaisons introuvables ailleurs.' },
+      { icon: '🚌', name: 'Rome2rio', badge: 'have', desc: 'Compare tous les modes de transport A→B (bus, train, ferry, vol). Indispensable en Asie.' },
+      { icon: '🌏', name: 'Trip.com', badge: 'have', desc: 'Trains & bus réservables en Asie. Fort sur le réseau chinois et vietnamien.' },
+    ]
+  },
+  {
+    cat: '🚗 Mobilité locale', apps: [
+      { icon: '🟢', name: 'Grab', badge: 'key', desc: 'L\'Uber de l\'Asie du Sud-Est. Taxi, moto, food. Fonctionne en Thaïlande, Laos, Cambodge, Vietnam, Philippines, Indonésie.' },
+      { icon: '🚗', name: 'Uber', badge: 'have', desc: 'Utile principalement à Taipei (Taiwan) et dans quelques grandes villes.' },
+      { icon: '🛵', name: 'Gojek', badge: 'reco', desc: 'Concurrent de Grab en Indonésie. Souvent moins cher à Bali et Jakarta.' },
+      { icon: '🛴', name: 'Lime / Cityscoot', badge: 'have', desc: 'Trottinettes & scooters. Disponibilité très variable selon les villes asiatiques.' },
+    ]
+  },
+  {
+    cat: '🎯 Activités', apps: [
+      { icon: '🎒', name: 'GetYourGuide', badge: 'have', desc: 'Réservation d\'activités & tours. Bonnes offres last-minute. Incontournable.' },
+      { icon: '⭐', name: 'TripAdvisor', badge: 'have', desc: 'Découverte d\'activités locales + avis. Complément utile à GetYourGuide.' },
+      { icon: '🌏', name: 'Trip.com', badge: 'have', desc: 'Activités + excursions, fort sur l\'Asie.' },
+      { icon: '🏕', name: 'iOverlander', badge: 'reco', desc: 'Spots nature : campings, bivouacs, sources. Idéal pour l\'immersion hors-sentiers.' },
+    ]
+  },
+  {
+    cat: '🥾 Randonnée & nature', apps: [
+      { icon: '🏔', name: 'AllTrails', badge: 'have', desc: 'Base de données de randos mondiale. Télécharger les traces hors-ligne avant de partir.' },
+      { icon: '🗺', name: 'Maps.me', badge: 'have', desc: 'Cartes offline détaillées. Fonctionne sans réseau — à télécharger par pays avant d\'arriver.' },
+    ]
+  },
+  {
+    cat: '🗺 Navigation & maps', apps: [
+      { icon: '🗺', name: 'Maps.me', badge: 'have', desc: 'Cartes hors-ligne précises. Indispensable dans les zones rurales (Laos, Népal).' },
+      { icon: '🌍', name: 'Google Maps', badge: 'reco', desc: 'Incontournable en ville. Télécharger les zones offline. Complément à Maps.me.' },
+    ]
+  },
+  {
+    cat: '💰 Budget & monnaie', apps: [
+      { icon: '💱', name: 'XE Currency', badge: 'have', desc: 'Conversion en temps réel. Fonctionne offline pour les taux récents.' },
+      { icon: '💳', name: 'Revolut / Wise', badge: 'key', desc: 'Carte sans frais à l\'étranger. À ouvrir avant le départ si pas encore fait. Indispensable.' },
+      { icon: '📊', name: 'Numbeo', badge: 'reco', desc: 'Coût de la vie par ville en temps réel. Utile pour calibrer le budget sur place.' },
+    ]
+  },
+  {
+    cat: '📱 Communication & utilitaires', apps: [
+      { icon: '💬', name: 'WhatsApp', badge: 'key', desc: 'Standard pour contacter guesthouses, guides et locaux en Asie. Avoir le numéro français actif.' },
+      { icon: '🔤', name: 'Google Translate', badge: 'reco', desc: 'Mode caméra (traduction live de menus/panneaux) + mode hors-ligne par langue à télécharger.' },
+      { icon: '🔒', name: 'NordVPN', badge: 'have', desc: 'Sécurité sur les WiFi publics. Utile aussi si passage en Chine (accès aux apps occidentales).' },
+      { icon: '📍', name: 'Polarsteps', badge: 'have', desc: 'Journal de voyage automatique. Trace GPS + photos. Partage public activé.' },
+      { icon: '🚽', name: 'Flush', badge: 'reco', desc: 'Localise les toilettes publiques. Sous-estimé, très utile au quotidien.' },
+    ]
+  },
+  {
+    cat: '🏥 Santé & urgences', apps: [
+      { icon: '🏥', name: 'iSOS / mPassport', badge: 'reco', desc: 'Infos sanitaires par pays + localisation hôpitaux. Utile pour les zones reculées.' },
+      { icon: '💊', name: 'PlushCare / Medici', badge: 'reco', desc: 'Téléconsultation médicale depuis le terrain. En cas de doute sans accès à un médecin local.' },
+    ]
+  },
+];
+
+function renderApps() {
+  const grid = document.getElementById('apps-grid');
+  grid.innerHTML = APPS_DATA.map(cat => {
+    const rows = cat.apps.map(app => {
+      const badgeLabel = app.badge === 'have' ? 'Installé' : app.badge === 'key' ? 'Clé' : 'Recommandé';
+      const badgeClass = `badge-${app.badge}`;
+      return `
+        <div class="app-row">
+          <div class="app-icon">${app.icon}</div>
+          <div class="app-info">
+            <div class="app-name">
+              ${app.name}
+              <span class="app-badge ${badgeClass}">${badgeLabel}</span>
+            </div>
+            <div class="app-desc">${app.desc}</div>
+          </div>
+        </div>`;
+    }).join('');
+    return `
+      <div class="apps-card">
+        <div class="apps-card-header">${cat.cat}</div>
+        ${rows}
+      </div>`;
+  }).join('');
+}
+
+// ============================================================
 // TABS
 // ============================================================
 function switchTab(name, btn) {
@@ -1533,6 +1719,7 @@ renderBudget();
 renderChecklist();
 renderMeteo();
 renderPhrases();
+renderApps();
 updateCountdown();
 </script>
 </body>
