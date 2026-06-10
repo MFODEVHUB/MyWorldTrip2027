@@ -890,6 +890,16 @@
     .header-stats { gap: 1rem; }
     .stat { text-align: left; }
   }
+
+  .city-clickable {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+  }
+  .city-clickable:hover {
+    opacity: 0.75;
+  }
 </style>
 </head>
 <body>
@@ -1166,6 +1176,199 @@ const METEO_LABELS = { G:'✓', Y:'~', O:'!', R:'✗', X:'' };
 // ============================================================
 // RENDER ITINERARY
 // ============================================================
+// ============================================================
+// DESTINATION DETAILS
+// ============================================================
+const DEST_DETAILS = {
+  1: {
+    title: 'Taipei',
+    intro: 'Point d\'entrée le 28 déc. Capitale dense et efficace — métro excellent, sécurité totale, marchés nocturnes incontournables.',
+    lieux: [
+      { name: 'Elephant Mountain (Xiangshan)', status: 'in', type: 'Rando / Vue', prix: '0€', dispo: 'Toute l\'année', transport: 'MRT Xiangshan (ligne rouge) + 20 min à pied', note: 'Faire en matinée tôt ou au coucher du soleil. Vue directe sur Taipei 101.' },
+      { name: 'Taipei 101 — observatoire', status: 'in', type: 'Incontournable', prix: '20€', dispo: 'Toute l\'année', transport: 'MRT Taipei 101/World Trade Center', note: 'Facultatif si tu fais Elephant Mountain — la vue est meilleure et gratuite depuis le sommet.' },
+      { name: 'Marchés nocturnes (Shilin, Raohe)', status: 'in', type: 'Street food', prix: '5–15€ / repas', dispo: 'Tous les soirs', transport: 'MRT Jiantan (Shilin) / MRT Houshanpi (Raohe)', note: 'Raohe = plus authentique et moins bondé. Shilin = plus grand mais très touristique.' },
+      { name: 'Longshan Temple + quartier Wanhua', status: 'in', type: 'Culture / Temple', prix: '0€', dispo: 'Toute l\'année', transport: 'MRT Longshan Temple', note: 'Actif tôt le matin avec les dévots locaux. Quartier historique autour à explorer à pied.' },
+      { name: 'Beitou Hot Springs', status: 'zone', type: 'Détente / Onsen', prix: '5–15€', dispo: 'Toute l\'année', transport: 'MRT Xinbeitou (30 min depuis le centre)', note: '⚑ Zone : accessible en demi-journée depuis Taipei. Parfait en janvier pour les bains chauds.' },
+      { name: 'Maokong Gondola + plantations de thé', status: 'zone', type: 'Nature / Thé', prix: '3€ A/R', dispo: 'Fermé le lundi', transport: 'MRT Zoo → téléphérique', note: '⚑ Zone : vue sur Taipei depuis les collines et thé local. Demi-journée confortable.' },
+    ],
+    pratique: [
+      { label: 'SIM locale', val: 'Chunghwa Telecom à l\'aéroport TPE dès l\'arrivée — 30j illimité ~10€.' },
+      { label: 'Cash', val: 'NT$ (Nouveau Dollar Taïwanais). DAB 7-Eleven et Family Mart partout, sans frais.' },
+      { label: 'Transport', val: 'EasyCard rechargeable (MRT + bus) — acheter à l\'aéroport. Métro = moyen le plus rapide.' },
+      { label: 'Logement', val: 'Hostels bien fournis quartiers Zhongzheng et Da\'an. Réserver 3–5j avant en janvier.' },
+    ]
+  },
+  2: {
+    title: 'Ruifang — Jiufen',
+    intro: 'Ruifang = base logistique. Jiufen = village suspendu au-dessus de la mer, ruelles de lanternes rouges, ambiance décor de film. Ne pas y aller le week-end.',
+    lieux: [
+      { name: 'Jiufen Old Street', status: 'in', type: 'Village historique', prix: '0€ (accès libre)', dispo: 'Toute l\'année', transport: 'Bus 788 depuis Ruifang (15 min)', note: 'Y aller en semaine impérativement. Le week-end les ruelles sont impraticables de monde.' },
+      { name: 'Jinguashi + Gold Museum', status: 'in', type: 'Histoire / Mine', prix: '2€', dispo: 'Toute l\'année, fermé lundi', transport: 'Bus depuis Jiufen (10 min) ou depuis Ruifang', note: 'Ancienne ville minière d\'or. Vue panoramique sur la côte. Moins fréquenté que Jiufen.' },
+      { name: 'Teapot Mountain (Wufen)', status: 'zone', type: 'Randonnée', prix: '0€', dispo: 'Toute l\'année', transport: 'Depuis Jinguashi à pied (45 min de montée)', note: '⚑ Zone : vue 360° sur la mer et les montagnes. Niveau modéré. Départ depuis Jinguashi.' },
+      { name: 'Ligne Pingxi (Shifen, lanternes)', status: 'zone', type: 'Nature / Expérience', prix: '3–5€ (lanterne)', dispo: 'Toute l\'année', transport: 'Train Pingxi Line depuis Ruifang (20 min)', note: '⚑ Zone : très faisable depuis Ruifang. Shifen + Pingxi = journée complète sur la ligne locale.' },
+    ],
+    pratique: [
+      { label: 'Transport', val: 'Train direct Taipei → Ruifang (54 min, ~2€). Bus local ensuite pour Jiufen.' },
+      { label: 'Logement', val: 'Loger à Ruifang = plus calme et moins cher. Quelques B&B à Jiufen pour l\'atmosphère.' },
+      { label: 'Timing', val: 'Arriver tôt à Jiufen (avant 10h). Partir avant 16h pour éviter les bus de tours.' },
+    ]
+  },
+  3: {
+    title: 'Yuchi — Sun Moon Lake',
+    intro: 'Plus grand lac de Taïwan en altitude. Eau miroir au lever du jour, temples sur les rives, vélo de bord de lac. Calme total comparé au nord.',
+    lieux: [
+      { name: 'Tour du lac à vélo', status: 'in', type: 'Vélo / Nature', prix: '8–12€ (location)', dispo: 'Toute l\'année', transport: 'Location à Shuishe Pier', note: 'Boucle complète 33 km, ~3h. Départ tôt pour avoir le lac sans brume. E-bike disponible.' },
+      { name: 'Wenwu Temple', status: 'in', type: 'Temple / Architecture', prix: '0€', dispo: 'Toute l\'année', transport: 'Bus local ou vélo depuis Shuishe', note: 'Temple spectaculaire sur falaise dominant le lac. Arriver tôt le matin.' },
+      { name: 'Ropeway (téléphérique)', status: 'in', type: 'Vue panoramique', prix: '10€ A/R', dispo: 'Toute l\'année (fermetures maintenance)', transport: 'Rive est, départ Shuishe', note: 'Le trajet vaut plus que la destination — vue sur le lac et les montagnes.' },
+      { name: 'Ita Thao — village du peuple Thao', status: 'zone', type: 'Culture autochtone', prix: '0€ (marché à part)', dispo: 'Week-end surtout', transport: 'Ferry ou vélo depuis Shuishe (20 min)', note: '⚑ Zone : village autochtone Thao sur la rive. Spécialités locales, ambiance marché artisanal.' },
+    ],
+    pratique: [
+      { label: 'Transport', val: 'Bus depuis Taichung (1h30). Depuis Taipei : train → Taichung + bus. Total ~2h45.' },
+      { label: 'Logement', val: 'Shuishe = hub principal. Réserver en avance — week-ends souvent complets côté taïwanais.' },
+      { label: 'Ferry', val: 'Pass bateau journée ~7€ — utile pour circuler entre les rives.' },
+    ]
+  },
+  4: {
+    title: 'Alishan',
+    intro: 'Forêt de cyprès de 2 000 ans, mer de nuages au lever du soleil, train forestier légendaire. Altitude 2 400m — prévoir une couche chaude même en janvier.',
+    lieux: [
+      { name: 'Lever de soleil — mer de nuages', status: 'in', type: 'Nature / Incontournable', prix: 'Inclus (pass parc ~7€)', dispo: 'Toute l\'année (meilleur nov–mars)', transport: 'Train forestier interne depuis Alishan station (04h30)', note: 'SE LEVER À 4H. Train bonde vite — acheter le billet la veille à la gare. Lampe frontale obligatoire.' },
+      { name: 'Forêt de cyprès géants (Shenmu)', status: 'in', type: 'Rando / Nature', prix: 'Inclus dans le pass parc', dispo: 'Toute l\'année', transport: 'À pied depuis le centre Alishan', note: 'Cyprès de 2 300 ans. Sentiers balisés. Ambiance brume matinale spectaculaire.' },
+      { name: 'Train forestier Chiayi → Alishan', status: 'in', type: 'Transport / Expérience', prix: '12€ aller', dispo: 'Toute l\'année', transport: 'Gare de Chiayi', note: 'Le trajet lui-même est une attraction — montée en lacets dans la jungle. Réserver 14j avant en ligne.' },
+    ],
+    pratique: [
+      { label: 'Transport', val: 'Train forestier depuis Chiayi (2h30, ~12€) ou bus plus rapide (1h30, ~5€). Réserver le train.' },
+      { label: 'Température janvier', val: '5–12°C le matin au sommet. Prévoir fleece ou doudoune légère.' },
+      { label: 'Météo janvier', val: '✓ Excellente période. Brume matinale fréquente = spectaculaire. Peu de pluie.' },
+    ]
+  },
+  5: {
+    title: 'Tainan',
+    intro: 'Ancienne capitale. Meilleure street food de tout Taïwan — c\'est un fait objectif, pas un argument de brochure. Rythme plus lent que Taipei, habitantes très chaleureuses.',
+    lieux: [
+      { name: 'Anping Fort (Fort Zeelandia)', status: 'in', type: 'Histoire coloniale', prix: '1€', dispo: 'Toute l\'année, fermé lundi', transport: 'Scooter ou bus 2 depuis le centre (20 min)', note: 'Ancien fort hollandais du 17e s. Quartier d\'Anping autour agréable pour flâner.' },
+      { name: 'Street food — Danzai noodles, huître', status: 'in', type: 'Food incontournable', prix: '2–5€ / plat', dispo: 'Toute l\'année (matin surtout)', transport: 'Marché Dongmen, ruelle Shennong — centre-ville', note: 'Danzai mian = spécialité de Tainan. Manger tôt avec les locaux. Shennong St = herboristes et cafés.' },
+      { name: 'Chihkan Tower (Fort Provintia)', status: 'in', type: 'Histoire / Architecture', prix: '1€', dispo: 'Toute l\'année', transport: 'Centre-ville, à pied', note: 'Second fort hollandais. Tortues géantes sculptées dans la cour. Vue depuis le haut.' },
+      { name: 'Hayashi Department Store', status: 'in', type: 'Architecture art déco', prix: '0€ entrée', dispo: 'Toute l\'année', transport: 'Centre-ville, à pied', note: 'Grand magasin japonais de 1932 restauré. Produits locaux au sous-sol.' },
+      { name: 'Cigu Lagoon + marais salants', status: 'zone', type: 'Nature / Insolite', prix: '0€', dispo: 'Toute l\'année', transport: 'Scooter ~30 min depuis Tainan', note: '⚑ Zone : lagon côtier et anciens marais salants. Flamants roses en hiver. Nécessite un scooter.' },
+    ],
+    pratique: [
+      { label: 'Transport interne', val: 'Scooter recommandé (7–12€/j, permis international requis) ou YouBike (vélos en libre-service).' },
+      { label: 'Meilleurs spots food', val: 'Dongmen Night Market, Shennong St (boutique), Miaokou (matin).' },
+      { label: 'Logement', val: 'Bon choix de guesthouses. Réserver 3–4j avant en janvier.' },
+    ]
+  },
+  6: {
+    title: 'Kaohsiung',
+    intro: 'Seconde ville de Taïwan, portuaire et décontractée. 1 nuit = étape transit bien calibrée. Métro propre, front de mer rénové, habitants très accueillants.',
+    lieux: [
+      { name: 'Dragon & Tiger Pagodas', status: 'in', type: 'Temple / Insolite', prix: '0€', dispo: 'Toute l\'année', transport: 'MRT Zuoying → bus', note: 'Entrer par la gueule du dragon, sortir par le tigre — tradition locale. Kitsch assumé et fascinant.' },
+      { name: 'Pier-2 Art District', status: 'in', type: 'Art / Balade', prix: '0€', dispo: 'Toute l\'année, fermé lundi', transport: 'MRT Yanchengpu', note: 'Anciens entrepôts portuaires en galeries et cafés. Mural street art dans les rues adjacentes.' },
+      { name: 'Liuhe Night Market', status: 'in', type: 'Street food', prix: '5–10€', dispo: 'Tous les soirs', transport: 'MRT Formosa Boulevard (2 min)', note: 'Fruits de mer frais à bon prix. Moins bondé que Shilin à Taipei.' },
+      { name: 'Dome of Light (MRT Formosa Blvd)', status: 'in', type: 'Architecture / Insolite', prix: '0€ (dans le métro)', dispo: 'Toute l\'année', transport: 'MRT Formosa Boulevard', note: 'L\'une des plus belles stations de métro au monde. Immense vitrail circulaire. Gratuit avec EasyCard.' },
+    ],
+    pratique: [
+      { label: 'Transport', val: 'MRT + bus. Depuis Tainan : train 30 min, ~4€.' },
+      { label: 'Timing 1 nuit', val: 'Arriver l\'après-midi, soirée Pier-2 + marché nocturne, départ bus Hengchun le lendemain matin.' },
+    ]
+  },
+  7: {
+    title: 'Hengchun — Kenting',
+    intro: 'Ville fortifiée du 19e siècle avec ses remparts intacts. Porte du Parc National de Kenting — plages, snorkeling, côte sauvage. Janvier = basse saison, plages quasi-vides.',
+    lieux: [
+      { name: 'Remparts de Hengchun', status: 'in', type: 'Histoire / Balade', prix: '0€', dispo: 'Toute l\'année', transport: 'Centre de Hengchun, à pied', note: 'Quatre portes d\'enceinte en bon état. Tour à pied 30 min. Très peu de touristes.' },
+      { name: 'Plages de Kenting (Baisha, Nanwan)', status: 'in', type: 'Plage / Snorkeling', prix: '0–3€', dispo: 'Toute l\'année (meilleur nov–mai)', transport: 'Bus ou scooter (10–20 min)', note: 'Janvier : eau 22–24°C, plages quasi-vides. Snorkeling correct avec son propre équipement.' },
+      { name: 'Parc National Kenting — côte est', status: 'in', type: 'Nature / Randonnée', prix: '0€', dispo: 'Toute l\'année', transport: 'Scooter depuis Hengchun (15 min)', note: 'Côte est = falaises et plages sauvages. Bien plus beau que le côté ouest sur-développé.' },
+      { name: 'Eluanbi — cap sud de Taïwan', status: 'zone', type: 'Point extrême / Phare', prix: '1€', dispo: 'Toute l\'année', transport: 'Bus Kenting → Eluanbi (20 min)', note: '⚑ Zone : point le plus méridional de Taïwan. Phare + récifs coralliens. Demi-journée depuis Hengchun.' },
+      { name: 'Houbihu — plongée sous-marine', status: 'zone', type: 'Plongée', prix: '30–50€ / plongée', dispo: 'Toute l\'année', transport: 'Scooter depuis Hengchun (15 min)', note: '⚑ Zone : meilleur spot plongée de Taïwan. Janvier = visibilité correcte. Réserver avec un centre local.' },
+    ],
+    pratique: [
+      { label: 'Transport', val: 'Bus depuis Kaohsiung (1h45, ~5€). Louer un scooter sur place = indispensable pour explorer le parc.' },
+      { label: 'Logement', val: 'Hostels et guesthouses abordables à Hengchun. Kenting centre = plus cher (resort area).' },
+      { label: 'Météo janvier', val: '✓ Excellente saison. Vent possible côté est. Mer bonne pour nager et snorkeler.' },
+    ]
+  },
+  8: {
+    title: 'Hualien City',
+    intro: 'Base incontournable pour les Gorges de Taroko — le plus beau parc national de Taïwan. Ville côtière paisible, bonne scène culinaire locale, habitants autochtones Amis.',
+    lieux: [
+      { name: 'Taroko — Sentier Shakadang', status: 'in', type: 'Rando / Nature', prix: '0€', dispo: 'Toute l\'année (fermeture après typhons)', transport: 'Bus Hualien → entrée Taroko (30 min, ~2€)', note: 'Sentier en surplomb de la rivière turquoise. 4 km A/R. Niveau facile. Partir avant 8h.' },
+      { name: 'Taroko — Tunnel of Nine Turns', status: 'in', type: 'Rando / Incontournable', prix: '0€ (casque obligatoire)', dispo: 'Toute l\'année', transport: 'Bus interne au parc ou scooter', note: '1,3 km taillé dans le marbre. Casque fourni à l\'entrée. Vue époustouflante à chaque virage.' },
+      { name: 'Qingshui Cliffs — falaises de marbre', status: 'in', type: 'Vue / Route côtière', prix: '0€', dispo: 'Toute l\'année', transport: 'Scooter sur la Route 9 (nord de Hualien)', note: 'Falaises de 2 000m plongeant dans le Pacifique. À admirer depuis la route ou en bateau.' },
+      { name: 'Hualien Sugar Factory', status: 'zone', type: 'Culture / Food locale', prix: '0€ (glaces 1–2€)', dispo: 'Toute l\'année', transport: 'Vélo ou taxi depuis le centre (15 min)', note: '⚑ Zone : ancienne usine sucrière reconvertie. Glace à la canne à sucre locale. Marché week-end.' },
+    ],
+    pratique: [
+      { label: 'Transport Taroko', val: 'Bus depuis Hualien (~2€). Taxi journée ~40€ si budget. Scooter = flexible mais routes étroites.' },
+      { label: 'Permis Taroko', val: 'Sentier Zhuilu (avancé) nécessite un permis en ligne. Vérifier sur le site du parc avant d\'arriver.' },
+      { label: 'Logement', val: 'Bon choix à Hualien centre. Réserver 4–5j avant — populaire toute l\'année.' },
+      { label: 'Météo janvier', val: '✓ Bonne saison. La côte est peut avoir de la pluie — prévoir un poncho.' },
+    ]
+  },
+  9: {
+    title: 'Dulan',
+    intro: 'Village de surfeurs et d\'artistes aborigènes Amis sur la côte est. L\'anti-Taipei : pas de plan, hamacs, plage, musique live. 3 nuits = bon rythme pour décompresser avant la transition.',
+    lieux: [
+      { name: 'Plage de Dulan + surf', status: 'in', type: 'Plage / Surf', prix: '0€ (cours surf ~25€)', dispo: 'Toute l\'année (meilleures vagues oct–mars)', transport: 'À pied depuis le centre du village', note: 'Bonnes vagues en janvier. Moniteurs locaux proposent des cours informels sur la plage.' },
+      { name: 'Dulan Sugar Factory — musique live', status: 'in', type: 'Culture / Musique', prix: '0€ (consommation bar)', dispo: 'Toute l\'année (concerts le week-end)', transport: 'À pied dans le village', note: 'Hub culturel aborigène Amis. Concerts certains soirs. Bar ouvert en soirée.' },
+      { name: 'East Rift Valley à vélo', status: 'zone', type: 'Vélo / Paysage', prix: '8–12€ (location)', dispo: 'Toute l\'année', transport: 'Depuis Dulan vers le nord ou le sud', note: '⚑ Zone : vallée encaissée entre montagne et mer. Rizières, villages autochtones. Journée complète.' },
+      { name: 'Xiaoyeliu — formations rocheuses', status: 'zone', type: 'Géologie / Littoral', prix: '0€', dispo: 'Toute l\'année', transport: 'Scooter ou bus ~20 min vers le sud (direction Taitung)', note: '⚑ Zone : formations coralliennes érodées sur le littoral. Moins connu que Yehliu. Superbe.' },
+    ],
+    pratique: [
+      { label: 'Transport', val: 'Train depuis Hualien (4h34, ~7€). Bus local possible mais plus lent.' },
+      { label: 'Logement', val: 'Hostels de surf et B&B artisanaux. Peu d\'options — réserver absolument à l\'avance.' },
+      { label: 'Ambiance', val: 'Village très petit (~500 hab). Une seule rue principale. Prévoir de ne rien faire efficacement.' },
+      { label: 'Suite itinéraire', val: 'Depuis Dulan : bus/train vers Taitung → vol ou train retour Taipei pour la transition Bangkok.' },
+    ]
+  },
+};
+
+function openDestModal(stepNum) {
+  const d = DEST_DETAILS[stepNum];
+  if (!d) return;
+  const modal = document.getElementById('dest-modal');
+  const body = document.getElementById('dest-modal-body');
+  const lieuxHtml = d.lieux.map(l => {
+    const isZone = l.status === 'zone';
+    const sb = isZone
+      ? `<span style="background:#FAEEDA;color:#633806;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap;">⚑ Zone</span>`
+      : `<span style="background:#EAF3DE;color:#27500A;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap;">✓ Prévu</span>`;
+    return `<div style="border:0.5px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;${isZone?'border-left:2px solid #EF9F27;':''}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;">
+        <div style="font-size:13px;font-weight:500;color:var(--text)">${l.name}</div>
+        <div style="display:flex;gap:4px;flex-shrink:0;">${sb}<span style="background:var(--surface2);color:var(--muted);font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap;">${l.type}</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:${l.note?'6px':'0'};">
+        <div style="font-size:11px;"><span style="color:var(--muted)">Prix</span><br><b style="color:var(--text);font-weight:500;">${l.prix}</b></div>
+        <div style="font-size:11px;"><span style="color:var(--muted)">Dispo</span><br><span style="color:var(--text);">${l.dispo}</span></div>
+        <div style="font-size:11px;"><span style="color:var(--muted)">Transport</span><br><span style="color:var(--text);">${l.transport}</span></div>
+      </div>
+      ${l.note?`<div style="font-size:11px;color:var(--muted);border-top:0.5px solid var(--border);padding-top:6px;">${l.note}</div>`:''}
+    </div>`;
+  }).join('');
+  const pratHtml = d.pratique.map(p=>`<div style="display:grid;grid-template-columns:110px 1fr;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);">
+    <div style="font-size:11px;color:var(--muted);font-weight:500;padding-top:1px;">${p.label}</div>
+    <div style="font-size:12px;color:var(--text);">${p.val}</div>
+  </div>`).join('');
+  body.innerHTML = `
+    <div style="padding:16px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+      <div>
+        <div style="font-size:18px;font-weight:500;color:var(--text);margin-bottom:6px;">${d.title}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5;">${d.intro}</div>
+      </div>
+      <button onclick="document.getElementById('dest-modal').style.display='none'" style="flex-shrink:0;background:none;border:0.5px solid var(--border);border-radius:6px;padding:4px 10px;color:var(--muted);cursor:pointer;font-size:13px;">✕</button>
+    </div>
+    <div style="padding:16px 20px;">
+      <div style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Lieux &amp; Activités</div>
+      ${lieuxHtml}
+      <div style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;margin-top:16px;">Infos pratiques</div>
+      <div style="border:0.5px solid var(--border);border-radius:8px;padding:4px 12px;">${pratHtml}</div>
+      <div style="margin-top:12px;padding:8px 10px;background:var(--surface2);border-radius:6px;font-size:11px;color:var(--muted);">
+        <span style="color:#854F0B;font-weight:500;">⚑ Zone</span> = lieu non prévu explicitement dans l'itinéraire, mais faisable depuis cette étape sans détour majeur.
+      </div>
+    </div>`;
+  modal.style.display = 'flex';
+}
+
 function renderItinerary() {
   const body = document.getElementById('itinerary-body');
   let html = '';
@@ -1182,17 +1385,17 @@ function renderItinerary() {
         if(h==='altitude') return `<span class="health-tag health-altitude">Altitude</span>`;
         return '';
       }).join('');
-
       const monthCells = step.meteo.map((m,i) => {
         const cls = METEO_COLOR[m] || 'm-gray';
-        const activeCls = step.active && step.active.includes && false ? 'm-active' : '';
         return `<td class="m-cell"><div class="m-inner ${cls}">${METEO_LABELS[m]||''}</div></td>`;
       }).join('');
-
-      html += `
-        <tr>
+      const hasDetail = DEST_DETAILS[step.num] !== undefined;
+      const cityCell = hasDetail
+        ? `<span class="city-flag">${step.flag}</span><span class="city-name city-clickable" onclick="openDestModal(${step.num})" title="Voir la fiche détail">${step.city} <span style="font-size:10px;opacity:0.5;margin-left:2px;">›</span></span>`
+        : `<span class="city-flag">${step.flag}</span><span class="city-name">${step.city}</span>`;
+      html += `<tr>
           <td class="step-num">${step.num}</td>
-          <td><span class="city-flag">${step.flag}</span><span class="city-name">${step.city}</span></td>
+          <td>${cityCell}</td>
           <td><span class="nights-badge">${step.nights > 0 ? step.nights + ' n.' : 'Transit'}</span></td>
           <td class="transport">${step.transport}</td>
           <td><span class="visa-pill ${visaClass}">${step.visa}</span></td>
@@ -1204,7 +1407,6 @@ function renderItinerary() {
   });
   body.innerHTML = html;
 }
-
 // ============================================================
 // VISA DATA & RENDER
 // ============================================================
@@ -1722,5 +1924,10 @@ renderPhrases();
 renderApps();
 updateCountdown();
 </script>
+
+<!-- ===== MODAL DESTINATION ===== -->
+<div id="dest-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
+  <div id="dest-modal-body" style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;max-width:680px;width:100%;max-height:88vh;overflow-y:auto;"></div>
+</div>
 </body>
 </html>
