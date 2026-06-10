@@ -971,7 +971,6 @@
           <th>Transport</th>
           <th>Visa</th>
           <th>Budget est.</th>
-          <th>Santé</th>
           <th class="month-col">Jan</th>
           <th class="month-col">Fév</th>
           <th class="month-col">Mar</th>
@@ -1184,6 +1183,7 @@ const METEO_LABELS = { G:'✓', Y:'~', O:'!', R:'✗', X:'' };
 // ============================================================
 const DEST_DETAILS = {
   1: {
+    country: '🇹🇼 Taïwan',
     title: 'Taipei', flag: '🇹🇼', nights: '4 nuits',
     intro: 'Première ville du voyage, arrivée le 28 décembre. Taipei est dense, sûre, ultra-connectée. Le métro couvre 90 % des sites touristiques pour moins d\'un euro le trajet. Idéale pour se remettre du décalage horaire tout en explorant.',
     lieux: [
@@ -1556,6 +1556,124 @@ const DEST_DETAILS = {
       { label: 'Transition vers Taipei', val: 'Depuis Dulan : bus ou train vers Taitung → train rapide vers Taipei (2h30) pour le vol Taipei → Bangkok. Prévoir cette connexion avec marge.' },
     ]
   },
+
+  // ── LAOS ──
+  14: {
+    country: '🇱🇦 Laos',
+    title: 'Thakhek Loop 🏍️',
+    nights: '3–4 jours · ~500 km',
+    intro: 'Le circuit moto incontournable du centre Laos. Grottes karst parmi les plus spectaculaires d'Asie du Sud-Est, rivières souterraines, villages isolés. Départ et retour depuis Thakhek.',
+    lieux: [
+      { name: 'Kong Lo Cave', type: 'Grotte', prix: '~3€', dispo: 'Toute l'année', transport: 'Moto depuis Thakhek (~2h)', status: 'prévu',
+        note: 'Rivière souterraine navigable sur 7 km. Barque locale obligatoire. L'une des plus grandes grottes d'Asie. Prévoir lampe frontale.' },
+      { name: 'Tham Nang Aen', type: 'Grotte', prix: '~1€', dispo: 'Toute l'année', transport: 'Sur la route de la loop', status: 'zone',
+        note: 'Grotte aux stalactites impressionnantes, moins touristique que Kong Lo. À inclure sur la grande boucle.' },
+      { name: 'Mahaxai & villages', type: 'Culture', prix: 'Gratuit', dispo: 'Toute l'année', transport: 'Moto', status: 'prévu',
+        note: 'Villages ethniques le long de la Nam Hinboun. Vie locale authentique, peu de touristes. Bon endroit pour s'arrêter la nuit.' },
+    ],
+    pratique: [
+      { label: 'Location moto', val: 'Thakhek Travel Lodge — QG des backpackers pour cette loop. Semi-automatique ou manuelle, ~8–12$/j. Préférer une 110cc bien entretenue.' },
+      { label: 'Durée', val: '3 jours minimum (petite boucle), 4 jours recommandés pour voir Kong Lo + les grottes secondaires sans se presser.' },
+      { label: 'Route', val: 'Route 12 est puis Route 8 nord. Asphalte correct sur les axes principaux, piste sur quelques sections secondaires. GPS offline conseillé.' },
+      { label: 'Budget', val: '~40–50$/j tout compris (moto + hébergement + nourriture + entrées).' },
+      { label: 'Timing itinéraire', val: 'À faire depuis Thakhek entre Vientiane et Pakse. Laisser les scooters à Thakhek, reprendre le bus vers le sud.' },
+    ]
+  },
+  // ── LAOS (Bolaven) ──
+  15: {
+    country: '🇱🇦 Laos',
+    title: 'Bolaven Plateau Loop 🏍️',
+    nights: '2–4 jours · 200–340 km',
+    intro: 'Le plateau des Bolavens, au sud du Laos, est le cœur de la production de café arabica du pays. Cascades géantes, plantations, villages ethniques Katu et Alak. Départ et retour depuis Pakse.',
+    lieux: [
+      { name: 'Tad Fane', type: 'Cascade', prix: '~2€', dispo: 'Toute l'année (plus belle en saison des pluies)', transport: 'Moto depuis Pakse (~1h30)', status: 'prévu',
+        note: 'Double cascade de 120m. La photo de la tyrolienne au-dessus est emblématique. Zipline disponible (~25€). Hôtel avec vue panoramique sur place.' },
+      { name: 'Tad Lo', type: 'Cascade + village', prix: '~1€', dispo: 'Toute l'année', transport: 'Sur la loop', status: 'prévu',
+        note: 'Petite communauté de voyageurs autour des cascades. Guesthouse sympa, bain possible. Village Alak à proximité avec bain d'éléphant en soirée.' },
+      { name: 'Plantation de café', type: 'Agro-tourisme', prix: '~3€', dispo: 'Toute l'année', transport: 'Sur la route principale', status: 'prévu',
+        note: 'Café arabica bio cultivé à 1 300m d'altitude. Dégustation sur place. Le café laotien est parmi les meilleurs d'Asie du Sud-Est — ramener des grains.' },
+      { name: 'Village Katu', type: 'Culture', prix: 'Gratuit', dispo: 'Toute l'année', transport: 'Chemin de terre depuis la route', status: 'zone',
+        note: 'Minorité ethnique connue pour ses crânes d'animaux et maisons communes. Prévoir un guide local pour ne pas être intrusif.' },
+    ],
+    pratique: [
+      { label: 'Location moto', val: 'Pakse — nombreuses agences près du marché central. ~8–10$/j. Miss Noy Motorbikes reconnue pour ses cartes détaillées de la loop.' },
+      { label: 'Petite boucle', val: '200 km · 2 jours · 1 nuit à Tad Lo. Couvre l'essentiel : Tad Fane, café, Tad Lo.' },
+      { label: 'Grande boucle', val: '340 km · 3–4 jours · nuits à Tad Lo, Houay Kong, Paksong. Inclut les villages ethniques et cascades secondaires.' },
+      { label: 'Route', val: 'Majoritairement asphaltée. Quelques passages en terre rouge après la pluie — glissant.' },
+      { label: 'Timing itinéraire', val: 'Dernière étape au Laos avant de passer au Cambodge. Rendre la moto à Pakse, prendre le bus vers Phnom Penh le lendemain.' },
+    ]
+  },
+  // ── VIETNAM ──
+  22: {
+    country: '🇻🇳 Vietnam',
+    title: 'Ha Giang Loop 🏍️',
+    nights: '4–5 jours · ~350 km',
+    intro: 'Le road trip moto le plus spectaculaire du Vietnam et probablement de toute l'Asie du Sud-Est. Routes vertigineuses, cols mythiques, rizières en terrasses, villages Hmong et Dao isolés. Passage mars–avril = fenêtre météo idéale.',
+    lieux: [
+      { name: 'Ma Pi Leng Pass', type: 'Col de montagne', prix: 'Gratuit', dispo: 'Oct–avril (optimal)', transport: 'Sur la loop — obligatoire', status: 'prévu',
+        note: 'Considéré comme le plus beau col du Vietnam. 2 000m d'altitude, gorges de la rivière Nho Que 500m en contrebas. Prévoir une heure pour les photos. Dangereux par temps de brouillard — partir tôt.' },
+      { name: 'Dong Van', type: 'Village + marché', prix: 'Gratuit', dispo: 'Toute l'année', transport: 'Étape de nuit sur la loop', status: 'prévu',
+        note: 'Ville frontière sino-vietnamienne préservée. Vieille ville en pierre Hmong classée. Marché ethnique le dimanche matin — arriver la veille.' },
+      { name: 'Meo Vac', type: 'Village ethnique', prix: 'Gratuit', dispo: 'Toute l'année', transport: 'Après Ma Pi Leng', status: 'prévu',
+        note: 'Point le plus reculé de la loop. Minorités Hmong et Dao en habits traditionnels. Marché dominical incontournable. Ambiance authentique encore préservée.' },
+      { name: 'Lung Cu — Pointe nord', type: 'Point symbolique', prix: '~1€', dispo: 'Toute l'année', transport: 'Détour 30km depuis Dong Van', status: 'zone',
+        note: 'Le point le plus septentrional du Vietnam, à 600m de la Chine. Drapeau géant au sommet d'une colline. Symbolique mais détour non négligeable — selon le temps disponible.' },
+    ],
+    pratique: [
+      { label: 'Location moto', val: 'Ha Giang ville — nombreuses agences. Semi-automatique Honda Wave 110cc recommandée (~7–10$/j). Vérifier freins et pneus avant de partir. Easy Rider possible avec guide (~30–40$/j).' },
+      { label: 'Agences locales', val: 'Jasmine Tours, Mr Hung Agency, QT Motorbikes. En groupe = moins cher et plus sécurisé. Solo possible si à l'aise en moto montagne.' },
+      { label: 'Niveau moto', val: 'Intermédiaire requis. Routes étroites, virages serrés, quelques passages de piste. Jamais le premier voyage à moto.' },
+      { label: 'Météo', val: 'Mars–avril = optimal (sec, ciel dégagé, verdure). Éviter juin–septembre (mousson, routes glissantes). ✅ Ton passage est parfait.' },
+      { label: 'Timing itinéraire', val: 'Bus Ha Noi → Ha Giang (~4h30, ~6$). Faire la loop 4–5j, retour Ha Giang → Ha Noi en bus. Dernier stop avant le vol Hanoï → Manille.' },
+    ]
+  },
+  // ── PHILIPPINES ──
+  25: {
+    country: '🇵🇭 Philippines',
+    title: 'Croisière El Nido ↔ Coron 🚢',
+    nights: '3–5 jours en mer',
+    intro: 'L'expédition liveaboard entre El Nido et Coron via les îles isolées de Linapacan est la pépite de Palawan. Pas d'électricité, pas d'internet, campements de plage, snorkeling dans des eaux cristallines. À faire en saison sèche (nov–mai).',
+    lieux: [
+      { name: 'Îles de Linapacan', type: 'Archipel isolé', prix: 'Inclus croisière', dispo: 'Nov–mai (saison sèche)', transport: 'Bateau de l'expédition', status: 'prévu',
+        note: 'Les plus belles eaux turquoise des Philippines, loin des foules. Plages de sable blanc uniquement accessibles par bateau. Snorkeling exceptionnel sur les récifs coralliens.' },
+      { name: 'Île de Culion', type: 'Histoire + plongée', prix: 'Inclus croisière', dispo: 'Toute l'année', transport: 'Arrêt intermédiaire', status: 'prévu',
+        note: 'Ancienne léproserie classée, aujourd'hui île paisible. Architecture espagnole coloniale, petit musée. Bonne plongée sur les épaves alentour.' },
+      { name: 'Coron — Lacs et épaves', type: 'Plongée + nature', prix: 'Séparé (~10–30€/activité)', dispo: 'Toute l'année', transport: 'Arrivée de la croisière', status: 'prévu',
+        note: 'Twin Lagoon, Kayangan Lake (eau cristalline dans une falaise karstique), et épaves japonaises WWII pour les plongeurs. 1–2 jours à explorer avant ou après la croisière.' },
+    ],
+    pratique: [
+      { label: 'Opérateurs', val: 'El Nido Paradise, Green Gecko, Buhay Isla, Sea Quest Palawan. Réserver 2–4 semaines à l'avance en haute saison (jan–mai).' },
+      { label: 'Format', val: '3D/2N (compact) à 5D/4N (version complète avec plus d'îles). Recommandé : 4D/3N pour un bon équilibre.' },
+      { label: 'Prix', val: 'Groupe : ~60–100€ tout inclus (nourriture, équipement snorkeling, camping ou bateau). Privé : 300–500€.' },
+      { label: 'Sens', val: 'El Nido → Coron ou Coron → El Nido — même expérience dans les deux sens. Choisir selon logistique des vols domestiques.' },
+      { label: 'Confort', val: 'Primitif par design — douche au seau, pas d'électricité, dortoir sur le pont ou tente de plage. C'est le concept. Pas pour ceux qui cherchent le confort.' },
+      { label: 'Météo', val: '✅ Passage avril–mai = saison sèche, mer calme. Parfait. Éviter juin–novembre (mer agitée, typhons potentiels).' },
+    ]
+  },
+  // ── INDONÉSIE ──
+  28: {
+    country: '🇮🇩 Indonésie',
+    title: 'Road trip Lombok → Flores 🏍️',
+    nights: '10–12 jours · ~2 000 km · 3 ferries',
+    intro: 'La traversée des îles de la Petite Sonde en scooter est l'une des aventures les plus épiques d'Indonésie. Lombok → Sumbawa → Komodo → Flores. Paysages volcaniques, plages désertes, varans géants et raies mantas.',
+    lieux: [
+      { name: 'Lombok — Gili Islands', type: 'Plages + snorkeling', prix: 'Ferry ~5€', dispo: 'Toute l'année', transport: 'Départ du road trip', status: 'prévu',
+        note: 'Base de départ. Gili Trawangan/Air pour le snorkeling tortues et requins de récif. Senggigi pour louer un scooter solide. Rinjani pour les trekkeurs (3 726m).' },
+      { name: 'Sumbawa traversée', type: 'Route', prix: 'Ferry ~3€', dispo: 'Toute l'année', transport: '⚠️ 400km — DÉPART MATINAL', status: 'prévu',
+        note: 'Étape logistique critique. Prendre le ferry de Lombok tôt le matin pour traverser Sumbawa dans la journée et attraper le ferry vers Komodo avant la tombée de la nuit. Surnommée la "journée de l'enfer" — mais les paysages volcaniques valent le coup.' },
+      { name: 'Parc national de Komodo', type: 'Faune + plongée', prix: 'Entrée ~15€ + guide obligatoire', dispo: 'Toute l'année (sec = avril–oct)', transport: 'Ferry depuis Sumbawa', status: 'prévu',
+        note: 'Varans de Komodo sur Rinca ou Komodo Island. Plongée/snorkeling parmi les meilleurs au monde — raies mantas, requins, tortues. Pink Beach pour les couleurs uniques. Réserver guide obligatoire pour approcher les varans.' },
+      { name: 'Labuan Bajo', type: 'Ville + hub', prix: 'Hébergement ~15–25€/n', dispo: 'Toute l'année', transport: 'Fin du road trip', status: 'prévu',
+        note: 'Petite ville portuaire en plein développement. Base pour le parc Komodo. Nombreux opérateurs de plongée et day trips. Vols vers Bali quotidiens (~50€, ~1h30).' },
+    ],
+    pratique: [
+      { label: 'Location scooter', val: 'Lombok (Senggigi) — guesthouses ou agences locales. ~2–3€/j pour un scooter automatique correct. Vérifier freins, pneus, rétroviseurs avant de partir pour 10 jours.' },
+      { label: 'Ferries', val: '3 traversées : Lombok→Sumbawa (Kayangan→Poto Tano, 2h), Sumbawa→Lombok Sape→Labuan Bajo (8h, overnight possible). Scooter embarqué sur tous les ferries.' },
+      { label: 'Sumbawa timing', val: 'Prendre le premier ferry de Lombok (~7h00). Traverser Sumbawa de bout en bout (400km, ~6–7h de route) pour attraper le dernier ferry vers Flores. Pas de marge.' },
+      { label: 'Niveau moto', val: 'Débutant OK pour les routes principales (toutes asphaltées). Quelques chemins de terre pour accéder aux plages. Rien de technique.' },
+      { label: 'Retour Bali', val: 'Vol Labuan Bajo → Bali (~1h30, ~50–80€). Fin de la Phase 1 depuis Bali (~24 juin 2027).' },
+    ]
+  },
 };
 
 function openDestModal(stepNum) {
@@ -1599,7 +1717,7 @@ function openDestModal(stepNum) {
     <div style="border:1px solid rgba(128,128,128,0.2);border-radius:14px;width:100%;max-width:700px;height:85vh;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:2147483647;background:${document.documentElement.classList.contains('light') ? '#ffffff' : '#1e1e22'};">
       <div style="padding:18px 22px 14px;border-bottom:1px solid rgba(128,128,128,0.15);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;">
         <div>
-          <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">🇹🇼 Taïwan — ${d.nights}</div>
+          <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">${d.country || ''} — ${d.nights}</div>
           <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;">${d.title}</div>
           <div style="font-size:13px;color:var(--muted);line-height:1.6;max-width:580px;">${d.intro}</div>
         </div>
@@ -1625,18 +1743,23 @@ function renderItinerary() {
   const body = document.getElementById('itinerary-body');
   let html = '';
   ITINERARY.forEach(group => {
-    html += `<tr class="country-row"><td colspan="20">${group.country}</td></tr>`;
+    const totalNights = group.steps.reduce((s, st) => s + st.nights, 0);
+    const budgets = group.steps.map(st => st.budget).filter(b => b && b !== '—');
+    const allLow = budgets.map(b => parseInt(b.replace(/[^0-9–]/g,'').split('–')[0])).filter(n=>!isNaN(n));
+    const allHigh = budgets.map(b => { const p = b.replace(/[^0-9–]/g,'').split('–'); return parseInt(p[1]||p[0]); }).filter(n=>!isNaN(n));
+    const estLow = allLow.length ? allLow.reduce((a,b)=>a+b,0) : 0;
+    const estHigh = allHigh.length ? allHigh.reduce((a,b)=>a+b,0) : 0;
+    const budgetEst = estLow ? `~${estLow*totalNights/allLow.length|0}–${estHigh*totalNights/allHigh.length|0}€` : '';
+    html += `<tr class="country-row">
+      <td colspan="6">${group.country}</td>
+      <td colspan="2" style="text-align:right;font-size:12px;opacity:0.75;">${totalNights} nuits</td>
+      <td colspan="12" style="font-size:12px;opacity:0.75;padding-left:8px;">${budgetEst}</td>
+    </tr>`;
     group.steps.forEach(step => {
       const visaClass = step.visa.includes('exempt') ? 'visa-free' :
                         step.visa.includes('eVisa') ? 'visa-evisa' :
                         step.visa.includes('VoA') ? 'visa-voa' : 'visa-required';
-      const healthHtml = step.health.map(h => {
-        if(h==='ok') return `<span class="health-tag health-ok">RAS</span>`;
-        if(h==='dengue') return `<span class="health-tag health-dengue">Dengue</span>`;
-        if(h==='malaria') return `<span class="health-tag health-malaria">Paludisme</span>`;
-        if(h==='altitude') return `<span class="health-tag health-altitude">Altitude</span>`;
-        return '';
-      }).join('');
+
       const monthCells = step.meteo.map((m,i) => {
         const cls = METEO_COLOR[m] || 'm-gray';
         return `<td class="m-cell"><div class="m-inner ${cls}">${METEO_LABELS[m]||''}</div></td>`;
@@ -1652,7 +1775,6 @@ function renderItinerary() {
           <td class="transport">${step.transport}</td>
           <td><span class="visa-pill ${visaClass}">${step.visa}</span></td>
           <td class="budget-cell">${step.budget}</td>
-          <td><div class="health-tags">${healthHtml}</div></td>
           ${monthCells}
         </tr>`;
     });
