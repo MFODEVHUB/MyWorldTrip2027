@@ -892,13 +892,14 @@
   }
 
   .city-clickable {
-    cursor: pointer;
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-underline-offset: 3px;
+    cursor: pointer !important;
+    color: var(--accent) !important;
+    text-decoration: underline !important;
+    text-decoration-style: dotted !important;
+    text-underline-offset: 3px !important;
   }
   .city-clickable:hover {
-    opacity: 0.75;
+    opacity: 0.8 !important;
   }
 </style>
 </head>
@@ -988,6 +989,9 @@
       <tbody id="itinerary-body">
       </tbody>
     </table>
+  </div>
+  <div id="dest-modal" style="display:none;margin-top:1.5rem;border:0.5px solid var(--border);border-radius:12px;overflow:hidden;">
+    <div id="dest-modal-body"></div>
   </div>
 </div>
 
@@ -1366,7 +1370,8 @@ function openDestModal(stepNum) {
         <span style="color:#854F0B;font-weight:500;">⚑ Zone</span> = lieu non prévu explicitement dans l'itinéraire, mais faisable depuis cette étape sans détour majeur.
       </div>
     </div>`;
-  modal.style.display = 'flex';
+  modal.style.display = 'block';
+  setTimeout(() => modal.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
 
 function renderItinerary() {
@@ -1926,8 +1931,8 @@ updateCountdown();
 </script>
 
 <!-- ===== MODAL DESTINATION ===== -->
-<div id="dest-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:16px;" onclick="if(event.target===this)this.style.display='none'">
-  <div id="dest-modal-body" style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;max-width:680px;width:100%;max-height:88vh;overflow-y:auto;"></div>
+<div id="dest-modal" style="display:none;position:absolute;top:0;left:0;width:100%;min-height:100%;background:rgba(0,0,0,0.6);z-index:9999;padding:24px 16px;box-sizing:border-box;" onclick="if(event.target===this)this.style.display='none'">
+  <div id="dest-modal-body" style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;max-width:700px;margin:0 auto;"></div>
 </div>
 </body>
 </html>
