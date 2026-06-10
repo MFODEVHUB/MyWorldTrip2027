@@ -1595,7 +1595,7 @@ function openDestModal(stepNum) {
   overlay.id = 'dest-modal-overlay';
   overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;overflow:hidden;';
   overlay.innerHTML = `
-    <div style="background:var(--surface);border:1px solid rgba(128,128,128,0.2);border-radius:14px;width:100%;max-width:700px;height:85vh;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:2147483647;">
+    <div style="border:1px solid rgba(128,128,128,0.2);border-radius:14px;width:100%;max-width:700px;height:85vh;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:2147483647;">
       <div style="padding:18px 22px 14px;border-bottom:1px solid rgba(128,128,128,0.15);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;">
         <div>
           <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">🇹🇼 Taïwan — ${d.nights}</div>
@@ -1616,6 +1616,10 @@ function openDestModal(stepNum) {
     </div>`;
   overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.remove(); document.documentElement.style.overflow=''; document.body.style.overflow=''; } });
   document.body.appendChild(overlay);
+  // Set modal background from computed CSS var (supports light/dark mode)
+  const modalBox = overlay.querySelector('div');
+  const computedBg = getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim() || '#17171a';
+  modalBox.style.background = computedBg;
   document.documentElement.style.overflow = 'hidden';
   document.body.style.overflow = 'hidden';
 }
