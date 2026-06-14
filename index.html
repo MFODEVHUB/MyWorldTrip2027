@@ -870,6 +870,10 @@
     line-height: 1.5;
   }
 
+  /* Transit sub-steps */
+  tr.transit-sub td { background: rgba(34,211,238,0.03); }
+  tr.transit-sub .step-num { color: var(--accent2); font-size: 10px; }
+
   /* FOOTER */
   footer {
     border-top: 1px solid var(--border);
@@ -890,17 +894,6 @@
     .header-stats { gap: 1rem; }
     .stat { text-align: left; }
   }
-
-  .city-clickable {
-    cursor: pointer !important;
-    color: var(--accent) !important;
-    text-decoration: underline !important;
-    text-decoration-style: dotted !important;
-    text-underline-offset: 3px !important;
-  }
-  .city-clickable:hover {
-    opacity: 0.8 !important;
-  }
 </style>
 </head>
 <body>
@@ -912,11 +905,11 @@
   </div>
   <div class="header-stats">
     <div class="stat">
-      <div class="stat-value">6</div>
+      <div class="stat-value">7</div>
       <div class="stat-label">Pays Phase 1</div>
     </div>
     <div class="stat">
-      <div class="stat-value">~176</div>
+      <div class="stat-value">~210</div>
       <div class="stat-label">Nuits planifiées</div>
     </div>
     <div class="stat">
@@ -971,6 +964,7 @@
           <th>Transport</th>
           <th>Visa</th>
           <th>Budget est.</th>
+          <th>Santé</th>
           <th class="month-col">Jan</th>
           <th class="month-col">Fév</th>
           <th class="month-col">Mar</th>
@@ -989,7 +983,6 @@
       </tbody>
     </table>
   </div>
-
 </div>
 
 <!-- ===== TAB: VISAS ===== -->
@@ -1028,6 +1021,8 @@
       <div class="budget-stat-sub">vol + train nuit + visa</div>
     </div>
     <div class="budget-stat">
+      <div class="budget-stat-label">Trek Népal</div>
+      <div class="budget-stat-value">300–800€</div>
       <div class="budget-stat-sub">décision en attente ❓</div>
     </div>
   </div>
@@ -1049,7 +1044,7 @@
       <tbody id="budget-body"></tbody>
     </table>
   </div>
-  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort. Hors vols internationaux.</p>
+  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort. Hors vols internationaux et trek Népal.</p>
 </div>
 
 <!-- ===== TAB: CHECKLIST ===== -->
@@ -1113,62 +1108,67 @@ const ITINERARY = [
     { num:9, city:'Dulan', flag:'🇹🇼', nights:3, transport:'Train · 4h34', visa:'exempt', budget:'30–45€', health:['ok'],
       meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0] },
   ]},
-  { country: '🔀 Transit', steps: [
-    { num:10, city:'Bangkok (transit)', flag:'🇹🇭', nights:0, transport:'Train nuit → Nong Khai', visa:'exempt 30j', budget:'—', health:['dengue'],
+  { country: '🔀 Transit Taïwan → Laos', steps: [
+    { num:10, city:'Bangkok — Aéroport DMK (transit)', flag:'🇹🇭', nights:0, transport:'✈ Vol TPE→DMK · AirAsia / Vietjet · ~100€ · bagage 15kg', visa:'exempt', budget:'~100€ vol', health:['dengue'],
       meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[] },
+    { num:'10b', city:'Bangkok → Nong Khai (train de nuit)', flag:'🇹🇭', nights:0, transport:'🚂 Gare Krung Thep Aphiwat · Express n°25 · Départ ~20h → Arrivée ~6h30 · ~25€ couchette basse 2ᵉ cl.', visa:'exempt', budget:'~25€', health:['dengue'],
+      meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[] },
+    { num:'10c', city:'Nong Khai → Vientiane (frontière)', flag:'🇱🇦', nights:0, transport:'🛺 Tuk-tuk → frontière ~2€ · Navette Pont Amitié ~0,80€ · Visa VoA 40$ USD cash + 2 photos · Taxi → centre ~4€', visa:'VoA 40$', budget:'~50€ (visa incl.)', health:['dengue'],
+      meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[] },
   ]},
   { country: '🇱🇦 Laos', steps: [
-    { num:11, city:'Vientiane', flag:'🇱🇦', nights:5, transport:'Bus · Pont Amitié', visa:'VoA 40$', budget:'30–45€', health:['dengue','malaria'],
+    { num:11, city:'Vientiane — arrivée', flag:'🇱🇦', nights:4, transport:'Arrivée depuis Pont de l\'Amitié', visa:'VoA 40$ (fait à la frontière)', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[1] },
     { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Bus / avion', visa:'VoA', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','O','O','G','G'], active:[1] },
-    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:3, transport:'Bus · 3h', visa:'VoA', budget:'25–40€', health:['dengue','malaria'],
+    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Bus · 3h', visa:'VoA', budget:'25–40€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','R','R','R','R','R','O','G','G'], active:[1] },
-    { num:14, city:'Pakse + Plateau des Bolavens', flag:'🇱🇦', nights:5, transport:'Bus nuit', visa:'VoA', budget:'25–35€', health:['dengue','malaria'],
+    { num:14, city:'Thakhek + Loop (~500 km)', flag:'🇱🇦', nights:5, transport:'Bus nuit · 5h', visa:'VoA', budget:'25–35€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1] },
+    { num:15, city:'Pakse + Bolaven Plateau Loop', flag:'🇱🇦', nights:5, transport:'Bus · 3h', visa:'VoA', budget:'25–35€', health:['dengue','malaria'],
+      meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1] },
+    { num:16, city:'Si Phan Don (4 000 îles)', flag:'🇱🇦', nights:3, transport:'Bus + ferry · 2h', visa:'VoA', budget:'20–30€', health:['dengue','malaria'],
+      meteo:['G','G','G','G','Y','R','R','R','O','G','G','G'], active:[1] },
   ]},
   { country: '🇰🇭 Cambodge', steps: [
-    { num:15, city:'Phnom Penh', flag:'🇰🇭', nights:4, transport:'Bus terrestre', visa:'eVisa 36$', budget:'30–45€', health:['dengue','malaria'],
+    { num:17, city:'Phnom Penh', flag:'🇰🇭', nights:4, transport:'Bus terrestre · frontière Vang Tao', visa:'eVisa 36$', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2] },
-    { num:16, city:'Siem Reap (Angkor)', flag:'🇰🇭', nights:5, transport:'Bus · 6h', visa:'eVisa', budget:'35–50€', health:['dengue'],
+    { num:18, city:'Siem Reap (Angkor)', flag:'🇰🇭', nights:5, transport:'Bus · 6h', visa:'eVisa', budget:'35–50€', health:['dengue'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2] },
-    { num:17, city:'Îles (Koh Rong / Kep)', flag:'🇰🇭', nights:5, transport:'Bus + ferry', visa:'eVisa', budget:'30–45€', health:['dengue'],
+    { num:19, city:'Îles (Koh Rong / Kep)', flag:'🇰🇭', nights:5, transport:'Bus + ferry', visa:'eVisa', budget:'30–45€', health:['dengue'],
       meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2] },
   ]},
   { country: '🇻🇳 Vietnam', steps: [
-    { num:18, city:'Hô Chi Minh-Ville', flag:'🇻🇳', nights:5, transport:'🚌 Bus terrestre · Phnom Penh→HCMC · 6–7h · ~12€', visa:'eVisa 90j 25$', budget:'35–50€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3] },
-    { num:19, city:'Hội An / Đà Nẵng', flag:'🇻🇳', nights:6, transport:'🚂 Train Reunification Express · ~16h', visa:'eVisa', budget:'35–50€', health:['dengue'],
+    { num:20, city:'Hanoï', flag:'🇻🇳', nights:4, transport:'Vol · 1h30', visa:'eVisa 90j 25$', budget:'35–50€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3] },
+    { num:21, city:'Baie d\'Halong', flag:'🇻🇳', nights:3, transport:'Bus · 3h30', visa:'eVisa', budget:'50–80€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3] },
+    { num:22, city:'Hội An', flag:'🇻🇳', nights:5, transport:'Train · 14h', visa:'eVisa', budget:'35–50€', health:['dengue'],
       meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3] },
-    { num:20, city:'Hanoï', flag:'🇻🇳', nights:5, transport:'🚂 Train · 14h ou ✈️ 1h20', visa:'eVisa', budget:'35–50€', health:['dengue'],
-      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3] },
-    { num:21, city:'Baie d\'Halong', flag:'🇻🇳', nights:3, transport:'🚌 Bus · 3h30', visa:'eVisa', budget:'50–80€', health:['dengue'],
-      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3] },
-    { num:22, city:'Ha Giang 🏍️ Loop', flag:'🇻🇳', nights:6, transport:'🚌 Bus · 4h30 depuis Hanoï', visa:'eVisa', budget:'30–45€', health:['dengue'],
-      meteo:['G','G','G','G','G','R','O','O','G','G','G','G'], active:[3] },
+    { num:23, city:'Hô Chi Minh-Ville', flag:'🇻🇳', nights:4, transport:'Avion · 1h20', visa:'eVisa', budget:'35–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3] },
   ]},
   { country: '🇵🇭 Philippines', steps: [
-    { num:23, city:'Manille / Cebu', flag:'🇵🇭', nights:5, transport:'✈️ Vol Hanoï→Manille · ~3h · 60–120€', visa:'exempt 30j', budget:'40–55€', health:['dengue'],
+    { num:24, city:'Manille / Cebu', flag:'🇵🇭', nights:4, transport:'Vol · 2h', visa:'exempt 30j', budget:'40–55€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4] },
-    { num:24, city:'El Nido — Palawan', flag:'🇵🇭', nights:8, transport:'✈️ Vol domestique · 1h', visa:'exempt', budget:'45–65€', health:['dengue'],
+    { num:25, city:'Palawan (El Nido)', flag:'🇵🇭', nights:8, transport:'Vol domestique', visa:'exempt', budget:'45–65€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4] },
-    { num:25, city:'Croisière El Nido ↔ Coron 🚢', flag:'🇵🇭', nights:4, transport:'🚢 Liveaboard · 3–5 jours · Linapacan', visa:'exempt', budget:'60–100€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4] },
-    { num:26, city:'Coron — Palawan', flag:'🇵🇭', nights:4, transport:'🚢 Arrivée croisière', visa:'exempt', budget:'45–65€', health:['dengue'],
+    { num:26, city:'Siargao', flag:'🇵🇭', nights:5, transport:'Vol domestique', visa:'exempt', budget:'40–55€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4] },
   ]},
-
+  { country: '🇳🇵 Népal', steps: [
+    { num:27, city:'Katmandou', flag:'🇳🇵', nights:4, transport:'Vol long courrier', visa:'VoA 30$ · 30j', budget:'35–50€', health:['altitude'],
+      meteo:['G','G','G','G','G','R','R','R','G','G','G','G'], active:[5] },
+    { num:28, city:'Trek (Annapurna / EBC)', flag:'🇳🇵', nights:14, transport:'Bus / avion Pokhara', visa:'VoA', budget:'30–45€', health:['altitude'],
+      meteo:['G','G','G','G','G','R','R','R','G','G','G','G'], active:[5] },
+  ]},
   { country: '🇮🇩 Indonésie', steps: [
-    { num:27, city:'Bali', flag:'🇮🇩', nights:5, transport:'✈️ Vol Manille→Bali · ~4h · 70–120€', visa:'VoA gratuit 30j', budget:'35–55€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5] },
-    { num:28, city:'Lombok 🏍️', flag:'🇮🇩', nights:4, transport:'✈️ Vol Bali→Lombok · 30 min', visa:'VoA', budget:'30–45€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5] },
-    { num:29, city:'Sumbawa ⚠️', flag:'🇮🇩', nights:2, transport:'🚢 Ferry Lombok→Sumbawa · 2h · départ matinal', visa:'VoA', budget:'25–40€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5] },
-    { num:30, city:'Komodo — Varans & Manta 🤿', flag:'🇮🇩', nights:3, transport:'🚢 Ferry Sumbawa→Komodo', visa:'VoA', budget:'40–60€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5] },
-    { num:31, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:4, transport:'🚢 Ferry · fin road trip', visa:'VoA', budget:'35–50€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5] },
+    { num:29, city:'Bali', flag:'🇮🇩', nights:8, transport:'Vol via hub', visa:'VoA gratuit 30j', budget:'35–55€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[6] },
+    { num:30, city:'Java (Yogyakarta)', flag:'🇮🇩', nights:5, transport:'Ferry + bus', visa:'VoA', budget:'30–45€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[6] },
+    { num:31, city:'Lombok / Gili', flag:'🇮🇩', nights:6, transport:'Avion / ferry', visa:'VoA', budget:'35–50€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[6] },
   ]},
 ];
 
@@ -1178,612 +1178,46 @@ const METEO_LABELS = { G:'✓', Y:'~', O:'!', R:'✗', X:'' };
 // ============================================================
 // RENDER ITINERARY
 // ============================================================
-// ============================================================
-// DESTINATION DETAILS
-// ============================================================
-const DEST_DETAILS = {
-  1: {
-    country: '🇹🇼 Taïwan',
-    title: 'Taipei', flag: '🇹🇼', nights: '4 nuits',
-    intro: 'Première ville du voyage, arrivée le 28 décembre. Taipei est dense, sûre, ultra-connectée. Le métro couvre 90 % des sites touristiques pour moins d\'un euro le trajet. Idéale pour se remettre du décalage horaire tout en explorant.',
-    lieux: [
-      {
-        name: 'Elephant Mountain — Xiangshan', status: 'in', type: 'Rando urbaine',
-        prix: 'Gratuit', dispo: 'Toute l\'année — éviter midi en été',
-        transport: 'MRT ligne rouge → Xiangshan, puis 20 min à pied balisé',
-        note: 'Randonnée courte (30 min de montée, escaliers taillés dans le roc) qui débouche sur une vue directe face à Taipei 101 et la skyline complète. Le must pour commencer le séjour. Y aller tôt le matin (7h–9h) pour avoir la lumière et éviter la foule. Coucher de soleil aussi excellent mais plus fréquenté.'
-      },
-      {
-        name: 'Taipei 101 — observatoire', status: 'in', type: 'Panorama',
-        prix: '20 € (observatoire intérieur 89e étage)',
-        dispo: 'Toute l\'année, 9h–22h',
-        transport: 'MRT ligne rouge → Taipei 101/World Trade Center, sortie 4',
-        note: 'La tour la plus emblématique de Taïwan — 508 m, jadis la plus haute du monde. L\'observatoire est payant et la vue depuis Elephant Mountain est objectivement meilleure et gratuite. En revanche, le podium commercial (B1 à B5) vaut le détour pour la food : boulangeries locales, dim sum, desserts taïwanais. Intéressant à faire depuis l\'extérieur de nuit pour les photos.'
-      },
-      {
-        name: 'Marchés nocturnes — Shilin & Raohe', status: 'in', type: 'Street food',
-        prix: '8–15 € pour un repas complet avec boissons',
-        dispo: 'Tous les soirs dès 17h–18h, jusqu\'à minuit',
-        transport: 'Shilin : MRT → Jiantan. Raohe : MRT → Houshanpi',
-        note: 'Shilin est le plus grand marché nocturne de Taipei — impressionnant mais très touristique. Raohe est plus compact, plus authentique, avec de meilleures adresses selon les locaux (notamment les poivrons farcis à l\'entrée de la rue, queue garantie). Manger debout, payer en cash, pointer ce qu\'on veut si la barrière de langue pose problème. Éviter les soirs de week-end si possible.'
-      },
-      {
-        name: 'Longshan Temple + quartier Wanhua', status: 'in', type: 'Temple & quartier historique',
-        prix: 'Gratuit',
-        dispo: 'Temple ouvert 6h–22h, quartier toute la journée',
-        transport: 'MRT ligne bleue → Longshan Temple',
-        note: 'Temple bouddhiste et taoïste du 18e siècle, centre spirituel vivant de Taipei. Pas un musée — des locaux viennent y prier quotidiennement dès 6h du matin. L\'odeur d\'encens, les bâtons de divination, les statues couvertes de dorures : ambiance authentique à 100 %. Autour du temple, le quartier de Wanhua est l\'un des plus anciens de la ville — rues commerçantes populaires, herboristes, restaurants de congee le matin.'
-      },
-      {
-        name: 'Beitou Hot Springs', status: 'zone', type: 'Onsen & détente',
-        prix: '5–15 € (bains publics) / gratuit (bains de pieds en plein air)',
-        dispo: 'Toute l\'année. Bains publics fermés le lundi',
-        transport: 'MRT → Xinbeitou (terminus ligne rouge, 30 min depuis le centre)',
-        note: '⚑ Zone géo — non prévu explicitement mais accessible en demi-journée depuis Taipei sans sortir de la ville. Beitou est un quartier thermal à l\'écart, avec des sources volcaniques et une rivière qui fume. En janvier, tremper ses pieds dans l\'eau chaude à l\'air libre est une expérience idéale. Le musée des sources chaudes (2 €) retrace l\'histoire des onsen depuis l\'époque japonaise. À combiner avec une balade dans le parc Beitou.'
-      },
-      {
-        name: 'Maokong Gondola + plantations de thé', status: 'zone', type: 'Nature & thé',
-        prix: '3 € A/R téléphérique',
-        dispo: 'Toute l\'année. Fermé le lundi pour maintenance',
-        transport: 'MRT → Zoo (ligne brun), puis téléphérique Maokong',
-        note: '⚑ Zone géo — les plantations de thé de Maokong sont dans les collines au sud de Taipei, 40 min depuis le centre. Le téléphérique offre une belle vue sur la ville. En haut : sentiers entre les théiers, maisons de thé avec terrasses panoramiques, dégustation de thé oolong local. Ambiance très différente du centre urbain — calme, verdoyant, quelques randos légères possibles entre les jardins. Prévoir une demi-journée.'
-      },
-    ],
-    pratique: [
-      { label: 'SIM locale', val: 'Chunghwa Telecom à l\'aéroport TPE dès la sortie des douanes — 30 jours de données illimitées pour ~10 €. Prendre dès l\'arrivée pour avoir Maps et Translate fonctionnels immédiatement.' },
-      { label: 'Cash & DAB', val: 'Monnaie locale : NT$ (Nouveau Dollar Taïwanais, ~30 NT$ = 1 €). Les DAB dans les 7-Eleven et Family Mart fonctionnent avec les cartes étrangères sans frais. Très peu d\'endroits n\'acceptent pas la carte dans Taipei.' },
-      { label: 'Transport ville', val: 'EasyCard (carte rechargeable type Navigo) — acheter à l\'aéroport pour ~2 €. Valable sur tout le réseau MRT + bus de la ville. Donne aussi 20 % de réduction sur les bus. Le métro est propre, ponctuel, annoncé en français dans certaines lignes.' },
-      { label: 'Logement', val: 'Quartiers Da\'an et Zhongzheng = mieux situés pour les backpackers. Large choix de guesthouses et hostels entre 15 et 30 €/nuit. Réserver 4–5 jours à l\'avance en janvier (période creuse mais offre parfois limitée dans les bonnes adresses).' },
-    ]
-  },
-  2: {
-    title: 'Ruifang — Jiufen', flag: '🇹🇼', nights: '2 nuits',
-    intro: 'Ruifang est une ville de service ordinaire à 40 km au nord-est de Taipei — c\'est là qu\'on loge. Jiufen, à 15 min en bus, est l\'une des adresses les plus photographiées de Taïwan : ruelles en escalier, lanternes rouges suspendues, thé chaud avec vue sur la mer. Aller en semaine, impérativement.',
-    lieux: [
-      {
-        name: 'Jiufen Old Street', status: 'in', type: 'Village historique',
-        prix: 'Accès gratuit — budget food et souvenirs à part',
-        dispo: 'Toute l\'année. En semaine = indispensable, week-end = impraticable',
-        transport: 'Bus 788 ou 965 depuis Ruifang, 15 min, ~0,50 €',
-        note: 'Ancienne ville minière d\'or qui a connu son heure de gloire au début du 20e siècle, puis a servi de décor pour des films taïwanais cultes. Les ruelles principales (Jishan St et Shuqi Rd) montent en escalier à flanc de colline, bordées de maisons de thé, de marchands de taro balls, de devantures en bois. La vue sur la baie de Keelung depuis les terrasses du haut est exceptionnelle. En semaine de janvier : quasi désert, lumineux, magique. Le week-end : 3 000 touristes entassés dans 2 m de large de ruelle.'
-      },
-      {
-        name: 'Jinguashi + Gold Ecological Park', status: 'in', type: 'Histoire industrielle',
-        prix: '2 € (entrée parc écologique)',
-        dispo: 'Toute l\'année. Fermé le lundi',
-        transport: 'Bus depuis Jiufen (10 min) ou directement depuis Ruifang',
-        note: 'Ville adjacente à Jiufen, ancienne mine d\'or et de cuivre exploitée par les Japonais pendant leur occupation, puis abandonnée dans les années 80. Le parc écologique retrace cette histoire avec des galeries souterraines visitables, un musée du minerai, et une réplique en or massif qu\'on peut toucher. Vue panoramique sur la côte depuis le sommet. Moins fréquenté que Jiufen — à faire dans la foulée, l\'après-midi.'
-      },
-      {
-        name: 'Teapot Mountain (Wufen)', status: 'zone', type: 'Randonnée',
-        prix: 'Gratuit',
-        dispo: 'Toute l\'année (chemin parfois glissant après pluie)',
-        transport: 'Départ à pied depuis Jinguashi (45 min de montée)',
-        note: '⚑ Zone géo — accessible depuis Jinguashi sans transport supplémentaire. Randonnée de niveau modéré qui monte à 580 m d\'altitude sur un promontoire rocheux en forme de théière (d\'où le nom). Vue à 360° sur la mer, les mines abandonnées et les collines. Pas de balisage très marqué après le premier tiers — prévoir Maps.me offline. Compter 2h A/R depuis Jinguashi.'
-      },
-      {
-        name: 'Ligne Pingxi — Shifen & lanternes', status: 'zone', type: 'Expérience & nature',
-        prix: '3–5 € pour une lanterne + ~3 € de train',
-        dispo: 'Toute l\'année',
-        transport: 'Pingxi Line depuis la gare de Ruifang — trains toutes les 30 min',
-        note: '⚑ Zone géo — la ligne de train Pingxi part directement de Ruifang et longe une gorge boisée jusqu\'aux villages de Shifen et Pingxi. À Shifen : lâcher de lanternes en papier au-dessus des rails (tradition taïwanaise), chutes d\'eau accessibles à pied depuis la gare. La journée complète Ruifang → Shifen → Pingxi → Jinguashi → Jiufen est un classique qui couvre tout le secteur.'
-      },
-    ],
-    pratique: [
-      { label: 'Train depuis Taipei', val: 'TRA (train régional) depuis Taipei Main Station → Ruifang, 54 min, ~2 €. Départs fréquents toute la journée.' },
-      { label: 'Logement', val: 'Loger à Ruifang plutôt qu\'à Jiufen : moins cher, plus calme, et accès parfait aux deux sites. Quelques B&B à Jiufen pour l\'atmosphère mais prix doublés.' },
-      { label: 'Timing Jiufen', val: 'Arriver avant 10h pour les ruelles vides. Partir avant 15h quand les cars de tourisme débarquent depuis Taipei. Le soir après 20h : deuxième fenêtre tranquille avec les lanternes allumées.' },
-    ]
-  },
-  3: {
-    title: 'Yuchi — Sun Moon Lake', flag: '🇹🇼', nights: '2 nuits',
-    intro: 'Le plus grand lac naturel de Taïwan, perché à 760 m d\'altitude dans les montagnes du centre. Eau d\'un bleu-vert miroir le matin, temples bouddhistes sur les rives, vélo au bord de l\'eau. Rythme beaucoup plus lent que Taipei — c\'est le but.',
-    lieux: [
-      {
-        name: 'Tour du lac à vélo', status: 'in', type: 'Vélo & nature',
-        prix: '8–12 € (vélo standard) / 15–20 € (e-bike)',
-        dispo: 'Toute l\'année — piste cyclable dédiée sur tout le pourtour',
-        transport: 'Location directement à Shuishe Pier, le hub principal du lac',
-        note: 'Boucle complète de 33 km autour du lac sur une piste cyclable dédiée — pas de voiture, ombragée sur certains tronçons, avec des belvédères réguliers. Compter 2h30–3h à vitesse tranquille. Départ recommandé à 7h–8h : le lac est dans la brume matinale, lumière exceptionnelle, très peu de monde. L\'e-bike est idéal si l\'étape d\'Alishan suit — économiser ses jambes. Points d\'arrêt : Wenwu Temple (nord), Ita Thao (sud-est), Xuanzang Temple (milieu de lac).'
-      },
-      {
-        name: 'Wenwu Temple', status: 'in', type: 'Temple & architecture',
-        prix: 'Gratuit',
-        dispo: 'Tous les jours, 6h–18h',
-        transport: 'Bus local depuis Shuishe (20 min) ou vélo sur la piste',
-        note: 'Temple imposant construit à flanc de falaise, dominant le lac depuis le nord. Dédié à deux divinités guerrières — l\'architecture est massive, rouge et dorée, avec deux lions géants de chaque côté de l\'escalier principal. La terrasse offre la meilleure vue du lac depuis la terre ferme. En janvier, la brume matinale qui monte du lac derrière le temple est photographiquement parfaite.'
-      },
-      {
-        name: 'Ropeway Maolin — téléphérique', status: 'in', type: 'Vue panoramique',
-        prix: '10 € A/R',
-        dispo: 'Toute l\'année (fermetures techniques mensuelles — vérifier avant)',
-        transport: 'Départ depuis la rive est du lac, secteur Shuishe',
-        note: 'Téléphérique de 1,8 km qui survole le lac et monte vers les collines boisées. Le trajet lui-même est l\'attraction : vue plongeante sur le lac dans toute sa longueur. À l\'arrivée : accès à Formosan Aboriginal Culture Village (parc à thème sur les cultures autochtones taïwanaises), optionnel selon les intérêts. Le trajet aller seul mérite d\'être fait.'
-      },
-      {
-        name: 'Ita Thao — village autochtone Thao', status: 'zone', type: 'Culture autochtone',
-        prix: 'Accès gratuit — marché et food à part (~5–10 €)',
-        dispo: 'Animé surtout le week-end',
-        transport: 'Ferry depuis Shuishe (10 min, ~3 €) ou vélo sur la piste',
-        note: '⚑ Zone géo — petit village du peuple Thao, le plus petit groupe ethnique autochtone de Taïwan (moins de 800 personnes). Marché artisanal avec produits locaux, spécialités culinaires à base de millet et de poisson du lac, danses traditionnelles certains week-ends. Atmosphère authentique, beaucoup moins touristique que Shuishe.'
-      },
-    ],
-    pratique: [
-      { label: 'Transport', val: 'Depuis Taipei : train → Taichung HSR (40 min, ~15 €) puis bus Nantou Bus Co. → Sun Moon Lake (1h30, ~6 €). Ou depuis Alishan en sens inverse.' },
-      { label: 'Ferry lac', val: 'Pass bateau journée (~7 €) — navettes entre Shuishe, Xuanzang Temple et Ita Thao. Utile pour éviter les allers-retours à vélo.' },
-      { label: 'Logement', val: 'Shuishe Pier = hub central. Plusieurs guesthouses et petits hôtels. Les week-ends de janvier peuvent être chargés (tourisme taïwanais intérieur) — réserver en avance.' },
-    ]
-  },
-  4: {
-    title: 'Alishan', flag: '🇹🇼', nights: '2 nuits',
-    intro: 'Forêt nationale d\'altitude à 2 200–2 400 m, connue pour ses cyprès vieux de 2 000 ans et sa "mer de nuages" au lever du soleil. Le train forestier qui monte depuis Chiayi est lui-même une attraction. En janvier : température fraîche (5–12°C le matin), peu de pluie, brume garantie.',
-    lieux: [
-      {
-        name: 'Lever de soleil — mer de nuages', status: 'in', type: 'Nature — incontournable absolu',
-        prix: 'Inclus dans le pass parc (~7 €) + billet train interne (~3 €)',
-        dispo: 'Toute l\'année. Meilleure visibilité nov–mars (saison sèche)',
-        transport: 'Train forestier interne depuis Alishan Station, départ ~4h30–5h selon saison',
-        note: 'Le réveil à 4h est obligatoire. Le petit train gravit 30 min supplémentaires vers Zhushan (la plateforme de la mer de nuages). Là, face à l\'est, on attend dans le noir et le froid que le soleil émerge au-dessus d\'un océan de brume qui flotte entre les montagnes à 1 500 m sous les pieds. La vue peut être bouchée si le temps est mauvais — c\'est le risque. Mais en janvier la probabilité est favorable. Acheter le billet de train la veille à la gare (ils partent vite). Lampe frontale indispensable.'
-      },
-      {
-        name: 'Sentier des cyprès géants — Shenmu', status: 'in', type: 'Forêt & randonnée légère',
-        prix: 'Inclus dans le pass parc',
-        dispo: 'Toute l\'année',
-        transport: 'À pied depuis le centre d\'Alishan, ~15 min',
-        note: 'Sentier balisé de 2–3 km qui serpente entre des cyprès hinoki et des cèdres rouges vieux de 1 500 à 2 300 ans. Certains ont des troncs de 4–5 m de diamètre. Dans la brume matinale de janvier, l\'atmosphère est quasi mystique — lumière filtrée, silence, odeur de résine. Plusieurs plateformes d\'observation autour des arbres les plus vieux. Accessible à tout niveau, pas d\'effort.'
-      },
-      {
-        name: 'Train forestier Chiayi → Alishan', status: 'in', type: 'Transport-expérience',
-        prix: '12 € (tarif simple classe)',
-        dispo: 'Toute l\'année — 2 à 3 départs/jour depuis Chiayi',
-        transport: 'Gare ferroviaire de Chiayi (distincte de la gare HSR)',
-        note: 'L\'un des trains de montagne les plus célèbres d\'Asie. La ligne construite sous l\'occupation japonaise (1912) monte de 30 m à 2 216 m d\'altitude en 2h30, traversant cinq zones climatiques distinctes — bambous, forêt tempérée, cèdres. Le trajet lui-même est l\'activité. Réserver en ligne sur le site TRA au moins 14 jours avant, surtout en haute saison. Alternative : bus depuis Chiayi (1h30, ~5 €) si le train est complet.'
-      },
-    ],
-    pratique: [
-      { label: 'Température janvier', val: '5–12°C le matin, jusqu\'à 18°C l\'après-midi. Prévoir une couche polaire ou doudoune légère pour le lever de soleil — le vent sur la plateforme peut rendre le ressenti proche de 0°C.' },
-      { label: 'Pass parc', val: 'Billet d\'entrée du Parc National d\'Alishan : ~7 €, valable plusieurs jours. Acheter à l\'entrée ou en ligne.' },
-      { label: 'Hébergement', val: 'Quelques guesthouses et hôtels dans le village d\'Alishan — offre limitée, prix un peu plus élevés qu\'en plaine. Réserver obligatoirement en avance.' },
-    ]
-  },
-  5: {
-    title: 'Tainan', flag: '🇹🇼', nights: '2 nuits',
-    intro: 'Ancienne capitale de Taïwan sous les dynastes et les colonisateurs successifs. Rythme plus lent que Taipei. Réputation culinaire unanime : c\'est ici que la cuisine taïwanaise est la plus raffinée, la plus variée, et la moins chère. Se perdre dans les ruelles en scooter ou à vélo est le programme.',
-    lieux: [
-      {
-        name: 'Anping Fort (Fort Zeelandia)', status: 'in', type: 'Histoire coloniale',
-        prix: '1 €',
-        dispo: 'Toute l\'année. Fermé le lundi',
-        transport: 'Bus ligne 2 depuis le centre (25 min) ou scooter',
-        note: 'Premier établissement européen à Taïwan, construit par la Compagnie néerlandaise des Indes orientales en 1624. Les murs d\'origine en briques hollandaises sont encore debout. Le quartier d\'Anping qui entoure le fort est l\'un des plus anciens du pays — vieilles maisons, boutiques d\'huîtres séchées, ateliers de coutellerie. Se promener à pied dans ce quartier après la visite du fort vaut autant que le fort lui-même.'
-      },
-      {
-        name: 'Street food — Danzai noodles, omelette aux huîtres, taro ball', status: 'in', type: 'Food — priorité absolue',
-        prix: '1,50–4 € par plat',
-        dispo: 'Dès 6h du matin pour certains stands, jusqu\'à 23h',
-        transport: 'Marché Dongmen, rue Shennong, ruelle Miaokou — centre-ville à pied',
-        note: 'Les danzai mian (vermicelles au bouillon de crevettes, oeuf et viande de porc) sont nés à Tainan — trouver l\'original chez Degree of Lat 100 m derrière Chihkan Tower. L\'omelette aux huîtres (oyster omelette) se prend au marché Dongmen pour ~2 €. Les taro balls (boules de taro sucrées dans un bol de glace pilée) sont le dessert local par excellence. Manger debout, petit-déjeuner avec les locaux à 7h, c\'est le meilleur moment.'
-      },
-      {
-        name: 'Chihkan Tower (Fort Provintia)', status: 'in', type: 'Histoire & architecture',
-        prix: '1 €',
-        dispo: 'Toute l\'année, 8h30–21h',
-        transport: 'Centre-ville, à pied depuis la plupart des hébergements',
-        note: 'Second fort hollandais construit en 1653, transformé en temple taoïste par les Chinois après 1662. Dans la cour : 9 tortues géantes sculptées portent des stèles commémoratives chinoises sur leur dos — mélange culturel taïwanais parfaitement résumé dans un même lieu. La vue depuis le haut est modeste mais le site lui-même, le soir avec l\'éclairage, est très beau.'
-      },
-      {
-        name: 'Hayashi Department Store', status: 'in', type: 'Architecture japonaise',
-        prix: 'Entrée libre',
-        dispo: 'Toute l\'année, 11h–21h30',
-        transport: 'Centre-ville, à pied',
-        note: 'Grand magasin art déco construit en 1932 sous l\'occupation japonaise, restauré à l\'identique en 2014. L\'intérieur mêle architecture Showa et produits artisanaux taïwanais contemporains. Au sous-sol : épicerie fine locale avec thés, condiments, alcools de millet autochtone. L\'ascenseur d\'origine japonaise en cage est un détail à remarquer.'
-      },
-      {
-        name: 'Cigu Lagoon — marais salants et oiseaux', status: 'zone', type: 'Nature & insolite',
-        prix: 'Gratuit',
-        dispo: 'Toute l\'année (flamants roses visibles oct–mars)',
-        transport: 'Scooter ~30 min depuis le centre de Tainan',
-        note: '⚑ Zone géo — lagon côtier au nord de Tainan avec d\'anciens marais salants reconvertis en zones naturelles protégées. En janvier, des flamants roses y hivernent régulièrement — rare en Asie. Paysage de sel blanc, bassins roses, hérons. Nécessite absolument un scooter (pas de transport en commun). Si tu loues un scooter pour visiter Anping, prolonger jusqu\'à Cigu est naturel.'
-      },
-    ],
-    pratique: [
-      { label: 'Transport local', val: 'Scooter = moyen idéal à Tainan (7–12 €/jour, permis international requis). Alternative : YouBike (vélos partagés, ~1 €/30 min) pour le centre. Taxis peu chers aussi.' },
-      { label: 'Marchés food à noter', val: 'Dongmen Night Market (soirs), Shennong Street (boutiques food le matin), Miaokou (marché matinal derrière Chihkan Tower, 6h–10h).' },
-      { label: 'Logement', val: 'Bonne offre de guesthouses dans le centre historique. Quartier Zhongxi = idéal à pied pour tout. Réserver 3–4 jours avant en janvier.' },
-    ]
-  },
-  6: {
-    title: 'Kaohsiung', flag: '🇹🇼', nights: '1 nuit',
-    intro: 'Deuxième ville de Taïwan — plus industrielle, portuaire, détendue. Une nuit est le bon rythme : assez pour voir les incontournables sans s\'étirer. Métro propre et couverture complète.',
-    lieux: [
-      {
-        name: 'Dragon & Tiger Pagodas — Lotus Pond', status: 'in', type: 'Temple & insolite',
-        prix: 'Gratuit',
-        dispo: 'Toute l\'année, 8h30–17h30',
-        transport: 'MRT ligne orange → Zuoying, puis bus ou taxi (10 min)',
-        note: 'Deux pagodes à sept étages érigées au milieu d\'un lac de lotus — l\'une représente un dragon, l\'autre un tigre. On entre par la gueule du dragon (bonheur garanti selon la tradition) et on ressort par celle du tigre. L\'intérieur est couvert de fresques naïves représentant scènes de paradis et d\'enfer selon la cosmologie taoïste. Kitsch assumé, populaire, fascinant d\'honnêteté culturelle. Autour du lac : plusieurs autres temples accessibles à pied.'
-      },
-      {
-        name: 'Pier-2 Art District', status: 'in', type: 'Art & balade',
-        prix: 'Gratuit (expositions payantes ponctuellement)',
-        dispo: 'Toute l\'année. Fermé le lundi',
-        transport: 'MRT ligne orange → Yanchengpu, ou Kaohsiung Light Rail → Pier-2',
-        note: 'Anciens entrepôts portuaires des années 50 reconvertis en espace culturel sur 3 km de front de mer. Galeries d\'art contemporain, ateliers d\'artisans, cafés design dans des hangars à structure métallique. Le quartier est agréable à parcourir à pied le long des quais. Street art sur les murs extérieurs des entrepôts. Meilleur en fin d\'après-midi avec le soleil couchant sur le port.'
-      },
-      {
-        name: 'Dome of Light — station MRT Formosa Blvd', status: 'in', type: 'Architecture & insolite',
-        prix: 'Gratuit (il suffit d\'entrer dans la station)',
-        dispo: 'Toute l\'année, horaires MRT',
-        transport: 'MRT → Formosa Boulevard (intersection des deux lignes)',
-        note: 'L\'une des stations de métro les plus photographiées au monde. Le plafond de 4 500 m² est recouvert d\'un vitrail circulaire en verre de Murano — le Dome of Light, créé par l\'artiste Narcissus Quagliata. Les panneaux représentent les 4 éléments et le cycle de la vie humaine. La lumière change selon l\'heure. On peut juste descendre dans la station pour regarder sans prendre le métro — personne ne vérifie.'
-      },
-      {
-        name: 'Liuhe Night Market', status: 'in', type: 'Street food',
-        prix: '6–12 € pour un repas complet',
-        dispo: 'Tous les soirs, 18h–minuit',
-        transport: 'MRT → Formosa Boulevard, 2 min à pied',
-        note: 'Marché nocturne réputé pour ses fruits de mer frais — crabes, coquillages, crevettes grillées. Moins bondé que Shilin à Taipei, prix corrects. La rue est piétonne le soir. Commencer par un jus de canne à sucre pressé sur place (1 €) en entrant.'
-      },
-    ],
-    pratique: [
-      { label: 'Transport', val: 'MRT de Kaohsiung est excellent. Pass journée ~4 €. Depuis Tainan : train 30 min, ~4 €. Le Light Rail (tramway) longe le port et le Pier-2.' },
-      { label: 'Planning 1 nuit', val: 'Arrivée l\'après-midi → Pier-2 → dîner Liuhe → nuit. Lendemain matin : Formosa Blvd + Dragon Pagodas → bus pour Hengchun.' },
-    ]
-  },
-  7: {
-    title: 'Hengchun — Kenting', flag: '🇹🇼', nights: '2 nuits',
-    intro: 'Hengchun est une ville fortifiée du 19e siècle avec son enceinte quasi-intacte — rare à Taïwan. Elle donne accès au Parc National de Kenting, à l\'extrémité sud de l\'île : plages, snorkeling, falaises, savane tropicale. En janvier, basse saison totale — plages vides, peu de touristes.',
-    lieux: [
-      {
-        name: 'Remparts de Hengchun', status: 'in', type: 'Histoire & balade',
-        prix: 'Gratuit',
-        dispo: 'Toute l\'année',
-        transport: 'Centre-ville, à pied depuis tous les hébergements',
-        note: 'Construit en 1875 sous la dynastie Qing, le mur d\'enceinte de Hengchun avec ses quatre portes directionnelles est l\'un des rares ensembles fortifiés préservés de Taïwan. On peut marcher sur certains tronçons du rempart. La porte est (Dongmen) est la mieux conservée et la plus photogénique. Le quartier à l\'intérieur des murs est agréable pour flâner le soir — quelques restaurants locaux et stands de street food.'
-      },
-      {
-        name: 'Plages de Kenting — Baisha & Nanwan', status: 'in', type: 'Plage & snorkeling',
-        prix: 'Accès plage gratuit. Location de masque et tuba ~5 €',
-        dispo: 'Toute l\'année. Meilleure météo nov–mai',
-        transport: 'Bus Kenting Street Shuttle ou scooter depuis Hengchun (10–20 min)',
-        note: 'Baisha (Sable Blanc) est la plage principale, longue et peu fréquentée en janvier. Nanwan est plus petite, plus abritée, eau claire pour le snorkeling côtier. Température de l\'eau en janvier : 22–24°C — agréable pour nager. En basse saison, on peut avoir ces plages pour soi le matin. Éviter la zone Kenting Main Street en soirée — très commerciale et bruyante.'
-      },
-      {
-        name: 'Parc National Kenting — côte est sauvage', status: 'in', type: 'Nature & randonnée',
-        prix: 'Gratuit',
-        dispo: 'Toute l\'année',
-        transport: 'Scooter depuis Hengchun (15–20 min plein est)',
-        note: 'La côte ouest de Kenting est sur-développée (hôtels, enseignes, circulation). La côte est, accessible uniquement en scooter, est d\'un autre monde : falaises calcaires, ciques, plages sans accès routier, végétation de savane. Le sentier de Longpan Park longe des falaises de 30 m sur une mer turquoise. Accès à Eluanbi (phare) depuis ce côté.'
-      },
-      {
-        name: 'Eluanbi — phare et cap sud', status: 'zone', type: 'Point extrême',
-        prix: '1 €',
-        dispo: 'Toute l\'année, 7h–17h30',
-        transport: 'Bus depuis Kenting ou scooter (20 min depuis Hengchun)',
-        note: '⚑ Zone géo — le point le plus méridional de Taïwan, là où la mer de Chine du Sud rejoint le Pacifique. Le phare blanc de 1883 domine des récifs coralliens. Petit parc naturel autour avec sentiers côtiers. À combiner avec la côte est en une demi-journée de scooter depuis Hengchun.'
-      },
-      {
-        name: 'Houbihu — plongée sous-marine', status: 'zone', type: 'Plongée',
-        prix: '30–50 € la plongée encadrée, ~15 € si autonome',
-        dispo: 'Toute l\'année. Janvier = visibilité 15–20 m',
-        transport: 'Scooter depuis Hengchun (15 min)',
-        note: '⚑ Zone géo — considéré comme le meilleur site de plongée de Taïwan avec une biodiversité marine remarquable (coraux, raies, poissons-perroquets). Plusieurs centres de plongée à Houbihu proposent des sorties guidées en bateau. Convient aussi aux débutants avec un encadrement.'
-      },
-    ],
-    pratique: [
-      { label: 'Transport', val: 'Bus depuis Kaohsiung (1h45, ~5 €) ou navette directe. Sur place : louer un scooter = indispensable pour le parc.' },
-      { label: 'Scooter', val: 'Plusieurs loueurs à Hengchun et Kenting, ~8–12 €/jour. Permis de conduire international requis (catégorie A ou B selon le pays).' },
-      { label: 'Météo janvier', val: '✓ Excellente saison — vent nord-est possible (Hengchun est dans une zone de vents forts), soleil majoritaire, mer bonne pour nager.' },
-      { label: 'Logement', val: 'Préférer Hengchun centre (moins cher, plus authentique) à Kenting (resort area avec prix gonflés). Bonne offre de guesthouses dans les remparts.' },
-    ]
-  },
-  8: {
-    title: 'Hualien City', flag: '🇹🇼', nights: '3 nuits',
-    intro: 'Ville côtière à l\'est de Taïwan, point d\'entrée des Gorges de Taroko — le parc national le plus spectaculaire du pays. Canyon de marbre blanc, rivières turquoise, falaises de 1 000 m. Les 3 nuits permettent de couvrir le parc à fond et de décompresser entre deux journées intenses.',
-    lieux: [
-      {
-        name: 'Taroko — Sentier Shakadang', status: 'in', type: 'Randonnée canyon',
-        prix: 'Parc gratuit',
-        dispo: 'Toute l\'année (fermetures possibles après typhons ou séismes — vérifier)',
-        transport: 'Bus Hualien → entrée Taroko (30 min, ~2 €) puis à pied',
-        note: 'Sentier de 4,1 km (A/R) qui longe la rivière Shakadang dans le fond du canyon — l\'eau est d\'un bleu-vert irréel, taillée entre des parois de marbre blanc et gris. Niveau facile, chemin plat taillé dans la roche, quelques tunnels. Idéal le matin (lumière dans le canyon dès 8h). Points de vue sur les rapides et les marmites de géant creusées dans le marbre.'
-      },
-      {
-        name: 'Taroko — Tunnel of Nine Turns', status: 'in', type: 'Randonnée — incontournable',
-        prix: 'Gratuit (casque obligatoire, fourni à l\'entrée)',
-        dispo: 'Toute l\'année',
-        transport: 'Bus interne au parc ou taxi/scooter depuis l\'entrée',
-        note: 'Sentier de 1,3 km taillé directement dans la montagne de marbre. Neuf virages en épingle où le sentier alterne galeries obscures et trouées sur le canyon. À chaque tournant : une nouvelle composition de falaises, de végétation accrochée dans les fissures, de rivière en contrebas. Le plus impressionnant des sentiers de Taroko — accessible à tous, aucune difficulté physique. Y aller à l\'ouverture (8h) pour être seul.'
-      },
-      {
-        name: 'Qingshui Cliffs — falaises sur le Pacifique', status: 'in', type: 'Vue & route côtière',
-        prix: 'Gratuit',
-        dispo: 'Toute l\'année (route parfois fermée en cas de typhon)',
-        transport: 'Scooter ou bus sur la Route Provinciale 9, ~20 km au nord de Hualien',
-        note: 'Parmi les paysages les plus frappants de Taïwan : des falaises de marbre et de schiste de 2 000 m de hauteur qui plongent directement dans l\'océan Pacifique sans transition. On roule en bord de falaise avec la mer en contrebas. Plusieurs belvédères marqués sur la route. Peut aussi se voir en bateau depuis la mer (excursions disponibles à Hualien, ~20 €).'
-      },
-      {
-        name: 'Hualien Sugar Factory — food & marché', status: 'zone', type: 'Culture & food locale',
-        prix: 'Entrée libre — glace à la canne ~1,50 €',
-        dispo: 'Toute l\'année. Marché surtout le week-end',
-        transport: 'Vélo ou taxi depuis le centre de Hualien (15 min)',
-        note: '⚑ Zone géo — ancienne usine sucrière Taïyang fondée en 1913, reconvertie en espace culturel et alimentaire. La glace artisanale à la canne à sucre locale est une institution. Marché de producteurs locaux le week-end avec spécialités du peuple Amis (autochtones de la côte est). Ambiance beaucoup plus locale que les attractions touristiques du parc.'
-      },
-    ],
-    pratique: [
-      { label: 'Transport Taroko', val: 'Bus Hualien → entrée Taroko (~2 €, 30 min). Bus interne au parc disponible mais peu fréquent. Scooter depuis Hualien = meilleur compromis liberté/coût. Taxi journée ~40 €.' },
-      { label: 'Permis Taroko', val: 'Le sentier Zhuilu (difficile, paroi verticale) nécessite un permis gratuit en ligne (taroko.gov.tw). À demander 7 jours avant. Pas nécessaire pour Shakadang ou Nine Turns.' },
-      { label: 'Logement', val: 'Hualien centre = base idéale. Plusieurs hostels bien notés. Réserver 5–7 jours avant — Hualien est populaire toute l\'année.' },
-      { label: 'Météo janvier', val: 'La côte est reçoit plus de pluie que l\'ouest en hiver. Prévoir un poncho. Les journées mixtes (matin couvert, après-midi dégagé) sont fréquentes — prévoir les sorties tôt.' },
-    ]
-  },
-  9: {
-    title: 'Dulan', flag: '🇹🇼', nights: '3 nuits',
-    intro: 'Minuscule village (~500 habitants) de la côte est, entre Hualien et Taitung. Peuplé de surfeurs, d\'artistes et d\'autochtones Amis. Une seule rue principale, une plage, une ancienne sucrerie qui fait bar et scène de concert. Trois nuits ici, c\'est apprendre à décompresser sérieusement.',
-    lieux: [
-      {
-        name: 'Plage de Dulan — surf & baignade', status: 'in', type: 'Plage & surf',
-        prix: 'Gratuit. Cours de surf : ~25 € (moniteur local informel)',
-        dispo: 'Toute l\'année. Meilleures vagues : octobre–mars',
-        transport: 'À pied depuis le centre du village (5 min)',
-        note: 'Plage de galets et de sable noir volcanique avec une houle régulière venue du Pacifique. En janvier, les vagues sont bonnes (1–2 m) et la plage est quasi-déserte. Des moniteurs locaux proposent des cours de surf au feeling — pas de structure, on discute sur la plage et on s\'organise. L\'eau est à 22°C. Même sans surfer : se lever au lever du soleil sur cette plage face à l\'océan est une expérience à part entière.'
-      },
-      {
-        name: 'Dulan Sugar Factory — culture & musique', status: 'in', type: 'Culture Amis & musique live',
-        prix: 'Gratuit (bar et consommations à part)',
-        dispo: 'Toute l\'année. Concerts principalement le week-end',
-        transport: 'À pied dans le village',
-        note: 'Ancienne sucrerie japonaise reconvertie de façon très artisanale en hub culturel du peuple Amis. Boutiques d\'artisanat, ateliers, et un bar/scène de musique live certains soirs. Les concerts de musique traditionnelle Amis (polyphonies vocales, percussions) ou de rock local se mélangent selon les soirs. L\'ambiance est décontractée, les bières locales sont fraîches, et c\'est le seul endroit du village où l\'on rencontre les autres voyageurs.'
-      },
-      {
-        name: 'East Rift Valley — vélo entre montagne et mer', status: 'zone', type: 'Vélo & paysage',
-        prix: '8–12 € (location vélo ou e-bike à Hualien ou Taitung)',
-        dispo: 'Toute l\'année',
-        transport: 'Depuis Dulan vers le nord (Hualien) ou le sud (Taitung)',
-        note: '⚑ Zone géo — la vallée du Rift est l\'une des plus belles routes cyclables de Taïwan : une plaine agricole encadrée par la chaîne centrale à l\'ouest (3 000 m) et les montagnes côtières à l\'est, avec des rizières, des villages Amis, des rivières. En janvier les rizières sont en repos mais le paysage reste saisissant. Plusieurs sections adaptées à une journée de vélo depuis Dulan.'
-      },
-      {
-        name: 'Xiaoyeliu — formations rocheuses coralliennes', status: 'zone', type: 'Géologie & littoral',
-        prix: 'Gratuit',
-        dispo: 'Toute l\'année',
-        transport: 'Scooter ou bus ~20 min vers le sud, direction Taitung',
-        note: '⚑ Zone géo — littoral rocheux sculpté par l\'érosion marine sur d\'ancien récifs coralliens soulevés par la tectonique. Les formations ressemblent à celles de Yehliu (nord de Taïwan) mais avec bien moins de touristes. Champignons de roche, marmites, strates de calcaire. Accessible depuis Dulan en demi-journée combinée avec une visite de Taitung.'
-      },
-    ],
-    pratique: [
-      { label: 'Transport', val: 'Train depuis Hualien (4h34 via la côte est, ~7 €) ou bus local plus lent. Ne pas rater le trajet — la vue depuis le train sur la mer est exceptionnelle sur certains tronçons.' },
-      { label: 'Logement', val: 'Quelques guesthouses de surf et B&B artisanaux — offre très limitée. Réserver au moins une semaine à l\'avance. Les hébergements affichent souvent complet en janvier (surfeurs hivernaux).' },
-      { label: 'Transition vers Taipei', val: 'Depuis Dulan : bus ou train vers Taitung → train rapide vers Taipei (2h30) pour le vol Taipei → Bangkok. Prévoir cette connexion avec marge.' },
-    ]
-  },
-
-  // ── LAOS ──
-  14: {
-    country: '🇱🇦 Laos',
-    title: 'Thakhek Loop 🏍️',
-    nights: '3–4 jours · ~500 km',
-    intro: 'Le circuit moto incontournable du centre Laos. Grottes karst parmi les plus spectaculaires d\'Asie du Sud-Est, rivières souterraines, villages isolés. Départ et retour depuis Thakhek.',
-    lieux: [
-      { name: 'Kong Lo Cave', type: 'Grotte', prix: '~3€', dispo: 'Toute l\'année', transport: 'Moto depuis Thakhek (~2h)', status: 'prévu',
-        note: 'Rivière souterraine navigable sur 7 km. Barque locale obligatoire. L\'une des plus grandes grottes d\'Asie. Prévoir lampe frontale.' },
-      { name: 'Tham Nang Aen', type: 'Grotte', prix: '~1€', dispo: 'Toute l\'année', transport: 'Sur la route de la loop', status: 'zone',
-        note: 'Grotte aux stalactites impressionnantes, moins touristique que Kong Lo. À inclure sur la grande boucle.' },
-      { name: 'Mahaxai & villages', type: 'Culture', prix: 'Gratuit', dispo: 'Toute l\'année', transport: 'Moto', status: 'prévu',
-        note: 'Villages ethniques le long de la Nam Hinboun. Vie locale authentique, peu de touristes. Bon endroit pour s\'arrêter la nuit.' },
-    ],
-    pratique: [
-      { label: 'Location moto', val: 'Thakhek Travel Lodge — QG des backpackers pour cette loop. Semi-automatique ou manuelle, ~8–12$/j. Préférer une 110cc bien entretenue.' },
-      { label: 'Durée', val: '3 jours minimum (petite boucle), 4 jours recommandés pour voir Kong Lo + les grottes secondaires sans se presser.' },
-      { label: 'Route', val: 'Route 12 est puis Route 8 nord. Asphalte correct sur les axes principaux, piste sur quelques sections secondaires. GPS offline conseillé.' },
-      { label: 'Budget', val: '~40–50$/j tout compris (moto + hébergement + nourriture + entrées).' },
-      { label: 'Timing itinéraire', val: 'À faire depuis Thakhek entre Vientiane et Pakse. Laisser les scooters à Thakhek, reprendre le bus vers le sud.' },
-    ]
-  },
-  // ── LAOS (Bolaven) ──
-  15: {
-    country: '🇱🇦 Laos',
-    title: 'Bolaven Plateau Loop 🏍️',
-    nights: '2–4 jours · 200–340 km',
-    intro: 'Le plateau des Bolavens, au sud du Laos, est le cœur de la production de café arabica du pays. Cascades géantes, plantations, villages ethniques Katu et Alak. Départ et retour depuis Pakse.',
-    lieux: [
-      { name: 'Tad Fane', type: 'Cascade', prix: '~2€', dispo: 'Toute l\'année (plus belle en saison des pluies)', transport: 'Moto depuis Pakse (~1h30)', status: 'prévu',
-        note: 'Double cascade de 120m. La photo de la tyrolienne au-dessus est emblématique. Zipline disponible (~25€). Hôtel avec vue panoramique sur place.' },
-      { name: 'Tad Lo', type: 'Cascade + village', prix: '~1€', dispo: 'Toute l\'année', transport: 'Sur la loop', status: 'prévu',
-        note: 'Petite communauté de voyageurs autour des cascades. Guesthouse sympa, bain possible. Village Alak à proximité avec bain d\'éléphant en soirée.' },
-      { name: 'Plantation de café', type: 'Agro-tourisme', prix: '~3€', dispo: 'Toute l\'année', transport: 'Sur la route principale', status: 'prévu',
-        note: 'Café arabica bio cultivé à 1 300m d\'altitude. Dégustation sur place. Le café laotien est parmi les meilleurs d\'Asie du Sud-Est — ramener des grains.' },
-      { name: 'Village Katu', type: 'Culture', prix: 'Gratuit', dispo: 'Toute l\'année', transport: 'Chemin de terre depuis la route', status: 'zone',
-        note: 'Minorité ethnique connue pour ses crânes d\'animaux et maisons communes. Prévoir un guide local pour ne pas être intrusif.' },
-    ],
-    pratique: [
-      { label: 'Location moto', val: 'Pakse — nombreuses agences près du marché central. ~8–10$/j. Miss Noy Motorbikes reconnue pour ses cartes détaillées de la loop.' },
-      { label: 'Petite boucle', val: '200 km · 2 jours · 1 nuit à Tad Lo. Couvre l\'essentiel : Tad Fane, café, Tad Lo.' },
-      { label: 'Grande boucle', val: '340 km · 3–4 jours · nuits à Tad Lo, Houay Kong, Paksong. Inclut les villages ethniques et cascades secondaires.' },
-      { label: 'Route', val: 'Majoritairement asphaltée. Quelques passages en terre rouge après la pluie — glissant.' },
-      { label: 'Timing itinéraire', val: 'Dernière étape au Laos avant de passer au Cambodge. Rendre la moto à Pakse, prendre le bus vers Phnom Penh le lendemain.' },
-    ]
-  },
-  // ── VIETNAM ──
-  22: {
-    country: '🇻🇳 Vietnam',
-    title: 'Ha Giang Loop 🏍️',
-    nights: '4–5 jours · ~350 km',
-    intro: 'Le road trip moto le plus spectaculaire du Vietnam et probablement de toute l\'Asie du Sud-Est. Routes vertigineuses, cols mythiques, rizières en terrasses, villages Hmong et Dao isolés. Passage mars–avril = fenêtre météo idéale.',
-    lieux: [
-      { name: 'Ma Pi Leng Pass', type: 'Col de montagne', prix: 'Gratuit', dispo: 'Oct–avril (optimal)', transport: 'Sur la loop — obligatoire', status: 'prévu',
-        note: 'Considéré comme le plus beau col du Vietnam. 2 000m d\'altitude, gorges de la rivière Nho Que 500m en contrebas. Prévoir une heure pour les photos. Dangereux par temps de brouillard — partir tôt.' },
-      { name: 'Dong Van', type: 'Village + marché', prix: 'Gratuit', dispo: 'Toute l\'année', transport: 'Étape de nuit sur la loop', status: 'prévu',
-        note: 'Ville frontière sino-vietnamienne préservée. Vieille ville en pierre Hmong classée. Marché ethnique le dimanche matin — arriver la veille.' },
-      { name: 'Meo Vac', type: 'Village ethnique', prix: 'Gratuit', dispo: 'Toute l\'année', transport: 'Après Ma Pi Leng', status: 'prévu',
-        note: 'Point le plus reculé de la loop. Minorités Hmong et Dao en habits traditionnels. Marché dominical incontournable. Ambiance authentique encore préservée.' },
-      { name: 'Lung Cu — Pointe nord', type: 'Point symbolique', prix: '~1€', dispo: 'Toute l\'année', transport: 'Détour 30km depuis Dong Van', status: 'zone',
-        note: 'Le point le plus septentrional du Vietnam, à 600m de la Chine. Drapeau géant au sommet d\'une colline. Symbolique mais détour non négligeable — selon le temps disponible.' },
-    ],
-    pratique: [
-      { label: 'Location moto', val: 'Ha Giang ville — nombreuses agences. Semi-automatique Honda Wave 110cc recommandée (~7–10$/j). Vérifier freins et pneus avant de partir. Easy Rider possible avec guide (~30–40$/j).' },
-      { label: 'Agences locales', val: 'Jasmine Tours, Mr Hung Agency, QT Motorbikes. En groupe = moins cher et plus sécurisé. Solo possible si à l\'aise en moto montagne.' },
-      { label: 'Niveau moto', val: 'Intermédiaire requis. Routes étroites, virages serrés, quelques passages de piste. Jamais le premier voyage à moto.' },
-      { label: 'Météo', val: 'Mars–avril = optimal (sec, ciel dégagé, verdure). Éviter juin–septembre (mousson, routes glissantes). ✅ Ton passage est parfait.' },
-      { label: 'Timing itinéraire', val: 'Bus Ha Noi → Ha Giang (~4h30, ~6$). Faire la loop 4–5j, retour Ha Giang → Ha Noi en bus. Dernier stop avant le vol Hanoï → Manille.' },
-    ]
-  },
-  // ── PHILIPPINES ──
-  25: {
-    country: '🇵🇭 Philippines',
-    title: 'Croisière El Nido ↔ Coron 🚢',
-    nights: '3–5 jours en mer',
-    intro: 'L\'expédition liveaboard entre El Nido et Coron via les îles isolées de Linapacan est la pépite de Palawan. Pas d\'électricité, pas d\'internet, campements de plage, snorkeling dans des eaux cristallines. À faire en saison sèche (nov–mai).',
-    lieux: [
-      { name: 'Îles de Linapacan', type: 'Archipel isolé', prix: 'Inclus croisière', dispo: 'Nov–mai (saison sèche)', transport: 'Bateau de l\'expédition', status: 'prévu',
-        note: 'Les plus belles eaux turquoise des Philippines, loin des foules. Plages de sable blanc uniquement accessibles par bateau. Snorkeling exceptionnel sur les récifs coralliens.' },
-      { name: 'Île de Culion', type: 'Histoire + plongée', prix: 'Inclus croisière', dispo: 'Toute l\'année', transport: 'Arrêt intermédiaire', status: 'prévu',
-        note: 'Ancienne léproserie classée, aujourd\'hui île paisible. Architecture espagnole coloniale, petit musée. Bonne plongée sur les épaves alentour.' },
-      { name: 'Coron — Lacs et épaves', type: 'Plongée + nature', prix: 'Séparé (~10–30€/activité)', dispo: 'Toute l\'année', transport: 'Arrivée de la croisière', status: 'prévu',
-        note: 'Twin Lagoon, Kayangan Lake (eau cristalline dans une falaise karstique), et épaves japonaises WWII pour les plongeurs. 1–2 jours à explorer avant ou après la croisière.' },
-    ],
-    pratique: [
-      { label: 'Opérateurs', val: 'El Nido Paradise, Green Gecko, Buhay Isla, Sea Quest Palawan. Réserver 2–4 semaines à l\'avance en haute saison (jan–mai).' },
-      { label: 'Format', val: '3D/2N (compact) à 5D/4N (version complète avec plus d\'îles). Recommandé : 4D/3N pour un bon équilibre.' },
-      { label: 'Prix', val: 'Groupe : ~60–100€ tout inclus (nourriture, équipement snorkeling, camping ou bateau). Privé : 300–500€.' },
-      { label: 'Sens', val: 'El Nido → Coron ou Coron → El Nido — même expérience dans les deux sens. Choisir selon logistique des vols domestiques.' },
-      { label: 'Confort', val: 'Primitif par design — douche au seau, pas d\'électricité, dortoir sur le pont ou tente de plage. C\'est le concept. Pas pour ceux qui cherchent le confort.' },
-      { label: 'Météo', val: '✅ Passage avril–mai = saison sèche, mer calme. Parfait. Éviter juin–novembre (mer agitée, typhons potentiels).' },
-    ]
-  },
-  // ── INDONÉSIE ──
-  28: {
-    country: '🇮🇩 Indonésie',
-    title: 'Road trip Lombok → Flores 🏍️',
-    nights: '10–12 jours · ~2 000 km · 3 ferries',
-    intro: 'La traversée des îles de la Petite Sonde en scooter est l\'une des aventures les plus épiques d\'Indonésie. Lombok → Sumbawa → Komodo → Flores. Paysages volcaniques, plages désertes, varans géants et raies mantas.',
-    lieux: [
-      { name: 'Lombok — Gili Islands', type: 'Plages + snorkeling', prix: 'Ferry ~5€', dispo: 'Toute l\'année', transport: 'Départ du road trip', status: 'prévu',
-        note: 'Base de départ. Gili Trawangan/Air pour le snorkeling tortues et requins de récif. Senggigi pour louer un scooter solide. Rinjani pour les trekkeurs (3 726m).' },
-      { name: 'Sumbawa traversée', type: 'Route', prix: 'Ferry ~3€', dispo: 'Toute l\'année', transport: '⚠️ 400km — DÉPART MATINAL', status: 'prévu',
-        note: 'Étape logistique critique. Prendre le ferry de Lombok tôt le matin pour traverser Sumbawa dans la journée et attraper le ferry vers Komodo avant la tombée de la nuit. Surnommée la "journée de l\'enfer" — mais les paysages volcaniques valent le coup.' },
-      { name: 'Parc national de Komodo', type: 'Faune + plongée', prix: 'Entrée ~15€ + guide obligatoire', dispo: 'Toute l\'année (sec = avril–oct)', transport: 'Ferry depuis Sumbawa', status: 'prévu',
-        note: 'Varans de Komodo sur Rinca ou Komodo Island. Plongée/snorkeling parmi les meilleurs au monde — raies mantas, requins, tortues. Pink Beach pour les couleurs uniques. Réserver guide obligatoire pour approcher les varans.' },
-      { name: 'Labuan Bajo', type: 'Ville + hub', prix: 'Hébergement ~15–25€/n', dispo: 'Toute l\'année', transport: 'Fin du road trip', status: 'prévu',
-        note: 'Petite ville portuaire en plein développement. Base pour le parc Komodo. Nombreux opérateurs de plongée et day trips. Vols vers Bali quotidiens (~50€, ~1h30).' },
-    ],
-    pratique: [
-      { label: 'Location scooter', val: 'Lombok (Senggigi) — guesthouses ou agences locales. ~2–3€/j pour un scooter automatique correct. Vérifier freins, pneus, rétroviseurs avant de partir pour 10 jours.' },
-      { label: 'Ferries', val: '3 traversées : Lombok→Sumbawa (Kayangan→Poto Tano, 2h), Sumbawa→Lombok Sape→Labuan Bajo (8h, overnight possible). Scooter embarqué sur tous les ferries.' },
-      { label: 'Sumbawa timing', val: 'Prendre le premier ferry de Lombok (~7h00). Traverser Sumbawa de bout en bout (400km, ~6–7h de route) pour attraper le dernier ferry vers Flores. Pas de marge.' },
-      { label: 'Niveau moto', val: 'Débutant OK pour les routes principales (toutes asphaltées). Quelques chemins de terre pour accéder aux plages. Rien de technique.' },
-      { label: 'Retour Bali', val: 'Vol Labuan Bajo → Bali (~1h30, ~50–80€). Fin de la Phase 1 depuis Bali (~24 juin 2027).' },
-    ]
-  },
-};
-
-function openDestModal(stepNum) {
-  const d = DEST_DETAILS[stepNum];
-  if (!d) return;
-
-  // Remove existing modal if any
-  const existing = document.getElementById('dest-modal-overlay');
-  if (existing) existing.remove();
-
-  const lieuxHtml = d.lieux.map(l => {
-    const isZone = l.status === 'zone';
-    const sb = isZone
-      ? `<span style="background:#FAEEDA;color:#633806;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap;flex-shrink:0;">⚑ Zone</span>`
-      : `<span style="background:#EAF3DE;color:#27500A;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap;flex-shrink:0;">✓ Prévu</span>`;
-    return `<div style="border:1px solid ${isZone ? '#EF9F27' : 'rgba(128,128,128,0.2)'};border-radius:8px;padding:12px 14px;margin-bottom:10px;background:rgba(128,128,128,0.03);">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">
-        <div style="font-size:14px;font-weight:600;color:var(--text)">${l.name}</div>
-        <div style="display:flex;gap:4px;flex-shrink:0;">${sb}</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
-        <div style="font-size:12px;"><span style="color:var(--muted);display:block;margin-bottom:2px;">TYPE</span><span style="color:var(--text);">${l.type}</span></div>
-        <div style="font-size:12px;"><span style="color:var(--muted);display:block;margin-bottom:2px;">PRIX</span><span style="color:var(--text);font-weight:500;">${l.prix}</span></div>
-        <div style="font-size:12px;"><span style="color:var(--muted);display:block;margin-bottom:2px;">DISPONIBILITÉ</span><span style="color:var(--text);">${l.dispo}</span></div>
-        <div style="font-size:12px;"><span style="color:var(--muted);display:block;margin-bottom:2px;">TRANSPORT</span><span style="color:var(--text);">${l.transport}</span></div>
-      </div>
-      <div style="font-size:12px;color:var(--muted);background:rgba(128,128,128,0.06);border-radius:6px;padding:8px 10px;line-height:1.6;">${l.note}</div>
-    </div>`;
-  }).join('');
-
-  const pratHtml = d.pratique.map(p => `
-    <div style="display:grid;grid-template-columns:120px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid rgba(128,128,128,0.15);">
-      <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;padding-top:2px;">${p.label}</div>
-      <div style="font-size:13px;color:var(--text);line-height:1.5;">${p.val}</div>
-    </div>`).join('');
-
-  const overlay = document.createElement('div');
-  overlay.id = 'dest-modal-overlay';
-  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;overflow:hidden;';
-  overlay.innerHTML = `
-    <div style="border:1px solid rgba(128,128,128,0.2);border-radius:14px;width:100%;max-width:700px;height:85vh;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:2147483647;background:${document.documentElement.classList.contains('light') ? '#ffffff' : '#1e1e22'};">
-      <div style="padding:18px 22px 14px;border-bottom:1px solid rgba(128,128,128,0.15);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;">
-        <div>
-          <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">${d.country || ''} — ${d.nights}</div>
-          <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;">${d.title}</div>
-          <div style="font-size:13px;color:var(--muted);line-height:1.6;max-width:580px;">${d.intro}</div>
-        </div>
-        <button onclick="document.getElementById('dest-modal-overlay').remove();document.documentElement.style.overflow='';document.body.style.overflow='';" style="flex-shrink:0;background:rgba(128,128,128,0.1);border:none;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;margin-top:2px;">✕</button>
-      </div>
-      <div style="overflow-y:auto;padding:18px 22px;flex:1;">
-        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Lieux &amp; Activités</div>
-        ${lieuxHtml}
-        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;margin-top:18px;">Infos pratiques</div>
-        <div style="border:1px solid rgba(128,128,128,0.15);border-radius:8px;padding:0 14px;margin-bottom:14px;">${pratHtml}</div>
-        <div style="padding:8px 12px;background:rgba(239,159,39,0.08);border-left:3px solid #EF9F27;border-radius:4px;font-size:12px;color:var(--muted);">
-          <b style="color:#854F0B;">⚑ Zone</b> — lieu non prévu explicitement dans l'itinéraire mais faisable depuis cette étape sans détour majeur.
-        </div>
-      </div>
-    </div>`;
-  overlay.addEventListener('click', e => { if (e.target === overlay) { overlay.remove(); document.documentElement.style.overflow=''; document.body.style.overflow=''; } });
-  document.body.appendChild(overlay);
-  document.documentElement.style.overflow = 'hidden';
-  document.body.style.overflow = 'hidden';
-}
-
 function renderItinerary() {
   const body = document.getElementById('itinerary-body');
   let html = '';
   ITINERARY.forEach(group => {
-    const totalNights = group.steps.reduce((s, st) => s + st.nights, 0);
-    const budgets = group.steps.map(st => st.budget).filter(b => b && b !== '—');
-    const allLow = budgets.map(b => parseInt(b.replace(/[^0-9–]/g,'').split('–')[0])).filter(n=>!isNaN(n));
-    const allHigh = budgets.map(b => { const p = b.replace(/[^0-9–]/g,'').split('–'); return parseInt(p[1]||p[0]); }).filter(n=>!isNaN(n));
-    const estLow = allLow.length ? allLow.reduce((a,b)=>a+b,0) : 0;
-    const estHigh = allHigh.length ? allHigh.reduce((a,b)=>a+b,0) : 0;
-    const budgetEst = estLow ? `~${estLow*totalNights/allLow.length|0}–${estHigh*totalNights/allHigh.length|0}€` : '';
-    html += `<tr class="country-row">
-      <td></td>
-      <td>${group.country}</td>
-      <td><span class="nights-badge">${totalNights} n.</span></td>
-      <td colspan="2"></td>
-      <td style="font-size:12px;opacity:0.8;font-family:var(--mono);">${budgetEst}</td>
-      <td colspan="12"></td>
-    </tr>`;
+    html += `<tr class="country-row"><td colspan="20">${group.country}</td></tr>`;
     group.steps.forEach(step => {
       const visaClass = step.visa.includes('exempt') ? 'visa-free' :
                         step.visa.includes('eVisa') ? 'visa-evisa' :
                         step.visa.includes('VoA') ? 'visa-voa' : 'visa-required';
+      const healthHtml = step.health.map(h => {
+        if(h==='ok') return `<span class="health-tag health-ok">RAS</span>`;
+        if(h==='dengue') return `<span class="health-tag health-dengue">Dengue</span>`;
+        if(h==='malaria') return `<span class="health-tag health-malaria">Paludisme</span>`;
+        if(h==='altitude') return `<span class="health-tag health-altitude">Altitude</span>`;
+        return '';
+      }).join('');
 
       const monthCells = step.meteo.map((m,i) => {
         const cls = METEO_COLOR[m] || 'm-gray';
+        const activeCls = step.active && step.active.includes && false ? 'm-active' : '';
         return `<td class="m-cell"><div class="m-inner ${cls}">${METEO_LABELS[m]||''}</div></td>`;
       }).join('');
-      const hasDetail = DEST_DETAILS[step.num] !== undefined;
-      const cityCell = hasDetail
-        ? `<span class="city-flag">${step.flag}</span><span class="city-name city-clickable" onclick="openDestModal(${step.num})" title="Voir la fiche détail">${step.city} <span style="font-size:10px;opacity:0.5;margin-left:2px;">›</span></span>`
-        : `<span class="city-flag">${step.flag}</span><span class="city-name">${step.city}</span>`;
-      html += `<tr>
+
+      const isSub = typeof step.num === 'string';
+      html += `
+        <tr class="${isSub ? 'transit-sub' : ''}">
           <td class="step-num">${step.num}</td>
-          <td>${cityCell}</td>
+          <td><span class="city-flag">${step.flag}</span><span class="city-name">${step.city}</span></td>
           <td><span class="nights-badge">${step.nights > 0 ? step.nights + ' n.' : 'Transit'}</span></td>
           <td class="transport">${step.transport}</td>
           <td><span class="visa-pill ${visaClass}">${step.visa}</span></td>
           <td class="budget-cell">${step.budget}</td>
+          <td><div class="health-tags">${healthHtml}</div></td>
           ${monthCells}
         </tr>`;
     });
   });
   body.innerHTML = html;
 }
+
 // ============================================================
 // VISA DATA & RENDER
 // ============================================================
@@ -1813,7 +1247,11 @@ const VISAS = [
     steps: ['Entrée libre sans visa pour français', 'Extension possible sur place (Bureau d\'Immigration)', 'Billet de sortie du territoire requis'],
     warning: 'Durée séjour et extension à confirmer. ❓ Décision ouverte dans le doc.'
   },
-  
+  {
+    country: '🇳🇵 Népal', type: 'voa', typeLabel: 'Visa on Arrival', cost: '30$', duration: '30 jours', status: 'todo',
+    steps: ['Formulaire en ligne sur nepaliport.gov.np (recommandé avant)', 'Paiement sur place en cash USD ou carte', 'Photo d\'identité ou appareil photo à l\'aéroport', 'Possible à l\'aéroport de Katmandou (TIA)'],
+    warning: 'Prévoir cash. File d\'attente longue selon les vols. Pré-remplir le formulaire en ligne.'
+  },
   {
     country: '🇮🇩 Indonésie', type: 'voa', typeLabel: 'Visa on Arrival', cost: 'Gratuit', duration: '30 jours', status: 'todo',
     steps: ['Exemption VoA gratuite pour passeport français', 'Valable pour entrée à Bali (DPS), Jakarta (CGK), etc.', 'Extension 30j possible sur place (250 000 IDR)'],
@@ -1860,12 +1298,13 @@ function renderVisas() {
 // BUDGET RENDER
 // ============================================================
 const BUDGET_DATA = [
-  { country:'🇹🇼 Taïwan', flag:'🇹🇼', nights:35, daily:'45–55€', total:'1 575–1 925€', visa:'0€', notes:'Transport train inclus, hébergement + cher qu\'ASE' },
-  { country:'🇱🇦 Laos', flag:'🇱🇦', nights:25, daily:'30–40€', total:'750–1 000€', visa:'40$', notes:'Très bon marché, peu d\'ATM — prévoir cash. Bus terrestre depuis Pakse.' },
-  { country:'🇰🇭 Cambodge', flag:'🇰🇭', nights:25, daily:'35–45€', total:'875–1 125€', visa:'36$', notes:'Angkor Wat : pass 37$/j. Bus terrestre depuis Phnom Penh.' },
-  { country:'🇻🇳 Vietnam', flag:'🇻🇳', nights:36, daily:'35–50€', total:'1 260–1 800€', visa:'25$', notes:'Sens Sud→Nord. Ha Giang Loop incluse. Train Reunification Express.' },
-  { country:'🇵🇭 Philippines', flag:'🇵🇭', nights:30, daily:'45–65€', total:'1 350–1 950€', visa:'0€', notes:'Croisière El Nido↔Coron incluse (~80€). Vols domestiques.' },
-  { country:'🇮🇩 Indonésie', flag:'🇮🇩', nights:25, daily:'35–55€', total:'875–1 375€', visa:'0€', notes:'Road trip Lombok→Flores inclus (~30€ ferries). Bali + cher.' },
+  { country:'🇹🇼 Taïwan', flag:'🇹🇼', nights:21, daily:'45–55€', total:'950–1 150€', visa:'0€', notes:'Transport train inclus, hébergement + cher qu\'ASE' },
+  { country:'🇱🇦 Laos', flag:'🇱🇦', nights:21, daily:'30–40€', total:'630–840€', visa:'40$', notes:'Très bon marché, peu d\'ATM — prévoir cash' },
+  { country:'🇰🇭 Cambodge', flag:'🇰🇭', nights:14, daily:'35–45€', total:'490–630€', visa:'36$', notes:'Angkor Wat : pass 37$/j — budget activités à part' },
+  { country:'🇻🇳 Vietnam', flag:'🇻🇳', nights:18, daily:'35–50€', total:'630–900€', visa:'25$', notes:'Train longue distance confortable et pas cher' },
+  { country:'🇵🇭 Philippines', flag:'🇵🇭', nights:17, daily:'45–65€', total:'765–1 105€', visa:'0€', notes:'Vols domestiques à prévoir (+50–100€ total)' },
+  { country:'🇳🇵 Népal', flag:'🇳🇵', nights:21, daily:'35–45€', total:'735–945€', visa:'30$', notes:'Trek : 300–800€ en plus selon option choisie ❓' },
+  { country:'🇮🇩 Indonésie', flag:'🇮🇩', nights:21, daily:'35–55€', total:'735–1 155€', visa:'0€', notes:'Bali plus cher que Lombok/Java' },
 ];
 
 function renderBudget() {
@@ -1946,6 +1385,8 @@ const CHECKLIST_DATA = [
     items: [
       'Forclaz Travel 900 50+6L ✓',
       'Cadenas TSA',
+      'Sac de couchage léger (Népal)',
+      'Vêtements trek + chaud (Népal)',
       'Sandales + chaussures de marche',
       'Serviette microfibre',
       'Gourde filtrante',
@@ -2042,7 +1483,12 @@ const METEO_DETAIL = [
       {t:'31°',r:'120mm',q:'G'},{t:'30°',r:'190mm',q:'Y'},{t:'29°',r:'220mm',q:'O'},{t:'29°',r:'230mm',q:'O'},
       {t:'29°',r:'210mm',q:'O'},{t:'28°',r:'180mm',q:'Y'},{t:'28°',r:'120mm',q:'Y'},{t:'27°',r:'60mm',q:'G'},
     ]},
-
+  { country:'🇳🇵 Népal', lang:'Népalais',
+    months: [
+      {t:'8°',r:'15mm',q:'G'},{t:'10°',r:'20mm',q:'G'},{t:'15°',r:'35mm',q:'G'},{t:'20°',r:'60mm',q:'G'},
+      {t:'23°',r:'120mm',q:'G'},{t:'23°',r:'240mm',q:'R'},{t:'23°',r:'320mm',q:'R'},{t:'23°',r:'290mm',q:'R'},
+      {t:'21°',r:'180mm',q:'G'},{t:'17°',r:'55mm',q:'G'},{t:'12°',r:'20mm',q:'G'},{t:'8°',r:'12mm',q:'G'},
+    ]},
   { country:'🇮🇩 Indonésie (Bali)', lang:'Indonésien / Balinais',
     months: [
       {t:'27°',r:'300mm',q:'Y'},{t:'27°',r:'280mm',q:'Y'},{t:'27°',r:'180mm',q:'G'},{t:'28°',r:'90mm',q:'G'},
@@ -2106,7 +1552,12 @@ const PHRASES_DATA = [
     ['Trop cher','Mahal na mahal'],['Toilettes','CR (Comfort Room)'],['Eau','Tubig'],
     ['Hôpital','Ospital'],['Oui','Oo'],['Non','Hindi'],['Bonne cuisine','Masarap!'],
   ]},
-    { country:'🇮🇩 Indonésie', lang:'Bahasa Indonesia', phrases:[
+  { country:'🇳🇵 Népal', lang:'Népalais', phrases:[
+    ['Bonjour','Namaste (नमस्ते)'],['Merci','Dhanyabad (धन्यवाद)'],['Combien ?','Kati ho? (कति हो?)'],
+    ['Trop cher','Mahahgo (महँगो)'],['Toilettes','Sauchalay (शौचालय)'],['Eau','Pani (पानी)'],
+    ['Altitude','Uchaai (उचाइ)'],['Hôpital','Aspatal (अस्पताल)'],['Oui','Hunchha (हुन्छ)'],['Non','Hudaina (हुँदैन)'],
+  ]},
+  { country:'🇮🇩 Indonésie', lang:'Bahasa Indonesia', phrases:[
     ['Bonjour','Selamat pagi/siang'],['Merci','Terima kasih'],['Combien ?','Berapa harganya?'],
     ['Trop cher','Terlalu mahal'],['Toilettes','Kamar mandi / WC'],['Eau','Air'],
     ['Non épicé','Tidak pedas'],['Hôpital','Rumah sakit'],['Oui','Ya'],['Non','Tidak / Bukan'],
@@ -2151,7 +1602,7 @@ const APPS_DATA = [
     cat: '✈️ Vols & transports longue distance', apps: [
       { icon: '🔍', name: 'Google Flights', badge: 'reco', desc: 'Meilleur pour explorer les dates et comparer. Alertes de prix très utiles.' },
       { icon: '🔍', name: 'Skyscanner', badge: 'reco', desc: 'Excellent pour les vols "partout" ou "mois entier". Complémentaire à Google Flights.' },
-      { icon: '🔀', name: 'Kiwi.com', badge: 'reco', desc: 'Spécialiste des combinaisons complexes (Philippines → Indonésie). Trouve des liaisons introuvables ailleurs.' },
+      { icon: '🔀', name: 'Kiwi.com', badge: 'reco', desc: 'Spécialiste des combinaisons complexes (Philippines → Népal). Trouve des liaisons introuvables ailleurs.' },
       { icon: '🚌', name: 'Rome2rio', badge: 'have', desc: 'Compare tous les modes de transport A→B (bus, train, ferry, vol). Indispensable en Asie.' },
       { icon: '🌏', name: 'Trip.com', badge: 'have', desc: 'Trains & bus réservables en Asie. Fort sur le réseau chinois et vietnamien.' },
     ]
@@ -2180,7 +1631,7 @@ const APPS_DATA = [
   },
   {
     cat: '🗺 Navigation & maps', apps: [
-      { icon: '🗺', name: 'Maps.me', badge: 'have', desc: 'Cartes hors-ligne précises. Indispensable dans les zones rurales (Laos, Indonésie).' },
+      { icon: '🗺', name: 'Maps.me', badge: 'have', desc: 'Cartes hors-ligne précises. Indispensable dans les zones rurales (Laos, Népal).' },
       { icon: '🌍', name: 'Google Maps', badge: 'reco', desc: 'Incontournable en ville. Télécharger les zones offline. Complément à Maps.me.' },
     ]
   },
@@ -2284,10 +1735,5 @@ renderPhrases();
 renderApps();
 updateCountdown();
 </script>
-
-<!-- ===== MODAL DESTINATION ===== -->
-<div id="dest-modal" style="display:none;position:absolute;top:0;left:0;width:100%;min-height:100%;background:rgba(0,0,0,0.6);z-index:9999;padding:24px 16px;box-sizing:border-box;" onclick="if(event.target===this)this.style.display='none'">
-  <div id="dest-modal-body" style="background:var(--surface);border:0.5px solid var(--border);border-radius:12px;max-width:700px;margin:0 auto;"></div>
-</div>
 </body>
 </html>
