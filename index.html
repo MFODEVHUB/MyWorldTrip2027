@@ -696,58 +696,6 @@
     color: var(--muted);
   }
 
-  /* PHRASES TAB */
-  .phrases-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-  }
-
-  .phrases-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .phrases-card-header {
-    background: var(--bg3);
-    padding: 0.75rem 1.1rem;
-    font-size: 14px;
-    font-weight: 500;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .phrases-lang {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: var(--mono);
-    margin-left: auto;
-    text-transform: uppercase;
-  }
-
-  .phrase-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    padding: 0.5rem 1.1rem;
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-  }
-
-  .phrase-row:last-child { border-bottom: none; }
-
-  .phrase-fr { color: var(--muted); }
-  .phrase-local {
-    font-weight: 500;
-    color: var(--accent2);
-    font-family: var(--mono);
-    font-size: 11px;
-  }
-
   /* METEO DETAILS TAB */
   .meteo-grid {
     display: grid;
@@ -1074,7 +1022,6 @@
   <button onclick="switchTab('budget', this)">💰 Budget</button>
   <button onclick="switchTab('checklist', this)">✅ Checklist</button>
   <button onclick="switchTab('meteo', this)">🌤 Météo</button>
-  <button onclick="switchTab('phrases', this)">💬 Phrases clés</button>
   <button onclick="switchTab('apps', this)">📱 Apps & outils</button>
   <button onclick="switchTab('assurance', this)">🛡 Assurance</button>
   <button onclick="switchTab('connectivite', this)">📶 eSIM</button>
@@ -1210,12 +1157,6 @@
 <div id="tab-meteo" class="tab-content">
   <div class="section-title">Températures moyennes & précipitations par pays</div>
   <div class="meteo-grid" id="meteo-grid"></div>
-</div>
-
-<!-- ===== TAB: PHRASES ===== -->
-<div id="tab-phrases" class="tab-content">
-  <div class="section-title">Phrases essentielles par pays</div>
-  <div class="phrases-grid" id="phrases-grid"></div>
 </div>
 
 <!-- ===== TAB: APPS ===== -->
@@ -4610,61 +4551,6 @@ function renderMeteo() {
 }
 
 // ============================================================
-// PHRASES CLÉS
-// ============================================================
-const PHRASES_DATA = [
-  { country:'🇹🇼 Taïwan', lang:'Mandarin (chinois traditionnel)', phrases:[
-    ['Bonjour','Nǐ hǎo (你好)'],['Merci','Xièxie (謝謝)'],['Combien ?','Duōshǎo qián? (多少錢?)'],
-    ['Trop cher','Tài guì le (太貴了)'],['Toilettes','Cèsuǒ (廁所)'],['Où est… ?','…zài nǎlǐ? (在哪裡?)'],
-    ['Eau','Shuǐ (水)'],['Hôpital','Yīyuàn (醫院)'],['Pas épicé','Bù là (不辣)'],['Au revoir','Zàijiàn (再見)'],
-  ]},
-  { country:'🇱🇦 Laos', lang:'Laotien', phrases:[
-    ['Bonjour','Sabaidee (ສະບາຍດີ)'],['Merci','Khop chai (ຂອບໃຈ)'],['Combien ?','Tao dai? (ເທົ່າໃດ?)'],
-    ['Trop cher','Phaeng lai (ແພງຫຼາຍ)'],['Toilettes','Hong suam (ຫ້ອງນ້ຳ)'],['Eau','Nam (ນ້ຳ)'],
-    ['Non épicé','Bo phet (ບໍ່ເຜັດ)'],['Hôpital','Hong maw (ໂຮງໝໍ)'],['Oui','Mèn (ແມ່ນ)'],['Non','Bor (ບໍ່)'],
-  ]},
-  { country:'🇰🇭 Cambodge', lang:'Khmer', phrases:[
-    ['Bonjour','Chum reap suor (ជំរាបសួរ)'],['Merci','Aw koun (អរគុណ)'],['Combien ?','Thlai ponmaan? (ថ្លៃប៉ុន្មាន?)'],
-    ['Trop cher','Thlai nas (ថ្លៃណាស់)'],['Toilettes','Bantob tuk (បន្ទប់ទឹក)'],['Eau','Tuk (ទឹក)'],
-    ['Hôpital','Moom pét (មន្ទីរពេទ្យ)'],['Oui','Baat / Jah'],['Non','Te (ទេ)'],['À l\'aide !','Juoy phong! (ជួយផង!)'],
-  ]},
-  { country:'🇻🇳 Vietnam', lang:'Vietnamien', phrases:[
-    ['Bonjour','Xin chào'],['Merci','Cảm ơn'],['Combien ?','Bao nhiêu tiền?'],
-    ['Trop cher','Đắt quá'],['Toilettes','Nhà vệ sinh'],['Eau','Nước'],
-    ['Non épicé','Không cay'],['Hôpital','Bệnh viện'],['Oui','Vâng'],['Non','Không'],
-  ]},
-  { country:'🇵🇭 Philippines', lang:'Filipino / Anglais', phrases:[
-    ['Bonjour','Magandang araw'],['Merci','Salamat'],['Combien ?','Magkano?'],
-    ['Trop cher','Mahal na mahal'],['Toilettes','CR (Comfort Room)'],['Eau','Tubig'],
-    ['Hôpital','Ospital'],['Oui','Oo'],['Non','Hindi'],['Bonne cuisine','Masarap!'],
-  ]},
-    { country:'🇮🇩 Indonésie', lang:'Bahasa Indonesia', phrases:[
-    ['Bonjour','Selamat pagi/siang'],['Merci','Terima kasih'],['Combien ?','Berapa harganya?'],
-    ['Trop cher','Terlalu mahal'],['Toilettes','Kamar mandi / WC'],['Eau','Air'],
-    ['Non épicé','Tidak pedas'],['Hôpital','Rumah sakit'],['Oui','Ya'],['Non','Tidak / Bukan'],
-  ]},
-];
-
-function renderPhrases() {
-  const grid = document.getElementById('phrases-grid');
-  grid.innerHTML = PHRASES_DATA.map(c => {
-    const rows = c.phrases.map(p => `
-      <div class="phrase-row">
-        <div class="phrase-fr">${p[0]}</div>
-        <div class="phrase-local">${p[1]}</div>
-      </div>`).join('');
-    return `
-      <div class="phrases-card">
-        <div class="phrases-card-header">
-          ${c.country}
-          <span class="phrases-lang">${c.lang}</span>
-        </div>
-        ${rows}
-      </div>`;
-  }).join('');
-}
-
-// ============================================================
 // APPS & OUTILS
 // ============================================================
 const APPS_DATA = [
@@ -4814,7 +4700,6 @@ renderVisas();
 renderBudget();
 renderChecklist();
 renderMeteo();
-renderPhrases();
 renderApps();
 updateCountdown();
 </script>
