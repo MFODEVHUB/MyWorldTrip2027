@@ -157,13 +157,18 @@
   /* NAV */
   nav {
     display: flex;
-    gap: 0;
+    flex-direction: column;
     border-bottom: 1px solid var(--border);
+  }
+
+  .nav-groups {
+    display: flex;
+    gap: 0;
     padding: 0 2.5rem;
     overflow-x: auto;
   }
 
-  nav button {
+  .group-btn {
     background: none;
     border: none;
     color: var(--muted);
@@ -173,15 +178,61 @@
     cursor: pointer;
     border-bottom: 2px solid transparent;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     transition: color 0.15s, border-color 0.15s;
+    flex: 1 1 0;
+    justify-content: center;
+    max-width: 220px;
   }
 
-  nav button.active {
+  .group-btn .g-icon { font-size: 14px; }
+
+  .group-btn.active {
     color: var(--accent);
     border-bottom-color: var(--accent);
   }
 
-  nav button:hover:not(.active) {
+  .group-btn:hover:not(.active) {
+    color: var(--text);
+  }
+
+  .nav-subgroups {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 0 2.5rem;
+    overflow-x: auto;
+  }
+
+  .subgroup {
+    display: none;
+    gap: 0;
+  }
+
+  .subgroup.active {
+    display: flex;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 12.5px;
+    padding: 0.65rem 1.1rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-btn:hover:not(.active) {
     color: var(--text);
   }
 
@@ -197,6 +248,7 @@
     white-space: nowrap;
     font-family: var(--sans);
     transition: color 0.15s;
+    flex-shrink: 0;
   }
 
   .nav-polarsteps:hover {
@@ -882,7 +934,11 @@
 
   /* Responsive */
   @media (max-width: 700px) {
-    header, nav, main, footer { padding-left: 1rem; padding-right: 1rem; }
+    header, main, footer { padding-left: 1rem; padding-right: 1rem; }
+    .nav-groups, .nav-subgroups { padding-left: 1rem; padding-right: 1rem; }
+    .group-btn { font-size: 11px; padding: 0.7rem 0.4rem; max-width: none; }
+    .group-btn .g-icon { font-size: 16px; }
+    .nav-polarsteps { display: none; }
     .header-stats { gap: 1rem; }
     .stat { text-align: left; }
     .legend-meteo { display: none; }
@@ -1016,17 +1072,33 @@
 </header>
 
 <nav>
-  <button class="active" onclick="switchTab('itineraire', this)">📋 Itinéraire</button>
-  <button onclick="switchTab('carte', this)">🗺 Carte</button>
-  <button onclick="switchTab('visas', this)">🛂 Visas</button>
-  <button onclick="switchTab('budget', this)">💰 Budget</button>
-  <button onclick="switchTab('checklist', this)">✅ Checklist</button>
-  <button onclick="switchTab('meteo', this)">🌤 Météo</button>
-  <button onclick="switchTab('apps', this)">📱 Apps & outils</button>
-  <button onclick="switchTab('assurance', this)">🛡 Assurance</button>
-  <button onclick="switchTab('connectivite', this)">📶 eSIM</button>
-  <button onclick="switchTab('photos', this)">📷 Photos</button>
-  <a href="https://www.polarsteps.com/CestLeMath/20559043-mon-tour-d-asie?s=84885f78-8190-4092-ad9e-ee02d51e1fdc" target="_blank" class="nav-polarsteps">📍 Polarsteps ↗</a>
+  <div class="nav-groups">
+    <button class="group-btn active" data-group="voyage" onclick="switchGroup('voyage', this)"><span class="g-icon">🗺</span>Voyage</button>
+    <button class="group-btn" data-group="budget-admin" onclick="switchGroup('budget-admin', this)"><span class="g-icon">💰</span>Budget</button>
+    <button class="group-btn" data-group="prepa" onclick="switchGroup('prepa', this)"><span class="g-icon">🎒</span>Prépa</button>
+    <button class="group-btn" data-group="outils" onclick="switchGroup('outils', this)"><span class="g-icon">📱</span>Outils</button>
+    <a href="https://www.polarsteps.com/CestLeMath/20559043-mon-tour-d-asie?s=84885f78-8190-4092-ad9e-ee02d51e1fdc" target="_blank" class="nav-polarsteps">📍 Polarsteps ↗</a>
+  </div>
+  <div class="nav-subgroups">
+    <div class="subgroup active" data-group="voyage">
+      <button class="tab-btn active" onclick="switchTab('itineraire', this)">📋 Itinéraire</button>
+      <button class="tab-btn" onclick="switchTab('carte', this)">🗺 Carte</button>
+      <button class="tab-btn" onclick="switchTab('meteo', this)">🌤 Météo</button>
+    </div>
+    <div class="subgroup" data-group="budget-admin">
+      <button class="tab-btn" onclick="switchTab('budget', this)">💰 Budget</button>
+      <button class="tab-btn" onclick="switchTab('visas', this)">🛂 Visas</button>
+      <button class="tab-btn" onclick="switchTab('assurance', this)">🛡 Assurance</button>
+    </div>
+    <div class="subgroup" data-group="prepa">
+      <button class="tab-btn" onclick="switchTab('checklist', this)">✅ Checklist</button>
+      <button class="tab-btn" onclick="switchTab('connectivite', this)">📶 eSIM</button>
+      <button class="tab-btn" onclick="switchTab('photos', this)">📷 Photos</button>
+    </div>
+    <div class="subgroup" data-group="outils">
+      <button class="tab-btn" onclick="switchTab('apps', this)">📱 Apps & outils</button>
+    </div>
+  </div>
 </nav>
 
 <main>
@@ -4657,10 +4729,20 @@ function renderApps() {
 // ============================================================
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
   if (name === 'carte') setTimeout(initMap, 50);
+}
+
+function switchGroup(name, btn) {
+  document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.subgroup').forEach(s => s.classList.remove('active'));
+  const sub = document.querySelector('.subgroup[data-group="' + name + '"]');
+  sub.classList.add('active');
+  const firstTabBtn = sub.querySelector('.tab-btn');
+  if (firstTabBtn) firstTabBtn.click();
 }
 
 // ============================================================
