@@ -4103,13 +4103,13 @@ function renderItinerary() {
 const VISAS = [
   {
     country: '🇹🇼 Taïwan', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '90 jours', status: 'todo',
-    steps: ['Passeport valide 6 mois au-delà du séjour', 'Billet retour ou onward ticket exigé', 'Preuve de fonds suffisants peut être demandée'],
-    warning: 'Durée exacte à confirmer pour passeport français — vérifier avant départ.'
+    steps: ['Passeport valide 6 mois au-delà du séjour', 'Billet retour ou onward ticket exigé', 'Preuve de fonds suffisants peut être demandée', 'TWAC (Taiwan Arrival Card) à compléter en ligne sur twac.immigration.gov.tw dans les 7 jours précédant l\'arrivée — obligatoire pour tous, exemption de visa incluse'],
+    warning: 'Durée de 90 jours confirmée (France Diplomatie, source officielle, MàJ 09/06/2026). Sans TWAC complété, embarquement/entrée peuvent être refusés.'
   },
   {
     country: '🇱🇦 Laos', type: 'voa', typeLabel: 'Visa on Arrival', cost: '40$ US', duration: '30 jours', status: 'todo',
-    steps: ['40$ US en billets impeccables (non froissés)', '2 photos d\'identité format passeport', 'Formulaire rempli sur place', 'Passeport valide 6 mois minimum', 'Passage au Pont de l\'Amitié (Nong Khai → Vientiane)'],
-    warning: 'Prévoir cash USD. Les DAB du côté laotien sont peu fiables.'
+    steps: ['40$ US en billets impeccables (non froissés)', '2 photos d\'identité format passeport', 'Formulaire rempli sur place', 'Passeport valide 6 mois minimum', 'Passage au Pont de l\'Amitié I (Nong Khai → Vientiane)', 'LDIF (carte d\'arrivée numérique) à remplir en ligne 3 jours avant — obligatoire à ce poste depuis sept. 2025', 'Vérifier que l\'agent d\'immigration appose bien la date d\'entrée sur le passeport avant de quitter le poste'],
+    warning: 'Sans tampon de date d\'entrée : amende ≥200$ US pour séjour illégal (France Diplomatie, source officielle). Le Pont de l\'Amitié I accepte aussi le e-visa (50$, laoevisa.gov.la) — plus cher que le VOA, pas d\'intérêt sur ce trajet sauf pour éviter la file.'
   },
   {
     country: '🇰🇭 Cambodge', type: 'evisa', typeLabel: 'e-Visa', cost: '36$', duration: '30 jours', status: 'todo',
