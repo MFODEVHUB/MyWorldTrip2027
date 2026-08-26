@@ -1047,15 +1047,15 @@
   </div>
   <div class="header-stats">
     <div class="stat">
-      <div class="stat-value">6</div>
+      <div class="stat-value" id="stat-countries">—</div>
       <div class="stat-label">Pays Phase 1</div>
     </div>
     <div class="stat">
-      <div class="stat-value">~176</div>
+      <div class="stat-value" id="stat-nights">—</div>
       <div class="stat-label">Nuits planifiées</div>
     </div>
     <div class="stat">
-      <div class="stat-value">10 000 €</div>
+      <div class="stat-value" id="stat-budget">—</div>
       <div class="stat-label">Budget cible</div>
     </div>
     <div class="stat">
@@ -1163,37 +1163,37 @@
   <div class="budget-overview">
     <div class="budget-stat">
       <div class="budget-stat-label">Enveloppe totale</div>
-      <div class="budget-stat-value">10 000€</div>
+      <div class="budget-stat-value" id="budget-total">—</div>
       <div class="budget-stat-sub">+ réserve si besoin</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Budget / jour cible</div>
-      <div class="budget-stat-value">40–70€</div>
+      <div class="budget-stat-value" id="budget-daily">—</div>
       <div class="budget-stat-sub">moyenne pondérée</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Hébergement / nuit</div>
-      <div class="budget-stat-value">8–25€</div>
+      <div class="budget-stat-value" id="budget-accommodation">—</div>
       <div class="budget-stat-sub">hostel / hôtel simple</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Nourriture / jour</div>
-      <div class="budget-stat-value">5–15€</div>
+      <div class="budget-stat-value" id="budget-food">—</div>
       <div class="budget-stat-sub">street food prioritaire</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Transition TW→Laos</div>
-      <div class="budget-stat-value">~180€</div>
+      <div class="budget-stat-value" id="budget-transition">—</div>
       <div class="budget-stat-sub">vol + train nuit + visa</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Assurance voyage</div>
-      <div class="budget-stat-value">~44–59€</div>
+      <div class="budget-stat-value" id="budget-insurance">—</div>
       <div class="budget-stat-sub">/mois · AVA AVAnture (-5%)</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Connectivité eSIM</div>
-      <div class="budget-stat-value">~70€</div>
+      <div class="budget-stat-value" id="budget-esim">—</div>
       <div class="budget-stat-sub">Phase 1 entière · Airalo Asialink -15%</div>
     </div>
   </div>
@@ -1253,7 +1253,7 @@
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Prix estimé (-5%)</div>
-      <div class="budget-stat-value">~44–59€</div>
+      <div class="budget-stat-value" id="assurance-price">—</div>
       <div class="budget-stat-sub">/ mois avec code NOVO</div>
     </div>
     <div class="budget-stat">
@@ -1380,7 +1380,7 @@
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Budget net Phase 1</div>
-      <div class="budget-stat-value" style="color:var(--accent);">~70€</div>
+      <div class="budget-stat-value" id="esim-budget" style="color:var(--accent);">—</div>
       <div class="budget-stat-sub">+ cashback Airmoney (5-10%) pour la suite</div>
     </div>
   </div>
@@ -1614,7 +1614,7 @@
 </main>
 
 <footer>
-  <span>v2.1</span>
+  <span>v2.2</span>
   <span id="last-updated">Dernière mise à jour : 26 août 2026</span>
 </footer>
 
@@ -1624,6 +1624,22 @@
 // ============================================================
 
 const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+
+// ============================================================
+// GLOBAL_STATS — Source UNIQUE pour toute donnée budget transverse.
+// Ne jamais recopier ces valeurs en dur ailleurs dans ce fichier :
+// toujours référencer GLOBAL_STATS.xxx (voir AGENT_RULES.md §7).
+// ============================================================
+const GLOBAL_STATS = {
+  budgetTotal: 10000,
+  dailyBudget: { low: 40, high: 70 },
+  accommodation: { low: 8, high: 25 },
+  food: { low: 5, high: 15 },
+  localTransport: { low: 3, high: 10 },
+  activities: { low: 5, high: 20 },
+  transitionTaiwanLaos: 180,
+  esimCost: 70,
+};
 
 // G=green, Y=yellow, O=orange, R=red, X=not concerned
 // Météo qualitative par étape × 12 mois (Jan→Déc)
@@ -4028,9 +4044,12 @@ function renderItinerary() {
     </tr>`;
     cardsHtml += `<div class="mcard-country"><span>${group.country}</span><span>${totalNights > 0 ? totalNights + ' n.' : ''}${budgetEst ? ' · ' + budgetEst : ''}</span></div>`;
     group.steps.forEach(step => {
-      const visaClass = step.visa.includes('exempt') ? 'visa-free' :
-                        step.visa.includes('eVisa') ? 'visa-evisa' :
-                        step.visa.includes('VoA') ? 'visa-voa' : 'visa-required';
+      const linkedVisa = getVisa(step.flag);
+      const visaClass = linkedVisa
+        ? (linkedVisa.type === 'exempt' ? 'visa-free' : linkedVisa.type === 'evisa' ? 'visa-evisa' : 'visa-voa')
+        : (step.visa.includes('exempt') ? 'visa-free' :
+           step.visa.includes('eVisa') ? 'visa-evisa' :
+           step.visa.includes('VoA') ? 'visa-voa' : 'visa-required');
 
       const monthCells = step.meteo.map((m,i) => {
         const cls = METEO_COLOR[m] || 'm-gray';
@@ -4102,22 +4121,22 @@ function renderItinerary() {
 // ============================================================
 const VISAS = [
   {
-    country: '🇹🇼 Taïwan', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '90 jours', status: 'todo',
+    country: '🇹🇼 Taïwan', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '90 jours', shortLabel: 'Exemption 90j', status: 'todo',
     steps: ['Passeport valide 6 mois au-delà du séjour', 'Billet retour ou onward ticket exigé', 'Preuve de fonds suffisants peut être demandée', 'TWAC (Taiwan Arrival Card) à compléter en ligne sur twac.immigration.gov.tw dans les 7 jours précédant l\'arrivée — obligatoire pour tous, exemption de visa incluse'],
     warning: 'Durée de 90 jours confirmée (France Diplomatie, source officielle, MàJ 09/06/2026). Sans TWAC complété, embarquement/entrée peuvent être refusés.'
   },
   {
-    country: '🇱🇦 Laos', type: 'evisa', typeLabel: 'e-Visa', cost: '50$ US', duration: '30 jours', status: 'todo',
+    country: '🇱🇦 Laos', type: 'evisa', typeLabel: 'e-Visa', cost: '50$ US', duration: '30 jours', shortLabel: 'e-Visa 50$', status: 'todo',
     steps: ['Demande en ligne sur laoevisa.gov.la — passeport, photo numérique, paiement CB (50$ US)', 'Délai de traitement 3 à 5 jours ouvrés — à faire bien avant le départ', 'Lettre d\'approbation à imprimer ou garder sur le téléphone', 'LDIF (carte d\'arrivée numérique) à remplir en ligne 3 jours avant — obligatoire au Pont de l\'Amitié I depuis sept. 2025', 'Vérifier que l\'agent d\'immigration appose bien la date d\'entrée sur le passeport avant de quitter le poste'],
     warning: 'Choisi plutôt que le VOA cash (40$) : évite d\'avoir à trouver des billets USD "impeccables" et des photos d\'identité physiques. Sans tampon de date d\'entrée : amende ≥200$ US pour séjour illégal (France Diplomatie).'
   },
   {
-    country: '🇰🇭 Cambodge', type: 'evisa', typeLabel: 'e-Visa', cost: '36$', duration: '30 jours', status: 'todo',
+    country: '🇰🇭 Cambodge', type: 'evisa', typeLabel: 'e-Visa', cost: '36$', duration: '30 jours', shortLabel: 'e-Visa 36$', status: 'todo',
     steps: ['Faire la demande sur evisa.gov.kh 3–7j avant', 'Paiement carte bancaire en ligne', 'Imprimer ou avoir le QR code sur le téléphone', 'Valable pour entrée terrestre + aérien'],
     warning: null
   },
   {
-    country: '🇻🇳 Vietnam', type: 'exempt', typeLabel: 'Exemption visa (45j)', cost: '0€', duration: '45 jours', status: 'todo',
+    country: '🇻🇳 Vietnam', type: 'exempt', typeLabel: 'Exemption visa (45j)', cost: '0€', duration: '45 jours', shortLabel: 'Exemption 45j', status: 'todo',
     steps: [
       'Exemption sans visa pour les Français — séjour ≤ 45 jours, entrée unique',
       'Itinéraire actuel : ~33–34 nuits en entrée unique (Cambodge → Vietnam → vol Philippines) → l\'exemption suffit, aucune démarche à faire',
@@ -4128,15 +4147,15 @@ const VISAS = [
     warning: 'L\'exemption ne permet qu\'une entrée unique — vérifier avant de la choisir si le tracé final implique de ressortir puis rerentrer au Vietnam.'
   },
   {
-    country: '🇵🇭 Philippines', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '30 jours', status: 'todo',
+    country: '🇵🇭 Philippines', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '30 jours', shortLabel: 'Exemption 30j', status: 'todo',
     steps: ['Entrée libre sans visa pour français', 'Extension possible sur place (Bureau d\'Immigration)', 'Billet de sortie du territoire requis'],
     warning: 'Durée séjour et extension à confirmer. ❓ Décision ouverte dans le doc.'
   },
   
   {
-    country: '🇮🇩 Indonésie', type: 'voa', typeLabel: 'Visa on Arrival', cost: 'Gratuit', duration: '30 jours', status: 'todo',
-    steps: ['Exemption VoA gratuite pour passeport français', 'Valable pour entrée à Bali (DPS), Jakarta (CGK), etc.', 'Extension 30j possible sur place (250 000 IDR)'],
-    warning: null
+    country: '🇮🇩 Indonésie', type: 'voa', typeLabel: 'Visa on Arrival', cost: '~28€ (500 000 IDR)', duration: '30 jours', shortLabel: 'VoA ~28€', status: 'todo',
+    steps: ['VoA payant à l\'arrivée (500 000 IDR, ~28€)', 'Valable pour entrée à Bali (DPS), Jakarta (CGK), etc.', 'Extension 30j possible sur place (250 000 IDR)'],
+    warning: 'Corrigé le 26/08/2026 (audit visas) : le VoA n\'est pas gratuit comme indiqué précédemment, il coûte ~28€. D\'autres points de l\'audit (taxe Love Bali, déclaration All Indonesia) restent en attente de validation avant intégration ici.'
   },
 ];
 
@@ -4176,18 +4195,76 @@ function renderVisas() {
 }
 
 // ============================================================
+// LIENS ENTRE DONNÉES — VISAS est la source unique pour tout
+// libellé/coût de visa. ITINERARY et BUDGET_RATES ne stockent
+// plus leurs propres copies : ils référencent VISAS via ces
+// fonctions (voir AGENT_RULES.md §7).
+// ============================================================
+function getVisa(flag) {
+  return VISAS.find(v => v.country.includes(flag)) || null;
+}
+
+// Aligne le libellé visa affiché sur chaque étape de nuit (nights > 0)
+// avec la fiche VISAS du pays correspondant — évite toute désynchro
+// entre le tableau visa (onglet Visas) et l'itinéraire jour par jour.
+// Les étapes de transit/rappel (0 nuit, ex: "eVisa requis avant...")
+// gardent leur texte manuel, elles ne sont pas concernées.
+function syncVisaLabels() {
+  ITINERARY.forEach(group => {
+    group.steps.forEach(step => {
+      if (step.nights > 0) {
+        const v = getVisa(step.flag);
+        if (v && v.shortLabel) step.visa = v.shortLabel;
+      }
+    });
+  });
+}
+
+function getTotalNights() {
+  return ITINERARY.reduce((sum, group) => sum + group.steps.reduce((a, s) => a + (s.nights || 0), 0), 0);
+}
+
+function getPhase1CountryCount() {
+  return ITINERARY.filter(g => g.country && !g.country.includes('Transit') && !g.country.includes('🔀')).length;
+}
+
+// Injecte GLOBAL_STATS + valeurs dérivées (nuits, pays) dans le header
+// et les onglets Budget/Assurance/eSIM — seul endroit qui écrit ces
+// chiffres dans le DOM, à partir d'une unique source (GLOBAL_STATS,
+// ITINERARY, INSURANCE_RATE).
+function renderGlobalStats() {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('stat-countries', getPhase1CountryCount());
+  set('stat-nights', '~' + getTotalNights());
+  set('stat-budget', GLOBAL_STATS.budgetTotal.toLocaleString('fr-FR') + ' €');
+
+  set('budget-total', GLOBAL_STATS.budgetTotal.toLocaleString('fr-FR') + '€');
+  set('budget-daily', `${GLOBAL_STATS.dailyBudget.low}–${GLOBAL_STATS.dailyBudget.high}€`);
+  set('budget-accommodation', `${GLOBAL_STATS.accommodation.low}–${GLOBAL_STATS.accommodation.high}€`);
+  set('budget-food', `${GLOBAL_STATS.food.low}–${GLOBAL_STATS.food.high}€`);
+  set('budget-transition', `~${GLOBAL_STATS.transitionTaiwanLaos}€`);
+  set('budget-insurance', `~${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€`);
+  set('budget-esim', `~${GLOBAL_STATS.esimCost}€`);
+
+  set('assurance-price', `~${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€`);
+  set('esim-budget', `~${GLOBAL_STATS.esimCost}€`);
+}
+
+// ============================================================
 // BUDGET RENDER
 // ============================================================
 // BUDGET_DATA is now computed dynamically from ITINERARY
 // Daily rate ranges per country key (used for estimation)
+// Coût de vie quotidien uniquement — le coût du visa est lu depuis
+// VISAS (source unique), voir getVisa() dans renderBudget().
 const BUDGET_RATES = {
-  'taïwan':      { low:45, high:55, visa:'0€',   visaNote:'Exemption' },
-  'laos':        { low:30, high:40, visa:'40$',  visaNote:'VoA' },
-  'cambodge':    { low:35, high:45, visa:'36$',  visaNote:'eVisa' },
-  'vietnam':     { low:35, high:50, visa:'0€',   visaNote:'Exemption 45j' },
-  'philippines': { low:45, high:65, visa:'0€',   visaNote:'Exempt' },
-  'indonésie':   { low:35, high:55, visa:'0€',   visaNote:'VoA gratuit' },
-  'transit':     { low:0,  high:0,  visa:'—',    visaNote:'—' },
+  'taïwan':      { low:45, high:55 },
+  'laos':        { low:30, high:40 },
+  'cambodge':    { low:35, high:45 },
+  'vietnam':     { low:35, high:50 },
+  'philippines': { low:45, high:65 },
+  'indonésie':   { low:35, high:55 },
+  'transit':     { low:0,  high:0  },
 };
 
 const BUDGET_NOTES = {
@@ -4291,7 +4368,7 @@ function openSavingsModal(countryKey) {
 const INSURANCE_RATE = { low: 44, high: 59 }; // €/mois, code NOVO -5% appliqué
 
 function renderBudget() {
-  const TOTAL_BUDGET = 10000;
+  const TOTAL_BUDGET = GLOBAL_STATS.budgetTotal;
   const body = document.getElementById('budget-body');
 
   // Compute per-country stats from ITINERARY
@@ -4309,6 +4386,7 @@ function renderBudget() {
     const rate = BUDGET_RATES[match];
     const totalLow  = rate.low  * nights;
     const totalHigh = rate.high * nights;
+    const visaInfo = getVisa(group.steps[0] ? group.steps[0].flag : '');
 
     countries.push({
       country: group.country,
@@ -4316,8 +4394,8 @@ function renderBudget() {
       daily: `${rate.low}–${rate.high}€`,
       total: totalLow > 0 ? `${totalLow.toLocaleString('fr-FR')}–${totalHigh.toLocaleString('fr-FR')}€` : '—',
       totalLow,
-      visa: rate.visa,
-      visaNote: rate.visaNote,
+      visa: visaInfo ? visaInfo.cost : '—',
+      visaNote: visaInfo ? visaInfo.shortLabel : '',
       notes: BUDGET_NOTES[match] || '',
       matchKey: match,
     });
@@ -4777,9 +4855,11 @@ function initTheme() {
 // ============================================================
 initTheme();
 renderTimeline();
+syncVisaLabels();   // doit tourner avant renderItinerary() : aligne les libellés visa sur VISAS
 renderItinerary();
 renderVisas();
 renderBudget();
+renderGlobalStats(); // header + onglets Budget/Assurance/eSIM — lit GLOBAL_STATS/INSURANCE_RATE
 renderChecklist();
 renderMeteo();
 renderApps();
