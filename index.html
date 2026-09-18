@@ -1625,7 +1625,7 @@
 </main>
 
 <footer>
-  <span>v2.4</span>
+  <span>v2.5</span>
   <span id="last-updated">Dernière mise à jour : 18 septembre 2026</span>
 </footer>
 
@@ -4890,70 +4890,89 @@ updateCountdown();
 // ============================================================
 const MAP_STEPS = [
   // Taiwan
-  { num:1,  city:'Taipei',              lat:25.033,  lng:121.565, country:'taiwan',      dateIn:'29 déc 2026', dateOut:'02 jan 2027' },
-  { num:2,  city:'Ruifang',             lat:25.107,  lng:121.844, country:'taiwan',      dateIn:'02 jan 2027', dateOut:'04 jan 2027' },
-  { num:3,  city:'Yuchi (Sun Moon Lake)',lat:23.865,  lng:120.917, country:'taiwan',      dateIn:'04 jan 2027', dateOut:'06 jan 2027' },
-  { num:4,  city:'Alishan',             lat:23.510,  lng:120.804, country:'taiwan',      dateIn:'06 jan 2027', dateOut:'08 jan 2027' },
-  { num:5,  city:'Tainan',              lat:22.998,  lng:120.217, country:'taiwan',      dateIn:'08 jan 2027', dateOut:'10 jan 2027' },
-  { num:6,  city:'Kaohsiung',           lat:22.627,  lng:120.302, country:'taiwan',      dateIn:'10 jan 2027', dateOut:'11 jan 2027' },
-  { num:7,  city:'Hengchun',            lat:22.002,  lng:120.744, country:'taiwan',      dateIn:'11 jan 2027', dateOut:'13 jan 2027' },
-  { num:8,  city:'Hualien City',        lat:23.991,  lng:121.601, country:'taiwan',      dateIn:'13 jan 2027', dateOut:'16 jan 2027' },
-  { num:9,  city:'Dulan',               lat:23.108,  lng:121.381, country:'taiwan',      dateIn:'16 jan 2027', dateOut:'19 jan 2027' },
+  { num:1,  city:'Taipei',              lat:25.033,  lng:121.565, country:'taiwan' },
+  { num:2,  city:'Ruifang',             lat:25.107,  lng:121.844, country:'taiwan' },
+  { num:3,  city:'Yuchi (Sun Moon Lake)',lat:23.865,  lng:120.917, country:'taiwan' },
+  { num:4,  city:'Alishan',             lat:23.510,  lng:120.804, country:'taiwan' },
+  { num:5,  city:'Tainan',              lat:22.998,  lng:120.217, country:'taiwan' },
+  { num:6,  city:'Kaohsiung',           lat:22.627,  lng:120.302, country:'taiwan' },
+  { num:7,  city:'Hengchun',            lat:22.002,  lng:120.744, country:'taiwan' },
+  { num:8,  city:'Hualien City',        lat:23.991,  lng:121.601, country:'taiwan' },
+  { num:9,  city:'Dulan',               lat:23.108,  lng:121.381, country:'taiwan' },
   // Transit
-  { num:10, city:'Bangkok (transit)',    lat:13.757,  lng:100.502, country:'transit',     dateIn:'19 jan 2027', dateOut:'21 jan 2027' },
+  { num:10, city:'Bangkok (transit)',    lat:13.757,  lng:100.502, country:'transit' },
   // Laos
-  { num:11, city:'Vientiane',           lat:17.967,  lng:102.600, country:'laos',        dateIn:'21 jan 2027', dateOut:'26 jan 2027' },
-  { num:12, city:'Luang Prabang',       lat:19.889,  lng:102.135, country:'laos',        dateIn:'26 jan 2027', dateOut:'31 jan 2027' },
-  { num:13, city:'Vang Vieng',          lat:18.921,  lng:102.445, country:'laos',        dateIn:'31 jan 2027', dateOut:'02 fév 2027' },
-  { num:14, city:'Thakhek Loop',        lat:17.407,  lng:104.800, country:'laos',        dateIn:'02 fév 2027', dateOut:'07 fév 2027' },
-  { num:15, city:'Pakse + Bolaven',     lat:15.120,  lng:105.800, country:'laos',        dateIn:'07 fév 2027', dateOut:'10 fév 2027' },
-  { num:16, city:'Si Phan Don',         lat:13.950,  lng:105.983, country:'laos',        dateIn:'10 fév 2027', dateOut:'13 fév 2027' },
+  { num:11, city:'Vientiane',           lat:17.967,  lng:102.600, country:'laos' },
+  { num:12, city:'Luang Prabang',       lat:19.889,  lng:102.135, country:'laos' },
+  { num:13, city:'Vang Vieng',          lat:18.921,  lng:102.445, country:'laos' },
+  { num:14, city:'Thakhek Loop',        lat:17.407,  lng:104.800, country:'laos' },
+  { num:15, city:'Pakse + Bolaven',     lat:15.120,  lng:105.800, country:'laos' },
+  { num:16, city:'Si Phan Don',         lat:13.950,  lng:105.983, country:'laos' },
   // Cambodge
-  { num:17, city:'Phnom Penh',          lat:11.562,  lng:104.916, country:'cambodge',    dateIn:'13 fév 2027', dateOut:'17 fév 2027' },
-  { num:18, city:'Kampot',              lat:10.611,  lng:104.181, country:'cambodge',    dateIn:'17 fév 2027', dateOut:'21 fév 2027' },
-  { num:19, city:'Kep + Koh Tonsay',    lat:10.480,  lng:104.317, country:'cambodge',    dateIn:'21 fév 2027', dateOut:'24 fév 2027' },
-  { num:20, city:'Koh Ta Kiev',         lat:10.625,  lng:103.500, country:'cambodge',    dateIn:'24 fév 2027', dateOut:'27 fév 2027' },
-  { num:21, city:'Koh Rong Sanloem',    lat:10.530,  lng:103.200, country:'cambodge',    dateIn:'27 fév 2027', dateOut:'02 mar 2027' },
-  { num:22, city:'Mondolkiri',          lat:12.450,  lng:107.183, country:'cambodge',    dateIn:'02 mar 2027', dateOut:'07 mar 2027' },
-  { num:23, city:'Ratanakiri',          lat:13.739,  lng:106.987, country:'cambodge',    dateIn:'07 mar 2027', dateOut:'12 mar 2027' },
-  { num:24, city:'Kratie',              lat:12.489,  lng:106.018, country:'cambodge',    dateIn:'12 mar 2027', dateOut:'14 mar 2027' },
-  { num:25, city:'Siem Reap (Angkor)',  lat:13.363,  lng:103.860, country:'cambodge',    dateIn:'14 mar 2027', dateOut:'19 mar 2027' },
+  { num:17, city:'Phnom Penh',          lat:11.562,  lng:104.916, country:'cambodge' },
+  { num:18, city:'Kampot',              lat:10.611,  lng:104.181, country:'cambodge' },
+  { num:19, city:'Kep + Koh Tonsay',    lat:10.480,  lng:104.317, country:'cambodge' },
+  { num:20, city:'Koh Ta Kiev',         lat:10.625,  lng:103.500, country:'cambodge' },
+  { num:21, city:'Koh Rong Sanloem',    lat:10.530,  lng:103.200, country:'cambodge' },
+  { num:22, city:'Mondolkiri',          lat:12.450,  lng:107.183, country:'cambodge' },
+  { num:23, city:'Ratanakiri',          lat:13.739,  lng:106.987, country:'cambodge' },
+  { num:24, city:'Kratie',              lat:12.489,  lng:106.018, country:'cambodge' },
+  { num:25, city:'Siem Reap (Angkor)',  lat:13.363,  lng:103.860, country:'cambodge' },
   // Vietnam
-    { num:26, city:'Hô Chi Minh-Ville', lat:10.823, lng:106.630, country:'vietnam', dateIn:'19 mar 2027', dateOut:'22 mar 2027' },
-  { num:27, city:'Đà Lạt', lat:11.940, lng:108.458, country:'vietnam', dateIn:'22 mar 2027', dateOut:'24 mar 2027' },
-  { num:28, city:'Hội An', lat:15.880, lng:108.335, country:'vietnam', dateIn:'24 mar 2027', dateOut:'27 mar 2027' },
-  { num:29, city:'Huế', lat:16.463, lng:107.585, country:'vietnam', dateIn:'27 mar 2027', dateOut:'28 mar 2027' },
-  { num:30, city:'Phong Nha', lat:17.585, lng:106.283, country:'vietnam', dateIn:'28 mar 2027', dateOut:'31 mar 2027' },
-  { num:31, city:'Ninh Bình', lat:20.250, lng:105.974, country:'vietnam', dateIn:'31 mar 2027', dateOut:'02 avr 2027' },
-  { num:32, city:'Pù Luông', lat:20.450, lng:105.150, country:'vietnam', dateIn:'02 avr 2027', dateOut:'05 avr 2027' },
-  { num:33, city:'Hà Giang Loop', lat:22.823, lng:104.984, country:'vietnam', dateIn:'05 avr 2027', dateOut:'09 avr 2027' },
-  { num:34, city:'Cao Bằng', lat:22.665, lng:106.263, country:'vietnam', dateIn:'09 avr 2027', dateOut:'12 avr 2027' },
-  { num:35, city:'Hồ Ba Bể', lat:22.450, lng:105.617, country:'vietnam', dateIn:'12 avr 2027', dateOut:'14 avr 2027' },
-  { num:36, city:'Baie d\'Halong / Cat Bà', lat:20.910, lng:107.183, country:'vietnam', dateIn:'14 avr 2027', dateOut:'17 avr 2027' },
-  { num:37, city:'Cô Tô', lat:20.983, lng:107.767, country:'vietnam', dateIn:'17 avr 2027', dateOut:'20 avr 2027' },
-  { num:38, city:'Hanoï', lat:21.028, lng:105.834, country:'vietnam', dateIn:'20 avr 2027', dateOut:'23 avr 2027' },
+    { num:26, city:'Hô Chi Minh-Ville', lat:10.823, lng:106.630, country:'vietnam' },
+  { num:27, city:'Đà Lạt', lat:11.940, lng:108.458, country:'vietnam' },
+  { num:28, city:'Hội An', lat:15.880, lng:108.335, country:'vietnam' },
+  { num:29, city:'Huế', lat:16.463, lng:107.585, country:'vietnam' },
+  { num:30, city:'Phong Nha', lat:17.585, lng:106.283, country:'vietnam' },
+  { num:31, city:'Ninh Bình', lat:20.250, lng:105.974, country:'vietnam' },
+  { num:32, city:'Pù Luông', lat:20.450, lng:105.150, country:'vietnam' },
+  { num:33, city:'Hà Giang Loop', lat:22.823, lng:104.984, country:'vietnam' },
+  { num:34, city:'Cao Bằng', lat:22.665, lng:106.263, country:'vietnam' },
+  { num:35, city:'Hồ Ba Bể', lat:22.450, lng:105.617, country:'vietnam' },
+  { num:36, city:'Baie d\'Halong / Cat Bà', lat:20.910, lng:107.183, country:'vietnam' },
+  { num:37, city:'Cô Tô', lat:20.983, lng:107.767, country:'vietnam' },
+  { num:38, city:'Hanoï', lat:21.028, lng:105.834, country:'vietnam' },
   
-{ num:39, city:'Manille (transit)',  lat:14.599,  lng:120.984, country:'philippines', dateIn:'03 avr 2027', dateOut:'04 avr 2027' },
-  { num:40, city:'Banaue / Batad',     lat:16.908,  lng:121.057, country:'philippines', dateIn:'04 avr 2027', dateOut:'08 avr 2027' },
-  { num:41, city:'Manille (retour)',   lat:14.599,  lng:120.984, country:'philippines', dateIn:'08 avr 2027', dateOut:'09 avr 2027' },
-  { num:42, city:'Puerto Princesa',    lat:9.744,   lng:118.736, country:'philippines', dateIn:'09 avr 2027', dateOut:'11 avr 2027' },
-  { num:43, city:'El Nido',            lat:11.175,  lng:119.383, country:'philippines', dateIn:'11 avr 2027', dateOut:'16 avr 2027' },
-  { num:44, city:'Croisière El Nido↔Coron', lat:11.990, lng:120.201, country:'philippines', dateIn:'16 avr 2027', dateOut:'20 avr 2027' },
-  { num:45, city:'Coron',              lat:12.012,  lng:120.205, country:'philippines', dateIn:'20 avr 2027', dateOut:'23 avr 2027' },
-  { num:47, city:'Cebu City',          lat:10.317, lng:123.906, country:'philippines', dateIn:'25 avr 2027', dateOut:'26 avr 2027' },
-  { num:48, city:'Malapascua',         lat:11.327,  lng:124.123, country:'philippines', dateIn:'26 avr 2027', dateOut:'30 avr 2027' },
-  { num:49, city:'Moalboal',           lat:9.943,   lng:123.395, country:'philippines', dateIn:'30 avr 2027', dateOut:'04 mai 2027' },
-  { num:50, city:'Siquijor',           lat:9.218,   lng:123.512, country:'philippines', dateIn:'04 mai 2027', dateOut:'09 mai 2027' },
-  { num:51, city:'Bohol / Panglao',    lat:9.647,   lng:123.853, country:'philippines', dateIn:'09 mai 2027', dateOut:'12 mai 2027' },
-  { num:52, city:'Camiguin',           lat:9.173,   lng:124.713, country:'philippines', dateIn:'12 mai 2027', dateOut:'16 mai 2027' },
-  { num:53, city:'Siargao',            lat:9.848,   lng:126.045, country:'philippines', dateIn:'16 mai 2027', dateOut:'22 mai 2027' },
+{ num:39, city:'Manille (transit)',  lat:14.599,  lng:120.984, country:'philippines' },
+  { num:40, city:'Banaue / Batad',     lat:16.908,  lng:121.057, country:'philippines' },
+  { num:41, city:'Manille (retour)',   lat:14.599,  lng:120.984, country:'philippines' },
+  { num:42, city:'Puerto Princesa',    lat:9.744,   lng:118.736, country:'philippines' },
+  { num:43, city:'El Nido',            lat:11.175,  lng:119.383, country:'philippines' },
+  { num:44, city:'Croisière El Nido↔Coron', lat:11.990, lng:120.201, country:'philippines' },
+  { num:45, city:'Coron',              lat:12.012,  lng:120.205, country:'philippines' },
+  { num:47, city:'Cebu City',          lat:10.317, lng:123.906, country:'philippines' },
+  { num:48, city:'Malapascua',         lat:11.327,  lng:124.123, country:'philippines' },
+  { num:49, city:'Moalboal',           lat:9.943,   lng:123.395, country:'philippines' },
+  { num:50, city:'Siquijor',           lat:9.218,   lng:123.512, country:'philippines' },
+  { num:51, city:'Bohol / Panglao',    lat:9.647,   lng:123.853, country:'philippines' },
+  { num:52, city:'Camiguin',           lat:9.173,   lng:124.713, country:'philippines' },
+  { num:53, city:'Siargao',            lat:9.848,   lng:126.045, country:'philippines' },
   // Indonésie
-  { num:54, city:'Bali',               lat:-8.340,  lng:115.092, country:'indonesie',   dateIn:'22 mai 2027', dateOut:'27 mai 2027' },
-  { num:55, city:'Lombok',             lat:-8.650,  lng:116.324, country:'indonesie',   dateIn:'27 mai 2027', dateOut:'31 mai 2027' },
-  { num:56, city:'Sumbawa',            lat:-8.700,  lng:118.000, country:'indonesie',   dateIn:'31 mai 2027', dateOut:'02 juin 2027' },
-  { num:57, city:'Komodo',             lat:-8.543,  lng:119.489, country:'indonesie',   dateIn:'02 juin 2027', dateOut:'05 juin 2027' },
-  { num:58, city:'Labuan Bajo/Flores', lat:-8.520,  lng:119.889, country:'indonesie',   dateIn:'05 juin 2027', dateOut:'09 juin 2027' },
+  { num:54, city:'Bali',               lat:-8.340,  lng:115.092, country:'indonesie' },
+  { num:55, city:'Lombok',             lat:-8.650,  lng:116.324, country:'indonesie' },
+  { num:56, city:'Sumbawa',            lat:-8.700,  lng:118.000, country:'indonesie' },
+  { num:57, city:'Komodo',             lat:-8.543,  lng:119.489, country:'indonesie' },
+  { num:58, city:'Labuan Bajo/Flores', lat:-8.520,  lng:119.889, country:'indonesie' },
 ];
+
+// Synchronise les dates de chaque marqueur carte sur ITINERARY (source unique) —
+// avant cette fonction, MAP_STEPS dupliquait dateIn/dateOut en dur et dérivait
+// silencieusement de l'itinéraire réel (cf. AGENT_RULES section 7, corrigé le 18/09/2026).
+// Ne jamais remettre dateIn/dateOut en dur dans MAP_STEPS : ITINERARY reste la seule source.
+function syncMapDates() {
+  const byNum = {};
+  ITINERARY.forEach(group => {
+    group.steps.forEach(step => { byNum[step.num] = step; });
+  });
+  MAP_STEPS.forEach(mapStep => {
+    const src = byNum[mapStep.num];
+    if (src) {
+      mapStep.dateIn = src.dateIn;
+      mapStep.dateOut = src.dateOut;
+    }
+  });
+}
+syncMapDates();
 
 const MAP_COLORS = {
   taiwan:      '#4ade80',
