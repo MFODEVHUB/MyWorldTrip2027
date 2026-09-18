@@ -1625,7 +1625,7 @@
 </main>
 
 <footer>
-  <span>v2.5</span>
+  <span>v2.6</span>
   <span id="last-updated">Dernière mise à jour : 18 septembre 2026</span>
 </footer>
 
@@ -4030,12 +4030,23 @@ function openDestModal(stepNum) {
   document.body.style.overflow = 'hidden';
 }
 
+// Sections pays repliables (préférence d'affichage uniquement — persistée
+// en localStorage, ne touche à aucune donnée d'itinéraire).
+let collapsedGroups = new Set();
+try { collapsedGroups = new Set(JSON.parse(localStorage.getItem('itinCollapsedGroups') || '[]')); } catch(e) {}
+
+function toggleItinGroup(idx) {
+  if (collapsedGroups.has(idx)) collapsedGroups.delete(idx); else collapsedGroups.add(idx);
+  try { localStorage.setItem('itinCollapsedGroups', JSON.stringify([...collapsedGroups])); } catch(e) {}
+  renderItinerary();
+}
+
 function renderItinerary() {
   const body = document.getElementById('itinerary-body');
   const cardsEl = document.getElementById('itinerary-cards');
   let html = '';
   let cardsHtml = '';
-  ITINERARY.forEach(group => {
+  ITINERARY.forEach((group, groupIdx) => {
     const totalNights = group.steps.reduce((s, st) => s + st.nights, 0);
     const budgets = group.steps.map(st => st.budget).filter(b => b && b !== '—');
     const allLow = budgets.map(b => parseInt(b.replace(/[^0-9–]/g,'').split('–')[0])).filter(n=>!isNaN(n));
@@ -4043,9 +4054,9 @@ function renderItinerary() {
     const estLow = allLow.length ? allLow.reduce((a,b)=>a+b,0) : 0;
     const estHigh = allHigh.length ? allHigh.reduce((a,b)=>a+b,0) : 0;
     const budgetEst = estLow ? `~${estLow*totalNights/allLow.length|0}–${estHigh*totalNights/allHigh.length|0}€` : '';
-    html += `<tr class="country-row">
+    html += `<tr class="country-row" data-group="${groupIdx}" onclick="toggleItinGroup(${groupIdx})" style="cursor:pointer;" title="Cliquer pour replier/déplier">
       <td></td>
-      <td>${group.country}</td>
+      <td><span class="group-toggle" style="display:inline-block;width:12px;opacity:0.6;font-size:11px;">${collapsedGroups.has(groupIdx) ? '▸' : '▾'}</span>${group.country}</td>
       <td style="font-size:12px;opacity:0.85;font-family:var(--mono);white-space:nowrap;">${totalNights > 0 ? totalNights + ' n.' : ''}</td>
       <td></td>
       <td></td>
@@ -4053,7 +4064,7 @@ function renderItinerary() {
       <td style="font-size:12px;opacity:0.85;font-family:var(--mono);white-space:nowrap;">${budgetEst}</td>
       <td colspan="12"></td>
     </tr>`;
-    cardsHtml += `<div class="mcard-country"><span>${group.country}</span><span>${totalNights > 0 ? totalNights + ' n.' : ''}${budgetEst ? ' · ' + budgetEst : ''}</span></div>`;
+    cardsHtml += `<div class="mcard-country" data-group="${groupIdx}" onclick="toggleItinGroup(${groupIdx})" style="cursor:pointer;" title="Cliquer pour replier/déplier"><span><span class="group-toggle" style="display:inline-block;width:12px;opacity:0.6;font-size:11px;">${collapsedGroups.has(groupIdx) ? '▸' : '▾'}</span>${group.country}</span><span>${totalNights > 0 ? totalNights + ' n.' : ''}${budgetEst ? ' · ' + budgetEst : ''}</span></div>`;
     group.steps.forEach(step => {
       const linkedVisa = getVisa(step.flag);
       const visaClass = linkedVisa
@@ -4092,7 +4103,7 @@ function renderItinerary() {
       const cityCell = hasDetail
         ? `<span class="city-flag">${step.flag}</span><span class="city-name city-clickable" onclick="openDestModal('${step.num}')" title="Voir la fiche détail">${step.city} <span style="font-size:10px;opacity:0.5;margin-left:2px;">›</span></span>`
         : `<span class="city-flag">${step.flag}</span><span class="city-name">${step.city}</span>`;
-      html += `<tr>
+      html += `<tr data-group="${groupIdx}" style="${collapsedGroups.has(groupIdx) ? 'display:none;' : ''}">
           <td class="step-num">${step.num}</td>
           <td>${cityCell}</td>
           <td><span class="nights-badge">${step.nights > 0 ? step.nights + ' n.' : 'Transit'}</span></td>
@@ -4115,7 +4126,7 @@ function renderItinerary() {
       const cardCityCell = hasDetail
         ? `<span class="city-flag">${step.flag}</span><span class="city-name city-clickable" onclick="openDestModal('${step.num}')" title="Voir la fiche détail">${step.city} <span style="font-size:10px;opacity:0.5;margin-left:2px;">›</span></span>`
         : `<span class="city-flag">${step.flag}</span><span class="city-name">${step.city}</span>`;
-      cardsHtml += `<div class="mcard">
+      cardsHtml += `<div class="mcard" data-group="${groupIdx}" style="${collapsedGroups.has(groupIdx) ? 'display:none;' : ''}">
           <div class="mcard-top">
             <div class="mcard-title"><span class="step-num" style="margin-right:6px;">${step.num}</span>${cardCityCell}</div>
             <span class="nights-badge">${step.nights > 0 ? step.nights + ' n.' : 'Transit'}</span>
