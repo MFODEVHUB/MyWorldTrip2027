@@ -157,13 +157,18 @@
   /* NAV */
   nav {
     display: flex;
-    gap: 0;
+    flex-direction: column;
     border-bottom: 1px solid var(--border);
+  }
+
+  .nav-groups {
+    display: flex;
+    gap: 0;
     padding: 0 2.5rem;
     overflow-x: auto;
   }
 
-  nav button {
+  .group-btn {
     background: none;
     border: none;
     color: var(--muted);
@@ -173,15 +178,61 @@
     cursor: pointer;
     border-bottom: 2px solid transparent;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     transition: color 0.15s, border-color 0.15s;
+    flex: 1 1 0;
+    justify-content: center;
+    max-width: 220px;
   }
 
-  nav button.active {
+  .group-btn .g-icon { font-size: 14px; }
+
+  .group-btn.active {
     color: var(--accent);
     border-bottom-color: var(--accent);
   }
 
-  nav button:hover:not(.active) {
+  .group-btn:hover:not(.active) {
+    color: var(--text);
+  }
+
+  .nav-subgroups {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 0 2.5rem;
+    overflow-x: auto;
+  }
+
+  .subgroup {
+    display: none;
+    gap: 0;
+  }
+
+  .subgroup.active {
+    display: flex;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 12.5px;
+    padding: 0.65rem 1.1rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .tab-btn:hover:not(.active) {
     color: var(--text);
   }
 
@@ -197,6 +248,7 @@
     white-space: nowrap;
     font-family: var(--sans);
     transition: color 0.15s;
+    flex-shrink: 0;
   }
 
   .nav-polarsteps:hover {
@@ -206,6 +258,12 @@
   /* MAIN */
   main {
     padding: 2rem 2.5rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  footer {
     max-width: 1600px;
     margin: 0 auto;
   }
@@ -220,10 +278,15 @@
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    margin-top: 2rem;
     margin-bottom: 1.25rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+  }
+
+  .tab-content > .section-title:first-child {
+    margin-top: 0;
   }
 
   .section-title::after {
@@ -685,62 +748,10 @@
     color: var(--muted);
   }
 
-  /* PHRASES TAB */
-  .phrases-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-  }
-
-  .phrases-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .phrases-card-header {
-    background: var(--bg3);
-    padding: 0.75rem 1.1rem;
-    font-size: 14px;
-    font-weight: 500;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .phrases-lang {
-    font-size: 10px;
-    color: var(--muted);
-    font-family: var(--mono);
-    margin-left: auto;
-    text-transform: uppercase;
-  }
-
-  .phrase-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-    padding: 0.5rem 1.1rem;
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-  }
-
-  .phrase-row:last-child { border-bottom: none; }
-
-  .phrase-fr { color: var(--muted); }
-  .phrase-local {
-    font-weight: 500;
-    color: var(--accent2);
-    font-family: var(--mono);
-    font-size: 11px;
-  }
-
   /* METEO DETAILS TAB */
   .meteo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
     gap: 1rem;
   }
 
@@ -762,16 +773,37 @@
     gap: 8px;
   }
 
+  .meteo-scroll {
+    overflow-x: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .meteo-month-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 0;
   }
 
+  @media (max-width: 760px) {
+    .meteo-scroll {
+      overflow-x: auto;
+    }
+    .meteo-month-grid {
+      grid-template-columns: repeat(12, minmax(48px, 1fr));
+    }
+  }
+
   .meteo-month-cell {
     padding: 0.5rem 0.25rem;
     text-align: center;
     border-right: 1px solid var(--border);
+  }
+
+  .meteo-month-cell.meteo-active {
+    background: rgba(255,255,255,0.07);
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    border-radius: 4px;
   }
 
   .meteo-month-cell:last-child { border-right: none; }
@@ -902,131 +934,95 @@
 
   /* Responsive */
   @media (max-width: 700px) {
-    header { padding: 1rem 1rem 0.75rem; gap: 0.75rem; }
-    nav { padding: 0 0.5rem; }
-    main { padding: 1rem; }
-
-    /* Header stats plus compact */
-    .header-stats { gap: 0.75rem; }
+    header, main, footer { padding-left: 1rem; padding-right: 1rem; }
+    .nav-groups, .nav-subgroups { padding-left: 1rem; padding-right: 1rem; }
+    .group-btn { font-size: 11px; padding: 0.7rem 0.4rem; max-width: none; }
+    .group-btn .g-icon { font-size: 16px; }
+    .nav-polarsteps { display: none; }
+    .header-stats { gap: 1rem; }
     .stat { text-align: left; }
-    .stat-value { font-size: 1.1rem; }
-
-    /* Tableau itinéraire caché sur mobile → remplacé par cartes */
-    #itinerary-table { display: none; }
-    .itinerary-cards { display: flex; flex-direction: column; gap: 10px; }
-
-    /* Frise chronologique scrollable */
-    #timeline-wrapper { overflow-x: auto; }
-
-    /* Tableau Budget scrollable */
-    .budget-country-table { display: block; overflow-x: auto; }
-
-    /* Modales pleine largeur */
-    #dest-modal-body { max-width: 100% !important; margin: 0 !important; }
+    .legend-meteo { display: none; }
   }
 
-  @media (min-width: 701px) {
-    .itinerary-cards { display: none; }
+  /* ===== MOBILE CARDS (tables -> cartes en dessous de 760px) ===== */
+  .mobile-cards { display: none; flex-direction: column; gap: 0.6rem; }
+
+  @media (max-width: 760px) {
+    .table-wrapper { display: none; }
+    .mobile-cards { display: flex; }
   }
 
-  /* CARTES MOBILE — itinéraire */
-  .itin-card {
-    background: var(--surface);
+  .mcard {
+    background: var(--bg2);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 12px 14px;
-    cursor: default;
+    padding: 0.85rem 1rem;
   }
-  .itin-card.has-detail { cursor: pointer; }
-  .itin-card.is-transit {
-    opacity: 0.65;
-    border-style: dashed;
-    padding: 8px 14px;
-  }
-  .itin-card.is-country-header {
+
+  .mcard-country {
     background: var(--bg3);
-    border-color: var(--border2);
-    padding: 6px 14px;
-    cursor: default;
-  }
-  .itin-card-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: space-between;
-  }
-  .itin-card-left {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    min-width: 0;
-  }
-  .itin-card-num {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-  .itin-card-city {
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 0.45rem 0.8rem;
+    font-size: 11px;
     font-weight: 600;
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .itin-card-right {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-  .itin-card-nights {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .itin-card-budget {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent2);
-    background: rgba(251,146,60,0.1);
-    padding: 2px 6px;
-    border-radius: 4px;
-  }
-  .itin-card-detail {
-    display: none;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  .itin-card.open .itin-card-detail { display: block; }
-  .itin-card-detail-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 4px;
-  }
-  .itin-card-detail-label {
-    flex-shrink: 0;
-    color: var(--text);
-    font-weight: 500;
-    min-width: 64px;
-  }
-  .itin-card-arrow {
-    font-size: 10px;
-    color: var(--muted);
-    transition: transform 0.2s;
-  }
-  .itin-card.open .itin-card-arrow { transform: rotate(90deg); }
-  .itin-card-country-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 700;
     color: var(--muted);
     text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mcard-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .mcard-title {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .mcard-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.3rem 0;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+
+  .mcard-row:first-of-type { border-top: none; }
+
+  .mcard-label {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
     letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .mcard-val {
+    text-align: right;
+    color: var(--text);
+  }
+
+  .mcard-notes {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
   }
 
   .city-clickable {
@@ -1051,15 +1047,15 @@
   </div>
   <div class="header-stats">
     <div class="stat">
-      <div class="stat-value">6</div>
+      <div class="stat-value" id="stat-countries">—</div>
       <div class="stat-label">Pays Phase 1</div>
     </div>
     <div class="stat">
-      <div class="stat-value">~176</div>
+      <div class="stat-value" id="stat-nights">—</div>
       <div class="stat-label">Nuits planifiées</div>
     </div>
     <div class="stat">
-      <div class="stat-value">10 000 €</div>
+      <div class="stat-value" id="stat-budget">—</div>
       <div class="stat-label">Budget cible</div>
     </div>
     <div class="stat">
@@ -1076,15 +1072,33 @@
 </header>
 
 <nav>
-  <button class="active" onclick="switchTab('itineraire', this)">📋 Itinéraire</button>
-  <button onclick="switchTab('carte', this)">🗺 Carte</button>
-  <button onclick="switchTab('visas', this)">🛂 Visas</button>
-  <button onclick="switchTab('budget', this)">💰 Budget</button>
-  <button onclick="switchTab('checklist', this)">✅ Checklist</button>
-  <button onclick="switchTab('meteo', this)">🌤 Météo</button>
-  <button onclick="switchTab('phrases', this)">💬 Phrases clés</button>
-  <button onclick="switchTab('apps', this)">📱 Apps & outils</button>
-  <a href="https://www.polarsteps.com/CestLeMath/20559043-mon-tour-d-asie?s=84885f78-8190-4092-ad9e-ee02d51e1fdc" target="_blank" class="nav-polarsteps">📍 Polarsteps ↗</a>
+  <div class="nav-groups">
+    <button class="group-btn active" data-group="voyage" onclick="switchGroup('voyage', this)"><span class="g-icon">🗺</span>Voyage</button>
+    <button class="group-btn" data-group="budget-admin" onclick="switchGroup('budget-admin', this)"><span class="g-icon">💰</span>Budget</button>
+    <button class="group-btn" data-group="prepa" onclick="switchGroup('prepa', this)"><span class="g-icon">🎒</span>Prépa</button>
+    <button class="group-btn" data-group="outils" onclick="switchGroup('outils', this)"><span class="g-icon">📱</span>Outils</button>
+    <a href="https://www.polarsteps.com/CestLeMath/20559043-mon-tour-d-asie?s=84885f78-8190-4092-ad9e-ee02d51e1fdc" target="_blank" class="nav-polarsteps">📍 Polarsteps ↗</a>
+  </div>
+  <div class="nav-subgroups">
+    <div class="subgroup active" data-group="voyage">
+      <button class="tab-btn active" onclick="switchTab('itineraire', this)">📋 Itinéraire</button>
+      <button class="tab-btn" onclick="switchTab('carte', this)">🗺 Carte</button>
+      <button class="tab-btn" onclick="switchTab('meteo', this)">🌤 Météo</button>
+    </div>
+    <div class="subgroup" data-group="budget-admin">
+      <button class="tab-btn" onclick="switchTab('budget', this)">💰 Budget</button>
+      <button class="tab-btn" onclick="switchTab('visas', this)">🛂 Visas</button>
+      <button class="tab-btn" onclick="switchTab('assurance', this)">🛡 Assurance</button>
+    </div>
+    <div class="subgroup" data-group="prepa">
+      <button class="tab-btn" onclick="switchTab('checklist', this)">✅ Checklist</button>
+      <button class="tab-btn" onclick="switchTab('connectivite', this)">📶 eSIM</button>
+      <button class="tab-btn" onclick="switchTab('photos', this)">📷 Photos</button>
+    </div>
+    <div class="subgroup" data-group="outils">
+      <button class="tab-btn" onclick="switchTab('apps', this)">📱 Apps & outils</button>
+    </div>
+  </div>
 </nav>
 
 <main>
@@ -1092,7 +1106,11 @@
 <!-- ===== TAB: ITINERAIRE ===== -->
 <div id="tab-itineraire" class="tab-content active">
 
-  <div class="legend">
+  <div class="section-title">Vue d'ensemble — frise chronologique</div>
+  <div class="timeline-wrap" id="timeline-container"></div>
+
+  <div class="section-title">Détail étape par étape</div>
+  <div class="legend legend-meteo" style="justify-content:flex-end;">
     <div class="legend-item"><div class="legend-dot" style="background:rgba(22,163,74,0.5)"></div> Idéal</div>
     <div class="legend-item"><div class="legend-dot" style="background:rgba(202,138,4,0.45)"></div> Acceptable</div>
     <div class="legend-item"><div class="legend-dot" style="background:rgba(234,88,12,0.45)"></div> Mitigé</div>
@@ -1100,8 +1118,6 @@
     <div class="legend-item"><div class="legend-dot" style="background:rgba(120,120,130,0.3)"></div> Non concerné</div>
     <div class="legend-item"><div class="legend-dot" style="border:2px solid rgba(255,255,255,0.5);background:transparent"></div> Période de présence</div>
   </div>
-
-  <div class="timeline-wrap" id="timeline-container"></div>
   <div class="table-wrapper">
     <table id="itinerary-table">
       <thead>
@@ -1131,9 +1147,7 @@
       </tbody>
     </table>
   </div>
-
-  <!-- VUE MOBILE — cartes empilées (visible uniquement sur petit écran) -->
-  <div class="itinerary-cards" id="itinerary-cards"></div>
+  <div class="mobile-cards" id="itinerary-cards"></div>
 
 </div>
 
@@ -1149,31 +1163,38 @@
   <div class="budget-overview">
     <div class="budget-stat">
       <div class="budget-stat-label">Enveloppe totale</div>
-      <div class="budget-stat-value">10 000€</div>
+      <div class="budget-stat-value" id="budget-total">—</div>
       <div class="budget-stat-sub">+ réserve si besoin</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Budget / jour cible</div>
-      <div class="budget-stat-value">40–70€</div>
+      <div class="budget-stat-value" id="budget-daily">—</div>
       <div class="budget-stat-sub">moyenne pondérée</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Hébergement / nuit</div>
-      <div class="budget-stat-value">8–25€</div>
+      <div class="budget-stat-value" id="budget-accommodation">—</div>
       <div class="budget-stat-sub">hostel / hôtel simple</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Nourriture / jour</div>
-      <div class="budget-stat-value">5–15€</div>
+      <div class="budget-stat-value" id="budget-food">—</div>
       <div class="budget-stat-sub">street food prioritaire</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Transition TW→Laos</div>
-      <div class="budget-stat-value">~180€</div>
+      <div class="budget-stat-value" id="budget-transition">—</div>
       <div class="budget-stat-sub">vol + train nuit + visa</div>
     </div>
     <div class="budget-stat">
-      <div class="budget-stat-sub">décision en attente ❓</div>
+      <div class="budget-stat-label">Assurance voyage</div>
+      <div class="budget-stat-value" id="budget-insurance">—</div>
+      <div class="budget-stat-sub">/mois · AVA AVAnture (-5%)</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Connectivité eSIM</div>
+      <div class="budget-stat-value" id="budget-esim">—</div>
+      <div class="budget-stat-sub">Phase 1 entière · Airalo Asialink -15%</div>
     </div>
   </div>
 
@@ -1194,12 +1215,24 @@
       <tbody id="budget-body"></tbody>
     </table>
   </div>
+  <div class="mobile-cards" id="budget-cards"></div>
   <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort. Hors vols internationaux.</p>
 </div>
 
 <!-- ===== TAB: CHECKLIST ===== -->
 <div id="tab-checklist" class="tab-content">
-  <div class="section-title">Avant le départ</div>
+  <div class="section-title">Checklist interactive</div>
+  <a href="https://claude.ai/public/artifacts/b605f9ae-76bd-4b6d-b7d3-1f0449d8ea0d" target="_blank" rel="noopener"
+     style="display:flex; align-items:center; justify-content:space-between; gap:1rem; background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:1rem 1.25rem; text-decoration:none; margin-bottom:1.5rem; transition:border-color .15s;"
+     onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+    <span>
+      <span style="display:block; font-family:'Space Mono',monospace; font-size:13px; color:var(--text); text-transform:uppercase; letter-spacing:0.04em;">Checklist chronologique →</span>
+      <span style="display:block; font-size:12px; color:var(--muted); margin-top:2px;">Version à jour, sections par période, sauvegarde automatique — ouvre dans un nouvel onglet</span>
+    </span>
+    <span style="font-size:20px; color:var(--accent);">↗</span>
+  </a>
+
+  <div class="section-title">Avant le départ (ancienne version — à archiver)</div>
   <div class="checklist-grid" id="checklist-grid"></div>
 </div>
 
@@ -1207,12 +1240,6 @@
 <div id="tab-meteo" class="tab-content">
   <div class="section-title">Températures moyennes & précipitations par pays</div>
   <div class="meteo-grid" id="meteo-grid"></div>
-</div>
-
-<!-- ===== TAB: PHRASES ===== -->
-<div id="tab-phrases" class="tab-content">
-  <div class="section-title">Phrases essentielles par pays</div>
-  <div class="phrases-grid" id="phrases-grid"></div>
 </div>
 
 <!-- ===== TAB: APPS ===== -->
@@ -1225,11 +1252,381 @@
 <div id="tab-carte" class="tab-content">
   <div id="map" style="height:calc(100vh - 180px);min-height:500px;border-radius:10px;overflow:hidden;border:1px solid var(--border);"></div>
 </div>
+
+<!-- ===== TAB: ASSURANCE ===== -->
+<div id="tab-assurance" class="tab-content">
+  <div class="section-title">Vue globale</div>
+  <div class="budget-overview">
+    <div class="budget-stat">
+      <div class="budget-stat-label">Plan retenu</div>
+      <div class="budget-stat-value" style="font-size:1.1rem;">AVA AVAnture</div>
+      <div class="budget-stat-sub">voyage longue durée / tour du monde</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Prix estimé (-5%)</div>
+      <div class="budget-stat-value" id="assurance-price">—</div>
+      <div class="budget-stat-sub">/ mois avec code NOVO</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Plafond frais médicaux</div>
+      <div class="budget-stat-value">300 000€</div>
+      <div class="budget-stat-sub">monde entier (1M€ USA/Canada — N/A)</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Durée max contrat</div>
+      <div class="budget-stat-value">18 mois</div>
+      <div class="budget-stat-sub">couvre Phase 1 + Phase 2 si besoin</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Date de début à indiquer</div>
+      <div class="budget-stat-value" style="font-size:1.1rem;">28/12/2026</div>
+      <div class="budget-stat-sub">jour du départ — aucun délai de carence</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Code promo</div>
+      <div class="budget-stat-value">NOVO</div>
+      <div class="budget-stat-sub">-5%, non cumulable</div>
+    </div>
+  </div>
+
+  <div class="section-title">Détails du contrat</div>
+  <div class="visa-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;">
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">🛡 AVA — Plan Santé AVAnture</div>
+        <span class="visa-status-badge status-done">✅ Acté</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Assureur</div>
+          <div class="visa-detail-value" style="font-size:12px;">AVA / GObyAVA (depuis 1981)</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Langue contrat</div>
+          <div class="visa-detail-value" style="font-size:12px;">Français</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Zone résidence</div>
+          <div class="visa-detail-value" style="font-size:12px;">Union européenne</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Couverture voyage</div>
+          <div class="visa-detail-value" style="font-size:12px;">Monde entier</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Remboursement mois non utilisés</div>
+          <div class="visa-detail-value" style="font-size:12px;">À vérifier au devis</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Carence si souscrit avant départ</div>
+          <div class="visa-detail-value" style="font-size:12px;">Aucune</div>
+        </div>
+      </div>
+      <div class="visa-steps">
+        <div class="visa-step"><span class="visa-step-num">01</span><span>Souscrire en ligne sur gobyava.com ou ava.fr — sélectionner « Plan Santé AVAnture »</span></div>
+        <div class="visa-step"><span class="visa-step-num">02</span><span>Saisir le code promo <strong>NOVO</strong> en fin de formulaire pour activer la réduction de -5%</span></div>
+        <div class="visa-step"><span class="visa-step-num">03</span><span>Indiquer une date de début = <strong>28/12/2026</strong> (date de départ réelle), pas la date de souscription</span></div>
+        <div class="visa-step"><span class="visa-step-num">04</span><span>Choisir une durée couvrant au moins la Phase 1 (~6 mois) — extensible si Phase 2 confirmée</span></div>
+        <div class="visa-step"><span class="visa-step-num">05</span><span>Étudier les options : assurance matériel électronique (MacBook), garantie sports/activités à risque (loops moto)</span></div>
+      </div>
+      <div class="visa-warning">⚠️ Souscrire tôt protège aussi contre une annulation de voyage avant départ (frais déjà engagés : vols, hostel Taipei)</div>
+    </div>
+
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">🆚 Alternative écartée — True Traveller</div>
+        <span class="visa-status-badge status-todo">Comparatif</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Prix</div>
+          <div class="visa-detail-value" style="font-size:12px;">39–64€/mois (pas de réduc)</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Plafond médical</div>
+          <div class="visa-detail-value" style="font-size:12px;">10 000 000€</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Langue contrat</div>
+          <div class="visa-detail-value" style="font-size:12px;">Anglais</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Couverture</div>
+          <div class="visa-detail-value" style="font-size:12px;">Monde entier</div>
+        </div>
+      </div>
+      <div class="visa-warning">Plafond et prix légèrement meilleurs, mais police en anglais — critère décisif en faveur d'AVA (confort en cas d'urgence médicale stressante)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB: CONNECTIVITE / ESIM ===== -->
+<div id="tab-connectivite" class="tab-content">
+  <div class="section-title">Vue globale</div>
+  <div class="budget-overview">
+    <div class="budget-stat">
+      <div class="budget-stat-label">Fournisseur</div>
+      <div class="budget-stat-value" style="font-size:1.1rem;">Airalo</div>
+      <div class="budget-stat-sub">plan régional Asialink</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Forfait retenu</div>
+      <div class="budget-stat-value">100 GB / 180j</div>
+      <div class="budget-stat-sub">achat unique, couvre toute la Phase 1</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Couverture</div>
+      <div class="budget-stat-value">6/6 pays</div>
+      <div class="budget-stat-sub">Taïwan, Laos, Cambodge, Vietnam, Philippines, Indonésie</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Prix brut</div>
+      <div class="budget-stat-value">89$ (~82€)</div>
+      <div class="budget-stat-sub">avant réduction</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Code promo</div>
+      <div class="budget-stat-value">SIMPACKERS15</div>
+      <div class="budget-stat-sub">-15%, nouveau client, achat unique</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Budget net Phase 1</div>
+      <div class="budget-stat-value" id="esim-budget" style="color:var(--accent);">—</div>
+      <div class="budget-stat-sub">+ cashback Airmoney (5-10%) pour la suite</div>
+    </div>
+  </div>
+
+  <div class="section-title">Détails de la stratégie</div>
+  <div class="visa-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;">
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">📶 Airalo — Asialink 100GB/180j</div>
+        <span class="visa-status-badge status-done">✅ Acté</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Type</div>
+          <div class="visa-detail-value" style="font-size:12px;">Data uniquement (pas d'appels/SMS natifs)</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Communication</div>
+          <div class="visa-detail-value" style="font-size:12px;">WhatsApp (messages + appels)</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Usage prévu</div>
+          <div class="visa-detail-value" style="font-size:12px;">GPS, messages, recherche — data mobile en appoint du wifi auberge</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Musique</div>
+          <div class="visa-detail-value" style="font-size:12px;">Spotify offline (téléchargé en amont)</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Solde entre pays</div>
+          <div class="visa-detail-value" style="font-size:12px;">Partagé — pas de perte au passage de frontière</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Numéro local</div>
+          <div class="visa-detail-value" style="font-size:12px;">Non nécessaire</div>
+        </div>
+      </div>
+      <div class="visa-steps">
+        <div class="visa-step"><span class="visa-step-num">01</span><span>Créer un compte Airalo (app ou site) et sélectionner le plan régional <strong>Asialink — 100GB / 180 jours</strong></span></div>
+        <div class="visa-step"><span class="visa-step-num">02</span><span>Saisir le code <strong>SIMPACKERS15</strong> au paiement (-15%, valable une seule fois, nouveau client)</span></div>
+        <div class="visa-step"><span class="visa-step-num">03</span><span>Installer l'eSIM avant le départ (scan QR code) — elle s'activera automatiquement à la connexion au premier réseau supporté (Taïwan)</span></div>
+        <div class="visa-step"><span class="visa-step-num">04</span><span>À chaque changement de pays, vérifier dans Réglages → Données cellulaires → eSIM que le bon profil réseau local est sélectionné</span></div>
+        <div class="visa-step"><span class="visa-step-num">05</span><span>Garder la SIM française active en roaming SMS/appels uniquement (data coupée) en filet de sécurité pour la 2FA par SMS (Grab, Gojek, banques…)</span></div>
+      </div>
+      <div class="visa-warning">⚠️ Plans "Unlimited" Airalo écartés — faux illimité, bridé à 3GB/jour puis 1000kbps. Le forfait fixe 100GB est plus avantageux pour ce profil d'usage.</div>
+    </div>
+
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">🆚 Options écartées</div>
+        <span class="visa-status-badge status-todo">Comparatif</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">eSIM locale par pays</div>
+          <div class="visa-detail-value" style="font-size:12px;">Airalo local / BNESIM / Jetpac / Roafly — économie ~10-15€ sur 6 mois, mais 6 installations et suivi de solde séparé</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">SIM physique locale</div>
+          <div class="visa-detail-value" style="font-size:12px;">Écartée d'emblée — pas pratique en itinérance</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Holafly</div>
+          <div class="visa-detail-value" style="font-size:12px;">Plus cher que toutes les alternatives à couverture égale, même remisé</div>
+        </div>
+      </div>
+      <div class="visa-warning">Seul Airalo Asialink couvre Laos + Cambodge en plus des 4 autres pays sur un seul plan — les régionaux concurrents (Saily, Nomad) les excluent.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TAB: PHOTOS / VIDÉO ===== -->
+<div id="tab-photos" class="tab-content">
+  <div class="section-title">Vue globale</div>
+  <div class="budget-overview">
+    <div class="budget-stat">
+      <div class="budget-stat-label">Stratégie</div>
+      <div class="budget-stat-value" style="font-size:1.1rem;">2 outils, pas de drone</div>
+      <div class="budget-stat-sub">contraintes réglementaires VN/Bali écartées</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Action cam</div>
+      <div class="budget-stat-value">AKASO Brave 8 Lite</div>
+      <div class="budget-stat-sub">⏳ à acheter — ~202,40€</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Téléphone</div>
+      <div class="budget-stat-value">Xiaomi 14T Pro</div>
+      <div class="budget-stat-sub">✅ déjà en possession</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Budget accessoires manquants</div>
+      <div class="budget-stat-value">~35–50€</div>
+      <div class="budget-stat-sub">dragonne + perche/trépied + carte SD</div>
+    </div>
+  </div>
+
+  <div class="section-title">Répartition des usages</div>
+  <div class="table-wrapper">
+    <table class="budget-country-table">
+      <thead>
+        <tr>
+          <th>Situation</th>
+          <th>Outil</th>
+          <th>Pourquoi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Nuit, intérieur, temples, marchés</td><td>📱 Xiaomi 14T Pro</td><td>Capteur 1/1.31" f/1.6 + OIS, largement supérieur à une action cam budget en basse lumière</td></tr>
+        <tr><td>Snorkeling</td><td>📷 Akaso Brave 8 Lite</td><td>Étanche 10m natif, sans caisson — largement suffisant en surface</td></tr>
+        <tr><td>Scooter / guidon</td><td>📷 Akaso Brave 8 Lite</td><td>Support guidon inclus dans le kit, mains libres, résiste aux chocs/pluie</td></tr>
+        <tr><td>Trek / activités mains libres</td><td>📷 Akaso Brave 8 Lite</td><td>Plus robuste que le téléphone, pas de risque de casse/vol en le sortant</td></tr>
+        <tr><td>Contenu Insta / Polarsteps du quotidien</td><td>📱 Xiaomi 14T Pro</td><td>Rapidité, qualité suffisante, pas besoin de transférer les fichiers</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Détails du matériel</div>
+  <div class="visa-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;">
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">📷 AKASO Brave 8 Lite</div>
+        <span class="visa-status-badge status-todo">⏳ À acheter</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Prix vérifié</div>
+          <div class="visa-detail-value" style="font-size:12px;">~202,40€ (Amazon)</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Capteur</div>
+          <div class="visa-detail-value" style="font-size:12px;">1/2" CMOS, 4K60fps, 48MP photo</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Étanchéité native</div>
+          <div class="visa-detail-value" style="font-size:12px;">10m sans caisson</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Batterie</div>
+          <div class="visa-detail-value" style="font-size:12px;">2× 1550mAh incluses, ~90min 4K chacune</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Alternative écartée</div>
+          <div class="visa-detail-value" style="font-size:12px;">DJI Osmo Action 5 Pro (350–400€) — surqualité inutile vu usage</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Lien produit</div>
+          <div class="visa-detail-value" style="font-size:12px;"><a href="https://www.amazon.fr/AKASO-Brave-Lite-Stabilisation-SuperSmooth/dp/B0CN93Y2YX" target="_blank" rel="noopener" style="color:var(--accent);">Amazon.fr ↗</a></div>
+        </div>
+      </div>
+      <div class="visa-steps">
+        <div class="visa-step"><span class="visa-step-num">01</span><span>Contenu de la boîte confirmé : caméra + cadre, 2 batteries + chargeur double, câble USB, télécommande, clé de montage</span></div>
+        <div class="visa-step"><span class="visa-step-num">02</span><span>9 montures incluses (crochet, boucle, supports articulés A/C/D/E/F/H) + support guidon (2 vis) + 2 supports casque adhésifs (courbe/plat)</span></div>
+        <div class="visa-step"><span class="visa-step-num">03</span><span>Attaches, films protection écran, chiffon microfibre, guide de démarrage — tout inclus</span></div>
+        <div class="visa-step"><span class="visa-step-num">04</span><span>Cadeau potentiel Noël — cibler une promo Black Friday (fin novembre, avant Noël) pour la personne qui achète</span></div>
+        <div class="visa-step"><span class="visa-step-num">05</span><span>À tester dès réception (carte SD, batteries, prise en main) avant le départ du 28/12</span></div>
+      </div>
+      <div class="visa-warning">⚠️ Montures incluses sans amortisseur anti-vibration — possible effet "jello" sur guidon rigide en route dégradée (Laos, Hà Giang). Non bloquant vu l'usage casual visé.</div>
+    </div>
+
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">📱 Xiaomi 14T Pro</div>
+        <span class="visa-status-badge status-done">✅ Déjà en possession</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Capteur principal</div>
+          <div class="visa-detail-value" style="font-size:12px;">1/1.31", f/1.6, OIS, Leica Summilux</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Point fort</div>
+          <div class="visa-detail-value" style="font-size:12px;">Basse lumière nettement supérieure à une action cam budget</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Vidéo max</div>
+          <div class="visa-detail-value" style="font-size:12px;">8K30 / 4K60, mode Director</div>
+        </div>
+        <div class="visa-detail-item">
+          <div class="visa-detail-label">Rôle dans la stratégie</div>
+          <div class="visa-detail-value" style="font-size:12px;">Nuit, intérieur, contenu rapide du quotidien</div>
+        </div>
+      </div>
+      <div class="visa-warning">Pas d'usage dans l'eau ou en situation à risque de chute/vol (scooter, trek exposé) — c'est le rôle de l'action cam.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Accessoires — ce qui est inclus vs à prévoir</div>
+  <div class="visa-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.25rem;">
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">✅ Inclus dans le kit Akaso</div>
+        <span class="visa-status-badge status-done">Fourni</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Support guidon (scooter/vélo)</div></div>
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Supports casque adhésifs (courbe + plat)</div></div>
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">2 batteries + chargeur double</div></div>
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Télécommande + montures diverses</div></div>
+      </div>
+    </div>
+
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">⏳ Indispensable à prévoir</div>
+        <span class="visa-status-badge status-todo">À acheter</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Carte micro SD U3 (jusqu'à 512Go) — ~15–20€</div></div>
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Dragonne/poignée flottante (sécurité snorkeling) — ~10–15€</div></div>
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Perche/trépied 3-en-1 — ~10–15€</div></div>
+      </div>
+      <div class="visa-warning">Sans dragonne flottante, la caméra coule si elle échappe des mains dans l'eau (IPX8 ≠ flottant).</div>
+    </div>
+
+    <div class="visa-card">
+      <div class="visa-card-header">
+        <div class="visa-card-title">💭 Optionnel selon besoin terrain</div>
+        <span class="visa-status-badge status-todo">Non retenu par défaut</span>
+      </div>
+      <div class="visa-details">
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Ventouse pour bateau (Mékong, excursions îles) — ~10€</div></div>
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Harnais poitrine pour trek mains libres — ~10–15€</div></div>
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Batteries de rechange supplémentaires si tournage intense</div></div>
+        <div class="visa-detail-item"><div class="visa-detail-value" style="font-size:12px;">Micro externe pour son propre en interview/vlog — ~20–30€</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <footer>
-  <span>VOYAGE_MASTER_DOC v1.0 · Avril 2026</span>
-  <span id="last-updated">Mis à jour : juin 2026</span>
+  <span>v2.3</span>
+  <span id="last-updated">Dernière mise à jour : 27 août 2026</span>
 </footer>
 
 <script>
@@ -1239,168 +1636,198 @@
 
 const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
 
+// ============================================================
+// GLOBAL_STATS — Source UNIQUE pour toute donnée budget transverse.
+// Ne jamais recopier ces valeurs en dur ailleurs dans ce fichier :
+// toujours référencer GLOBAL_STATS.xxx (voir AGENT_RULES.md §7).
+// ============================================================
+const GLOBAL_STATS = {
+  budgetTotal: 10000,
+  dailyBudget: { low: 40, high: 70 },
+  accommodation: { low: 8, high: 25 },
+  food: { low: 5, high: 15 },
+  localTransport: { low: 3, high: 10 },
+  activities: { low: 5, high: 20 },
+  transitionTaiwanLaos: 180,
+  esimCost: 70,
+};
+
 // G=green, Y=yellow, O=orange, R=red, X=not concerned
 // Météo qualitative par étape × 12 mois (Jan→Déc)
 const ITINERARY = [
   { country: '🇹🇼 Taïwan', steps: [
     { num:1, city:'Taipei', flag:'🇹🇼', nights:4, transport:'—', visa:'exempt', budget:'40–55€', health:['ok'],
-      meteo:['G','G','G','G','Y','O','R','R','O','Y','G','G'], active:[0], dateIn:'28 déc 2026', dateOut:'01 jan 2027'},
+      meteo:['G','G','G','G','Y','O','R','R','O','Y','G','G'], active:[0], dateIn:'29 déc 2026', dateOut:'02 jan 2027'},
     { num:2, city:'Ruifang', flag:'🇹🇼', nights:2, transport:'Train · 54 min', visa:'exempt', budget:'35–50€', health:['ok'],
-      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'01 jan 2027', dateOut:'03 jan 2027'},
+      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'02 jan 2027', dateOut:'04 jan 2027'},
     { num:3, city:'Yuchi (Sun Moon Lake)', flag:'🇹🇼', nights:2, transport:'Train · 2h45', visa:'exempt', budget:'40–55€', health:['ok'],
-      meteo:['G','G','G','G','Y','Y','O','O','Y','G','G','G'], active:[0], dateIn:'03 jan 2027', dateOut:'05 jan 2027'},
+      meteo:['G','G','G','G','Y','Y','O','O','Y','G','G','G'], active:[0], dateIn:'04 jan 2027', dateOut:'06 jan 2027'},
     { num:4, city:'Alishan', flag:'🇹🇼', nights:2, transport:'Train · 3h32', visa:'exempt', budget:'35–50€', health:['ok'],
-      meteo:['G','G','G','Y','O','O','R','R','O','G','G','G'], active:[0], dateIn:'05 jan 2027', dateOut:'07 jan 2027'},
+      meteo:['G','G','G','Y','O','O','R','R','O','G','G','G'], active:[0], dateIn:'06 jan 2027', dateOut:'08 jan 2027'},
     { num:5, city:'Tainan', flag:'🇹🇼', nights:2, transport:'Train · 5h17', visa:'exempt', budget:'35–50€', health:['ok'],
-      meteo:['G','G','G','G','Y','O','O','O','Y','G','G','G'], active:[0], dateIn:'07 jan 2027', dateOut:'09 jan 2027'},
+      meteo:['G','G','G','G','Y','O','O','O','Y','G','G','G'], active:[0], dateIn:'08 jan 2027', dateOut:'10 jan 2027'},
     { num:6, city:'Kaohsiung', flag:'🇹🇼', nights:1, transport:'Train · 1h42', visa:'exempt', budget:'40–55€', health:['ok'],
-      meteo:['G','G','G','G','Y','O','O','O','Y','G','G','G'], active:[0], dateIn:'09 jan 2027', dateOut:'10 jan 2027'},
+      meteo:['G','G','G','G','Y','O','O','O','Y','G','G','G'], active:[0], dateIn:'10 jan 2027', dateOut:'11 jan 2027'},
     { num:7, city:'Hengchun', flag:'🇹🇼', nights:2, transport:'Bus · 1h45', visa:'exempt', budget:'35–50€', health:['ok'],
-      meteo:['G','G','G','G','G','Y','Y','Y','Y','G','G','G'], active:[0], dateIn:'10 jan 2027', dateOut:'12 jan 2027'},
+      meteo:['G','G','G','G','G','Y','Y','Y','Y','G','G','G'], active:[0], dateIn:'11 jan 2027', dateOut:'13 jan 2027'},
     { num:8, city:'Hualien City', flag:'🇹🇼', nights:3, transport:'Train · 4h55', visa:'exempt', budget:'40–55€', health:['ok'],
-      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'12 jan 2027', dateOut:'15 jan 2027'},
+      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'13 jan 2027', dateOut:'16 jan 2027'},
     { num:9, city:'Dulan', flag:'🇹🇼', nights:3, transport:'Train · 4h34', visa:'exempt', budget:'30–45€', health:['ok'],
-      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'15 jan 2027', dateOut:'18 jan 2027'},
+      meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'16 jan 2027', dateOut:'19 jan 2027'},
   ]},
   { country: '🔀 Transit', steps: [
     { num:10, city:'Bangkok (transit)', flag:'🇹🇭', nights:0, transport:'Train nuit → Nong Khai', visa:'exempt 30j', budget:'—', health:['dengue'],
-      meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[], dateIn:'18 jan 2027', dateOut:'20 jan 2027'},
+      meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[], dateIn:'19 jan 2027', dateOut:'21 jan 2027'},
   ]},
   { country: '🇱🇦 Laos', steps: [
     { num:11, city:'Vientiane', flag:'🇱🇦', nights:5, transport:'Bus · Pont Amitié', visa:'VoA 40$', budget:'30–45€', health:['dengue','malaria'],
-      meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[1], dateIn:'20 jan 2027', dateOut:'25 jan 2027'},
+      meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[1], dateIn:'21 jan 2027', dateOut:'26 jan 2027'},
     { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Bus / avion', visa:'VoA', budget:'30–45€', health:['dengue','malaria'],
-      meteo:['G','G','G','Y','O','R','R','R','O','O','G','G'], active:[1], dateIn:'25 jan 2027', dateOut:'30 jan 2027'},
+      meteo:['G','G','G','Y','O','R','R','R','O','O','G','G'], active:[1], dateIn:'26 jan 2027', dateOut:'31 jan 2027'},
     { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Bus · 3h', visa:'VoA', budget:'25–40€', health:['dengue','malaria'],
-      meteo:['G','G','G','Y','R','R','R','R','R','O','G','G'], active:[1], dateIn:'30 jan 2027', dateOut:'01 fév 2027'},
+      meteo:['G','G','G','Y','R','R','R','R','R','O','G','G'], active:[1], dateIn:'31 jan 2027', dateOut:'02 fév 2027'},
     { num:14, city:'Thakhek Loop', flag:'🇱🇦', nights:5, transport:'Bus nuit · 5h depuis Vientiane', transportRisk:'low', visa:'VoA', budget:'25–35€', health:['dengue','malaria'],
-      meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1], dateIn:'01 fév 2027', dateOut:'06 fév 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1], dateIn:'02 fév 2027', dateOut:'07 fév 2027'},
     { num:15, city:'Pakse + Plateau des Bolavens', flag:'🇱🇦', nights:5, transport:'Bus · 3h depuis Thakhek', visa:'VoA', budget:'25–35€', health:['dengue','malaria'],
-      meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1], dateIn:'06 fév 2027', dateOut:'11 fév 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1], dateIn:'07 fév 2027', dateOut:'12 fév 2027'},
     { num:16, city:'Si Phan Don — 4 000 îles', flag:'🇱🇦', nights:3, transport:'Bus + ferry · 2h depuis Pakse', transportRisk:'low',
       visa:'VoA', budget:'20–30€', health:['dengue','malaria'],
-      meteo:['G','G','G','G','Y','R','R','R','O','G','G','G'], active:[1], dateIn:'11 fév 2027', dateOut:'14 fév 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','O','G','G','G'], active:[1], dateIn:'07 fév 2027', dateOut:'10 fév 2027'},
   ]},
   { country: '🔀 Transit Laos → Cambodge', steps: [
     { num:'T2', city:'Si Phan Don → Phnom Penh', flag:'🔀', nights:0,
       transport:'🚌 Bus direct · frontière Vang Tao / Dom Kralor · ~9h · ~12€',
       visa:'eVisa cambodgien requis', budget:'~12€', health:['dengue'],
-      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[], dateIn:'14 fév 2027', dateOut:'14 fév 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[], dateIn:'10 fév 2027', dateOut:'10 fév 2027'},
   ]},
   { country: '🇰🇭 Cambodge', steps: [
     { num:17, city:'Phnom Penh', flag:'🇰🇭', nights:4,
       transport:'Bus depuis Si Phan Don · frontière Vang Tao · ~9h · ~12€',
       visa:'eVisa 36$', budget:'30–45€', health:['dengue','malaria'],
-      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'14 fév 2027', dateOut:'18 fév 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'10 fév 2027', dateOut:'14 fév 2027'},
     { num:18, city:'Kampot', flag:'🇰🇭', nights:4,
       transport:'Bus · 3h · Virak Buntham',
       visa:'eVisa', budget:'30–40€', health:['dengue'],
-      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'18 fév 2027', dateOut:'22 fév 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'14 fév 2027', dateOut:'18 fév 2027'},
     { num:19, city:'Kep + Koh Tonsay', flag:'🇰🇭', nights:3,
       transport:'Tuk-tuk · 30 min depuis Kampot',
       visa:'eVisa', budget:'30–40€', health:['dengue'],
-      meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'22 fév 2027', dateOut:'25 fév 2027'},
+      meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'18 fév 2027', dateOut:'21 fév 2027'},
     { num:20, city:'Koh Ta Kiev', flag:'🇰🇭', nights:3,
       transport:'Bus Kep→Sihanoukville · 2h · ferry île · 1h',
       visa:'eVisa', budget:'25–35€', health:['dengue'],
-      meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'25 fév 2027', dateOut:'28 fév 2027'},
+      meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'21 fév 2027', dateOut:'24 fév 2027'},
     { num:21, city:'Koh Rong Sanloem', flag:'🇰🇭', nights:3,
       transport:'Ferry depuis Sihanoukville · 45 min',
       visa:'eVisa', budget:'25–40€', health:['dengue'],
-      meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'28 fév 2027', dateOut:'03 mar 2027'},
+      meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'24 fév 2027', dateOut:'27 fév 2027'},
     { num:22, city:'Mondolkiri', flag:'🇰🇭', nights:5,
       transport:'Ferry→Sihanoukville · bus→Phnom Penh 4h · bus→Sen Monorom 6h', transportRisk:'medium',
       visa:'eVisa', budget:'25–35€', health:['dengue'],
-      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'03 mar 2027', dateOut:'08 mar 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'27 fév 2027', dateOut:'04 mar 2027'},
     { num:23, city:'Ratanakiri', flag:'🇰🇭', nights:5,
       transport:'Bus Virak Buntham direct · 2h30 · 1 départ/jour', transportRisk:'low',
       visa:'eVisa', budget:'25–35€', health:['dengue'],
-      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'08 mar 2027', dateOut:'13 mar 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'04 mar 2027', dateOut:'09 mar 2027'},
     { num:24, city:'Kratie', flag:'🇰🇭', nights:2,
       transport:'Bus local · ~3h · peu fréquenté', transportRisk:'medium',
       visa:'eVisa', budget:'25–35€', health:['dengue'],
-      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'13 mar 2027', dateOut:'15 mar 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'09 mar 2027', dateOut:'11 mar 2027'},
     { num:25, city:'Siem Reap — Angkor', flag:'🇰🇭', nights:5,
       transport:'Bus Kratie→Kampong Cham 3h + bus→Siem Reap 5h', transportRisk:'low',
       visa:'eVisa', budget:'35–50€', health:['dengue'],
-      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'15 mar 2027', dateOut:'20 mar 2027'},
+      meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'11 mar 2027', dateOut:'16 mar 2027'},
   ]},
   { country: '🔀 Transit Cambodge → Vietnam', steps: [
     { num:'T3', city:'Kep / Koh Rong → Hô Chi Minh-Ville', flag:'🔀', nights:0,
       transport:'🚌 Bus terrestre · frontière Bavet / Môc Bài · ~6–7h · ~12€',
       visa:'eVisa Vietnam requis', budget:'~12€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[], dateIn:'20 mar 2027', dateOut:'20 mar 2027'},
+      meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[], dateIn:'24 fév 2027', dateOut:'24 fév 2027'},
   ]},
   { country: '🇻🇳 Vietnam', steps: [
-    { num:26, city:'Hô Chi Minh-Ville', flag:'🇻🇳', nights:5, transport:'🚌 Bus terrestre · Phnom Penh→HCMC · 6–7h · ~12€', visa:'eVisa 90j 25$', budget:'35–50€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3], dateIn:'20 mar 2027', dateOut:'25 mar 2027'},
-    { num:27, city:'Hội An / Đà Nẵng', flag:'🇻🇳', nights:6, transport:'🚂 Train Reunification Express · ~16h', visa:'eVisa', budget:'35–50€', health:['dengue'],
-      meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'25 mar 2027', dateOut:'30 mar 2027'},
-    { num:28, city:'Hanoï', flag:'🇻🇳', nights:5, transport:'🚂 Train · 14h ou ✈️ 1h20', visa:'eVisa', budget:'35–50€', health:['dengue'],
-      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'30 mar 2027', dateOut:'03 avr 2027'},
-    { num:29, city:'Baie d\'Halong', flag:'🇻🇳', nights:3, transport:'🚌 Bus · 3h30', visa:'eVisa', budget:'50–80€', health:['dengue'],
-      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'03 avr 2027', dateOut:'06 avr 2027'},
-    { num:30, city:'Ha Giang 🏍️ Loop', flag:'🇻🇳', nights:6, transport:'🚌 Bus · 4h30 depuis Hanoï', visa:'eVisa', budget:'30–45€', health:['dengue'],
-      meteo:['G','G','G','G','G','R','O','O','G','G','G','G'], active:[3], dateIn:'06 avr 2027', dateOut:'12 avr 2027'},
+    { num:26, city:'Hô Chi Minh-Ville', flag:'🇻🇳', nights:3, transport:'🚌 Bus terrestre · Phnom Penh→HCMC · 6–7h · ~12€', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3], dateIn:'24 fév 2027', dateOut:'27 fév 2027'},
+    { num:27, city:'Đà Lạt', flag:'🇻🇳', nights:2, transport:'🚌 Bus · ~7h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3], dateIn:'27 fév 2027', dateOut:'01 mar 2027'},
+    { num:28, city:'Hội An', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~11h ou ✈️ vol Đà Lạt→Đà Nẵng 1h10', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'01 mar 2027', dateOut:'04 mar 2027'},
+    { num:29, city:'Huế (journée)', flag:'🇻🇳', nights:1, transport:'🚌 Bus · ~3h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'04 mar 2027', dateOut:'05 mar 2027'},
+    { num:30, city:'Phong Nha', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~6h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'05 mar 2027', dateOut:'08 mar 2027'},
+    { num:31, city:'Ninh Bình / Tam Cốc', flag:'🇻🇳', nights:2, transport:'🚂 Train · ~8h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'08 mar 2027', dateOut:'10 mar 2027'},
+    { num:32, city:'Pù Luông', flag:'🇻🇳', nights:3, transport:'🚌 Bus/minivan · ~3h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'10 mar 2027', dateOut:'13 mar 2027'},
+    { num:33, city:'Hà Giang 🏍️ Loop', flag:'🇻🇳', nights:4, transport:'🚌 Bus · ~7h depuis Pù Luông/Hanoï', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','R','O','O','G','G','G','G'], active:[3], dateIn:'13 mar 2027', dateOut:'17 mar 2027'},
+    { num:34, city:'Cao Bằng', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~6h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','R','O','O','G','G','G','G'], active:[3], dateIn:'17 mar 2027', dateOut:'20 mar 2027'},
+    { num:35, city:'Hồ Ba Bể', flag:'🇻🇳', nights:2, transport:'🚌 Bus · ~4h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','R','O','O','G','G','G','G'], active:[3], dateIn:'20 mar 2027', dateOut:'22 mar 2027'},
+    { num:36, city:'Baie d\'Halong / Cat Bà', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~5h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'22 mar 2027', dateOut:'25 mar 2027'},
+    { num:37, city:'Cô Tô 🏝️', flag:'🇻🇳', nights:3, transport:'🚢 Bateau direct depuis Cẩm Phả/Vân Đồn · ~2–3h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'25 mar 2027', dateOut:'28 mar 2027'},
+    { num:38, city:'Hanoï', flag:'🇻🇳', nights:3, transport:'🚢 Bateau retour + 🚌 bus · ~4h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+      meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'28 mar 2027', dateOut:'31 mar 2027'},
   ]},
   { country: '🔀 Transit Vietnam → Philippines', steps: [
     { num:'T4', city:'Hanoï → Manille', flag:'🔀', nights:0,
       transport:'✈️ Vol direct · Hanoï (HAN) → Manille (MNL) · ~3h · 60–120€ · AirAsia / Cebu Pacific',
       visa:'exempt 30j Philippines', budget:'60–120€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[], dateIn:'12 avr 2027', dateOut:'12 avr 2027'},
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[], dateIn:'05 avr 2027', dateOut:'05 avr 2027'},
   ]},
   { country: '🇵🇭 Philippines', steps: [
-    { num:31, city:'Manille (transit)', flag:'🇵🇭', nights:1, transport:'Arrivée vol Hanoï→Manille', visa:'exempt 30j', budget:'45–55€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'12 avr 2027', dateOut:'13 avr 2027'},
-    { num:32, city:'Banaue / Batad 💎', flag:'🇵🇭', nights:4, transport:'🚌 Bus nuit · 8–9h depuis Manille', transportRisk:'low', visa:'exempt', budget:'30–40€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'13 avr 2027', dateOut:'17 avr 2027'},
-    { num:33, city:'Manille (retour)', flag:'🇵🇭', nights:1, transport:'🚌 Bus nuit · 8–9h', transportRisk:'low', visa:'exempt', budget:'35–45€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'17 avr 2027', dateOut:'18 avr 2027'},
-    { num:34, city:'Puerto Princesa', flag:'🇵🇭', nights:2, transport:'✈️ Vol Manille→Puerto Princesa · ~1h15 · ~60€', visa:'exempt', budget:'30–40€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'18 avr 2027', dateOut:'20 avr 2027'},
-    { num:35, city:'El Nido — Palawan', flag:'🇵🇭', nights:5, transport:'🚙 Van · 5–6h', visa:'exempt', budget:'40–55€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'20 avr 2027', dateOut:'25 avr 2027'},
-    { num:36, city:'Croisière El Nido ↔ Coron 🚢', flag:'🇵🇭', nights:4, transport:'🚢 Liveaboard · 3–5 jours · Linapacan', visa:'exempt', budget:'60–100€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'25 avr 2027', dateOut:'29 avr 2027'},
-    { num:37, city:'Coron — Palawan', flag:'🇵🇭', nights:3, transport:'🚢 Arrivée croisière', visa:'exempt', budget:'35–50€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'29 avr 2027', dateOut:'02 mai 2027'},
-    { num:38, city:'Manille (retour Coron)', flag:'🇵🇭', nights:1, transport:'⛴️ Ferry nuit · 11–18h', transportRisk:'medium', visa:'exempt', budget:'25–35€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'02 mai 2027', dateOut:'03 mai 2027'},
-    { num:39, city:'Cebu City (transit)', flag:'🇵🇭', nights:1, transport:'✈️ Vol Manille→Cebu · ~1h15 · ~32€', visa:'exempt', budget:'35–45€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'03 mai 2027', dateOut:'04 mai 2027'},
-    { num:40, city:'Malapascua', flag:'🇵🇭', nights:4, transport:'🚌 Bus 4h + ⛴️ ferry 30min', visa:'exempt', budget:'35–50€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'04 mai 2027', dateOut:'08 mai 2027'},
-    { num:41, city:'Moalboal', flag:'🇵🇭', nights:4, transport:'🚌 Bus · 6–7h', visa:'exempt', budget:'30–45€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'08 mai 2027', dateOut:'12 mai 2027'},
-    { num:42, city:'Siquijor 💎', flag:'🇵🇭', nights:5, transport:'⛴️ Ferry via Dumaguete', visa:'exempt', budget:'30–40€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'12 mai 2027', dateOut:'17 mai 2027'},
-    { num:43, city:'Bohol / Panglao', flag:'🇵🇭', nights:3, transport:'⛴️ Ferry direct · 2h', visa:'exempt', budget:'35–50€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'17 mai 2027', dateOut:'20 mai 2027'},
-    { num:44, city:'Camiguin', flag:'🇵🇭', nights:4, transport:'⛴️ Ferry · <4h', visa:'exempt', budget:'30–40€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'20 mai 2027', dateOut:'24 mai 2027'},
-    { num:45, city:'Siargao 🏄', flag:'🇵🇭', nights:6, transport:'⛴️ Bateau + 🚌 bus', visa:'exempt', budget:'45–65€', health:['dengue'],
-      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'24 mai 2027', dateOut:'30 mai 2027'},
+    { num:39, city:'Manille (transit)', flag:'🇵🇭', nights:1, transport:'Arrivée vol Hanoï→Manille', visa:'exempt 30j', budget:'45–55€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'05 avr 2027', dateOut:'06 avr 2027'},
+    { num:40, city:'Banaue / Batad 💎', flag:'🇵🇭', nights:4, transport:'🚌 Bus nuit · 8–9h depuis Manille', transportRisk:'low', visa:'exempt', budget:'30–40€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'06 avr 2027', dateOut:'10 avr 2027'},
+    { num:41, city:'Manille (retour)', flag:'🇵🇭', nights:1, transport:'🚌 Bus nuit · 8–9h', transportRisk:'low', visa:'exempt', budget:'35–45€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'10 avr 2027', dateOut:'11 avr 2027'},
+    { num:42, city:'Puerto Princesa', flag:'🇵🇭', nights:2, transport:'✈️ Vol Manille→Puerto Princesa · ~1h15 · ~60€', visa:'exempt', budget:'30–40€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'11 avr 2027', dateOut:'13 avr 2027'},
+    { num:43, city:'El Nido — Palawan', flag:'🇵🇭', nights:5, transport:'🚙 Van · 5–6h', visa:'exempt', budget:'40–55€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'13 avr 2027', dateOut:'18 avr 2027'},
+    { num:44, city:'Croisière El Nido ↔ Coron 🚢', flag:'🇵🇭', nights:4, transport:'🚢 Liveaboard · 3–5 jours · Linapacan', visa:'exempt', budget:'60–100€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'18 avr 2027', dateOut:'22 avr 2027'},
+    { num:45, city:'Coron — Palawan', flag:'🇵🇭', nights:3, transport:'🚢 Arrivée croisière', visa:'exempt', budget:'35–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'22 avr 2027', dateOut:'25 avr 2027'},
+    { num:47, city:'Cebu City', flag:'🇵🇭', nights:1, transport:'✈️ Vol direct Coron→Cebu · ~1h15 · 60–120€', visa:'exempt', budget:'35–45€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'25 avr 2027', dateOut:'26 avr 2027'},
+    { num:48, city:'Malapascua', flag:'🇵🇭', nights:4, transport:'🚌 Bus 4h + ⛴️ ferry 30min', visa:'exempt', budget:'35–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'26 avr 2027', dateOut:'30 avr 2027'},
+    { num:49, city:'Moalboal', flag:'🇵🇭', nights:4, transport:'🚌 Bus · 6–7h', visa:'exempt', budget:'30–45€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'30 avr 2027', dateOut:'04 mai 2027'},
+    { num:50, city:'Siquijor 💎', flag:'🇵🇭', nights:5, transport:'⛴️ Ferry via Dumaguete', visa:'exempt', budget:'30–40€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'04 mai 2027', dateOut:'09 mai 2027'},
+    { num:51, city:'Bohol / Panglao', flag:'🇵🇭', nights:3, transport:'⛴️ Ferry direct · 2h', visa:'exempt', budget:'35–50€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'09 mai 2027', dateOut:'12 mai 2027'},
+    { num:52, city:'Camiguin', flag:'🇵🇭', nights:4, transport:'⛴️ Ferry · <4h', visa:'exempt', budget:'30–40€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'12 mai 2027', dateOut:'16 mai 2027'},
+    { num:53, city:'Siargao 🏄', flag:'🇵🇭', nights:6, transport:'⛴️ Bateau + 🚌 bus', visa:'exempt', budget:'45–65€', health:['dengue'],
+      meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'16 mai 2027', dateOut:'22 mai 2027'},
   ]},
 
   { country: '🔀 Transit Philippines → Indonésie', steps: [
     { num:'T5', city:'Siargao / Cebu → Bali', flag:'🔀', nights:0,
       transport:'✈️ Vol · Cebu (CEB) → Bali (DPS) · ~3h · 60–110€ · Cebu Pacific / AirAsia',
       visa:'VoA gratuit Indonésie', budget:'60–110€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[], dateIn:'30 mai 2027', dateOut:'30 mai 2027'},
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[], dateIn:'22 mai 2027', dateOut:'22 mai 2027'},
   ]},
   { country: '🇮🇩 Indonésie', steps: [
-    { num:46, city:'Bali', flag:'🇮🇩', nights:5, transport:'✈️ Vol Manille→Bali · ~4h · 70–120€', visa:'VoA gratuit 30j', budget:'35–55€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'30 mai 2027', dateOut:'04 jun 2027'},
-    { num:47, city:'Lombok 🏍️', flag:'🇮🇩', nights:4, transport:'✈️ Vol Bali→Lombok · 30 min', transportRisk:'low', visa:'VoA', budget:'30–45€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'04 jun 2027', dateOut:'08 jun 2027'},
-    { num:48, city:'Sumbawa ⚠️', flag:'🇮🇩', nights:2, transport:'🚢 Ferry Lombok→Sumbawa · 2h · départ matinal', transportRisk:'high',
+    { num:54, city:'Bali', flag:'🇮🇩', nights:5, transport:'✈️ Vol Cebu→Bali · ~3h · 60–110€', visa:'VoA gratuit 30j', budget:'35–55€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'22 mai 2027', dateOut:'27 mai 2027'},
+    { num:55, city:'Lombok 🏍️', flag:'🇮🇩', nights:4, transport:'✈️ Vol Bali→Lombok · 30 min', transportRisk:'low', visa:'VoA', budget:'30–45€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'27 mai 2027', dateOut:'31 mai 2027'},
+    { num:56, city:'Sumbawa ⚠️', flag:'🇮🇩', nights:2, transport:'🚢 Ferry Lombok→Sumbawa · 2h · départ matinal', transportRisk:'high',
       visa:'VoA', budget:'25–40€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'08 jun 2027', dateOut:'10 jun 2027'},
-    { num:49, city:'Komodo — Varans & Manta 🤿', flag:'🇮🇩', nights:3, transport:'🚢 Ferry Sumbawa→Komodo', transportRisk:'low',
+      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'31 mai 2027', dateOut:'02 juin 2027'},
+    { num:57, city:'Komodo — Varans & Manta 🤿', flag:'🇮🇩', nights:3, transport:'🚢 Ferry Sumbawa→Komodo', transportRisk:'low',
       visa:'VoA', budget:'40–60€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'10 jun 2027', dateOut:'13 jun 2027'},
-    { num:50, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:4, transport:'🚢 Ferry · fin road trip', visa:'VoA', budget:'35–50€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'13 jun 2027', dateOut:'18 jun 2027'},
+      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'02 juin 2027', dateOut:'05 juin 2027'},
+    { num:58, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:4, transport:'🚢 Ferry · fin road trip', visa:'VoA', budget:'35–50€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'05 juin 2027', dateOut:'09 juin 2027'},
   ]},
 ];
 
@@ -1465,7 +1892,17 @@ function renderTimeline() {
     return Math.round((new Date(parseInt(p[2]), mo[p[1].slice(0,3)], parseInt(p[0])) - new Date('2026-12-28')) / 86400000);
   }
 
-  let html = `<div style="font-size:11px;color:var(--muted);margin-bottom:0.75rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:0.06em;">Frise chronologique</div>`;
+  // Legend (countries)
+  const legend = [
+    ['#4ade80','Taïwan'],['#fbbf24','Laos'],['#fb923c','Cambodge'],
+    ['#f87171','Vietnam'],['#818cf8','Philippines'],['#22d3ee','Indonésie']
+  ];
+  let html = `<div class="legend" style="margin-bottom:10px;">`;
+  legend.forEach(([color, name]) => {
+    html += `<div class="legend-item"><div class="legend-dot" style="background:${color};opacity:0.7;"></div>${name}</div>`;
+  });
+  html += `</div>`;
+
   html += `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;min-width:700px;table-layout:fixed;">`;
 
   // Header row
@@ -1503,18 +1940,6 @@ function renderTimeline() {
   });
 
   html += `</tbody></table></div>`;
-
-  // Legend
-  const legend = [
-    ['#4ade80','Taïwan'],['#fbbf24','Laos'],['#fb923c','Cambodge'],
-    ['#f87171','Vietnam'],['#818cf8','Philippines'],['#22d3ee','Indonésie']
-  ];
-  html += `<div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;">`;
-  legend.forEach(([color, name]) => {
-    html += `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">
-      <div style="width:14px;height:10px;border-radius:2px;background:${color};opacity:0.7;"></div>${name}</div>`;
-  });
-  html += `</div>`;
 
   container.innerHTML = html;
 }
@@ -2137,7 +2562,7 @@ const DEST_DETAILS = {
       { label: 'Monnaie', val: 'Le dong vietnamien (VND) prend le relai. 1\u20ac \u2248 27 000 VND. Retirer au DAB \u00e0 HCMC \u2014 \u00e9viter les bureaux de change frontaliers.' },
     ],
   },
-  32: {
+  40: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'Banaue / Batad \U0001f48e', flag: '\U0001f1f5\U0001f1ed', nights: '4 nuits',
     intro: 'Score 82% \u2014 la destination la mieux not\u00e9e de tout le pays selon l\u2019enqu\u00eate de 619 voyageurs. Rizi\u00e8res en terrasses creus\u00e9es \u00e0 la main il y a 2000 ans, class\u00e9es UNESCO. Province d\u2019Ifugao, montagnes du centre de Luzon.',
@@ -2171,7 +2596,7 @@ const DEST_DETAILS = {
       { label: 'Retour vers Palawan', val: 'Bus nuit Banaue \u2192 Manille (8\u20139h) puis vol Manille \u2192 Puerto Princesa (~1h15, ~60€).' },
     ],
   },
-  35: {
+  43: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'El Nido — Palawan', flag: '\U0001f1f5\U0001f1ed', nights: '5 nuits',
     intro: 'Score 58% \u2014 baie de Bacuit, une quarantaine d\u2019\u00eeles et \u00eelots aux formations karstiques vertigineuses. Village c\u00f4tier festif, point de d\u00e9part id\u00e9al pour explorer les lagons turquoise.',
@@ -2204,7 +2629,7 @@ const DEST_DETAILS = {
       { label: 'Vers la croisi\u00e8re', val: 'D\u00e9part directement depuis El Nido pour la croisi\u00e8re liveaboard vers Coron — v\u00e9rifier le point de rendez-vous avec l\u2019op\u00e9rateur.' },
     ],
   },
-  37: {
+  45: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'Coron — Palawan', flag: '\U0001f1f5\U0001f1ed', nights: '3 nuits',
     intro: 'Score 53% \u2014 paysages \u00e0 couper le souffle au nord de Palawan. Lacs ferm\u00e9s aux eaux cristallines, \u00e9paves de la Seconde Guerre mondiale, falaises calcaires.',
@@ -2244,7 +2669,7 @@ const DEST_DETAILS = {
       { label: 'Vers Cebu', val: 'Pas de ferry direct fiable Coron→Cebu. Ferry de nuit Coron→Manille (11\u201318h) puis vol Manille→Cebu (~1h15).' },
     ],
   },
-  40: {
+  48: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'Malapascua', flag: '\U0001f1f5\U0001f1ed', nights: '4 nuits',
     intro: 'Score 54% \u2014 petite \u00eele au nord de Cebu, c\u00e9l\u00e8bre pour ses requins-renards. Plages magnifiques, destination éco-touristique avec un nombre de plongeurs limit\u00e9.',
@@ -2277,7 +2702,7 @@ const DEST_DETAILS = {
       { label: 'Vers Moalboal', val: 'Retour Maya → Cebu City (4h) puis bus direction sud vers Moalboal (~3h supplémentaires). Compter une demi-journée de trajet.' },
     ],
   },
-  41: {
+  49: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'Moalboal', flag: '\U0001f1f5\U0001f1ed', nights: '4 nuits',
     intro: 'Score 35% \u2014 c\u00f4te sud-ouest de Cebu. C\u00e9l\u00e8bre pour le sardine run (bancs de sardines visibles en snorkeling depuis la plage) et l\u2019Osmeña Peak, sommet offrant une vue sur les volcans voisins.',
@@ -2310,7 +2735,7 @@ const DEST_DETAILS = {
       { label: 'Vers Siquijor', val: 'Ferry via Dumaguete (bus + ferry combinés) — compter une demi-journée de trajet.' },
     ],
   },
-  42: {
+  50: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'Siquijor \U0001f48e', flag: '\U0001f1f5\U0001f1ed', nights: '5 nuits',
     intro: 'Score 68% \u2014 3ème destination la mieux notée du pays. Île mystérieuse surnommée « l\u2019île aux sorcières », atmosphère sauvage et paisible, parfaite pour ralentir le rythme.',
@@ -2350,7 +2775,7 @@ const DEST_DETAILS = {
       { label: 'Vers Bohol', val: 'Ferry direct Siquijor → Tagbilaran (Bohol), environ 2h, ~18€.' },
     ],
   },
-  43: {
+  51: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'Bohol / Panglao', flag: '\U0001f1f5\U0001f1ed', nights: '3 nuits',
     intro: 'Score 32% — le moins consensuel de ton parcours selon l\u2019enquête, mais les Chocolate Hills et le sanctuaire des tarsiers restent des incontournables culturels du pays.',
@@ -2382,7 +2807,7 @@ const DEST_DETAILS = {
       { label: 'Vers Camiguin', val: 'Ferry Tagbilaran (Bohol) → Camiguin, moins de 4h.' },
     ],
   },
-  44: {
+  52: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'Camiguin', flag: '\U0001f1f5\U0001f1ed', nights: '4 nuits',
     intro: 'Score 57% \u2014 petite île volcanique encore peu touristique au large de Mindanao. Surnommée l\u2019île aux volcans, grande diversité de paysages sur un territoire minuscule.',
@@ -2415,7 +2840,7 @@ const DEST_DETAILS = {
       { label: 'Vers Siargao', val: 'Trajet combiné bateau + bus — pas de liaison directe simple, compter une journée complète de transport.' },
     ],
   },
-  45: {
+  53: {
     country: '\U0001f1f5\U0001f1ed Philippines',
     title: 'Siargao \U0001f3c4', flag: '\U0001f1f5\U0001f1ed', nights: '6 nuits',
     intro: 'Score 69% \u2014 île la plus prisée des surfeurs du pays, nord-est de Mindanao. Réputation construite sur des vagues de qualité mondiale, mais bien plus à offrir au-delà du surf.',
@@ -2549,11 +2974,19 @@ const DEST_DETAILS = {
         note: '⚑ Zone géo — les plantations de thé de Maokong sont dans les collines au sud de Taipei, 40 min depuis le centre. Le téléphérique offre une belle vue sur la ville. En haut : sentiers entre les théiers, maisons de thé avec terrasses panoramiques, dégustation de thé oolong local. Ambiance très différente du centre urbain — calme, verdoyant, quelques randos légères possibles entre les jardins. Prévoir une demi-journée.'
       },
     ],
+    logements: [
+      {
+        name: 'Backpackers Hostel - Ximen', status: 'reserved', type: 'Dortoir',
+        prix: '155 € / 4 nuits (~39 €/nuit)',
+        dates: '29 déc 2026 → 02 jan 2027',
+        quartier: 'Wanhua / Ximending',
+        note: 'Réservé via Agoda. En plein cœur du quartier historique de Ximending, à pied du marché nocturne, de Longshan Temple et de la vieille ville de Wanhua. Choix priorisant l\'emplacement plutôt que le confort (pas d\'ascenseur notamment). ⚠️ Tarif au-dessus de la fourchette cible (8–25 €/nuit) — effet haute saison Noël/Nouvel An, marché tendu (4 premiers choix déjà complets au moment de la réservation).'
+      },
+    ],
     pratique: [
       { label: 'SIM locale', val: 'Chunghwa Telecom à l\'aéroport TPE dès la sortie des douanes — 30 jours de données illimitées pour ~10 €. Prendre dès l\'arrivée pour avoir Maps et Translate fonctionnels immédiatement.' },
       { label: 'Cash & DAB', val: 'Monnaie locale : NT$ (Nouveau Dollar Taïwanais, ~30 NT$ = 1 €). Les DAB dans les 7-Eleven et Family Mart fonctionnent avec les cartes étrangères sans frais. Très peu d\'endroits n\'acceptent pas la carte dans Taipei.' },
       { label: 'Transport ville', val: 'EasyCard (carte rechargeable type Navigo) — acheter à l\'aéroport pour ~2 €. Valable sur tout le réseau MRT + bus de la ville. Donne aussi 20 % de réduction sur les bus. Le métro est propre, ponctuel, annoncé en français dans certaines lignes.' },
-      { label: 'Logement', val: 'Quartiers Da\'an et Zhongzheng = mieux situés pour les backpackers. Large choix de guesthouses et hostels entre 15 et 30 €/nuit. Réserver 4–5 jours à l\'avance en janvier (période creuse mais offre parfois limitée dans les bonnes adresses).' },
     ]
   },
   2: {
@@ -2924,7 +3357,7 @@ const DEST_DETAILS = {
     ]
   },
   // ── VIETNAM ──
-  30: {
+  33: {
     country: '🇻🇳 Vietnam',
     title: 'Ha Giang Loop 🏍️',
     nights: '4–5 jours · ~350 km',
@@ -2948,7 +3381,7 @@ const DEST_DETAILS = {
     ]
   },
   // ── PHILIPPINES ──
-  36: {
+  44: {
     country: '🇵🇭 Philippines',
     title: 'Croisière El Nido ↔ Coron 🚢',
     nights: '3–5 jours en mer',
@@ -2971,7 +3404,522 @@ const DEST_DETAILS = {
     ]
   },
   // ── INDONÉSIE ──
+  26: {
+    country: '🇻🇳 Vietnam',
+    title: 'Hô Chi Minh-Ville (Saïgon)', flag: '🇻🇳', nights: '3 nuits',
+    intro: 'Mégapole frénétique, scooters par millions, contraste marqué entre quartiers coloniaux français et tours modernes. Bonne mise en jambes après la frontière cambodgienne, mais arrivée parfois rude — prévoir une journée de transition avant de partir explorer.',
+    lieux: [
+      { name: 'Marché Bến Thành + quartier 1', type: 'Marché / street food', status: 'in',
+        prix: 'Gratuit à visiter — repas street food 1–3€',
+        dispo: 'Toute l\'année — marché ouvert 6h–18h',
+        transport: 'Cœur du quartier touristique, accessible à pied',
+        note: 'Bon point d\'ancrage mais prix touristiques dans les allées centrales — sortir vers les rues alentour pour les meilleurs stands et de meilleurs prix.' },
+      { name: 'Tunnels de Củ Chi', type: 'Histoire / guerre du Vietnam', status: 'in',
+        prix: 'Entrée + tour organisé ~10–15€',
+        dispo: 'Toute l\'année — excursion ½ journée',
+        transport: 'Tour organisé depuis le centre (~1h30 de route) ou bus public + taxi',
+        note: 'Réseau de tunnels viêt-côngs, très visité mais incontournable pour comprendre le pays. Réserver un tour matinal pour éviter la chaleur et la foule.' },
+      { name: 'Musée des Vestiges de Guerre', type: 'Histoire', status: 'in',
+        prix: '~1,50€',
+        dispo: 'Tous les jours, 7h30–18h',
+        transport: 'Quartier 3, accessible à pied ou Grab',
+        note: 'Saisissant, parfois dur émotionnellement. Compter 1h30–2h de visite.' },
+      { name: 'Quartier chinois (Cholon)', type: 'Quartier / temples', status: 'in',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année',
+        transport: 'Grab depuis le centre (~20 min)',
+        note: 'Moins touristique que le centre. Marché Bình Tây, temples chinois (Thiên Hậu). Bonne respiration après l\'agitation du quartier 1.' },
+      { name: 'Street food dans les hẻms (ruelles)', type: 'Food locale', status: 'in',
+        prix: '1–3€/repas',
+        dispo: 'Toute l\'année, surtout midi et soir',
+        transport: 'À pied, un peu partout en ville',
+        note: 'Les meilleures adresses sont dans les ruelles, pas sur les grands axes. À tester : bánh mì, phở, bún chả, bánh xèo, café sữa đá.' },
+    ],
+    pratique: [
+      { label: 'Traversée de rue', val: 'Ne jamais s\'arrêter — avancer à vitesse constante et régulière, les scooters s\'adaptent autour de soi.' },
+      { label: 'Déplacements', val: 'App Grab — bien moins cher et plus simple que négocier un taxi de rue.' },
+      { label: 'Durée du séjour', val: '3 nuits confortable pour la ville + Củ Chi. Possibilité de raccourcir à 2 si besoin de plus de temps à Đà Lạt.' },
+      { label: 'Arrivée par bus terrestre', val: 'Depuis le Cambodge (frontière Bavet/Mộc Bài), arrivée probable en gare de bus excentrée — prévoir Grab jusqu\'au centre.' },
+    ],
+  },
+  27: {
+    country: '🇻🇳 Vietnam',
+    title: 'Đà Lạt', flag: '🇻🇳', nights: '2 nuits',
+    intro: 'Ville d\'altitude (1500m) surnommée "le petit Paris" — héritage colonial français marqué, climat frais après la chaleur du Sud, lacs et cascades. Un peu kitsch par endroits mais bon contraste après Saïgon.',
+    lieux: [
+      { name: 'Lac Xuân Hương + marché nocturne', type: 'Balade urbaine', status: 'in',
+        prix: 'Gratuit — street food 1–2€',
+        dispo: 'Marché nocturne tous les soirs dès 17h–18h',
+        transport: 'Centre-ville, à pied',
+        note: 'Cœur de la ville. Marché nocturne animé et bon marché, bon pour le street food et les fraises locales.' },
+      { name: 'Datanla Falls / Vallée de l\'Amour', type: 'Nature / cascade', status: 'in',
+        prix: 'Entrée ~2€ + toboggan/canyoning en option ~5–15€',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter ou taxi depuis le centre (~15–20 min)',
+        note: 'Cascade avec activités (canyoning léger, toboggan) si envie de fun, sinon simple balade jusqu\'au pied de la chute.' },
+      { name: 'Plantations de café & fraises', type: 'Agritourisme', status: 'in',
+        prix: 'Visite + dégustation ~2–5€',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter en périphérie',
+        note: 'Fermes en périphérie de la ville. Dégustation de café robusta/arabica local et fraises fraîches.' },
+      { name: 'Gare ferroviaire + quartier des villas', type: 'Patrimoine', status: 'in',
+        prix: 'Entrée gare ~1€',
+        dispo: 'Toute l\'année',
+        transport: 'À pied ou scooter, centre-ville',
+        note: 'Ancienne gare Đà Lạt de style Art Déco, quartier des villas coloniales françaises. Peu de touristes occidentaux comparé au reste du pays.' },
+      { name: 'Crazy House (Hằng Nga Guesthouse)', type: 'Architecture insolite', status: 'in',
+        prix: '~2€',
+        dispo: 'Toute l\'année',
+        transport: 'À pied depuis le centre',
+        note: 'Maison-sculpture surréaliste, un peu touristique mais visuellement unique.' },
+    ],
+    pratique: [
+      { label: 'Scooter', val: 'Location sur place ~5€/j — bon réseau routier en altitude, idéal pour cascades et fermes en périphérie.' },
+      { label: 'Climat', val: 'Nuits fraîches (15–18°C) — net contraste avec le reste du Vietnam. Prévoir une petite veste.' },
+      { label: 'Durée du séjour', val: '2 nuits suffisantes pour l\'essentiel, sans s\'attarder sur le côté "parc d\'attractions" autour du lac qui peut vite saturer.' },
+    ],
+  },
+  28: {
+    country: '🇻🇳 Vietnam',
+    title: 'Hội An', flag: '🇻🇳', nights: '3 nuits',
+    intro: 'Vieille ville UNESCO, lanternes colorées, architecture marchande des XVe–XIXe siècles. Très touristique — un des spots les plus visités du Vietnam — mais le charme reste réel surtout en soirée et tôt le matin. Plage à proximité pour souffler.',
+    lieux: [
+      { name: 'Vieille ville + Pont japonais couvert', type: 'Patrimoine UNESCO', status: 'in',
+        prix: 'Billet combiné monuments ~5€',
+        dispo: 'Toute l\'année — visiter avant 8h ou après 21h pour éviter les groupes',
+        transport: 'Centre historique, à pied',
+        note: 'Visiter tôt le matin ou tard le soir pour éviter les groupes de tour. Billet payant pour certains monuments (maisons anciennes, temples).' },
+      { name: 'Marché nocturne des lanternes (fleuve Thu Bồn)', type: 'Ambiance / street food', status: 'in',
+        prix: 'Gratuit — street food 1–3€',
+        dispo: 'Tous les soirs dès 18h',
+        transport: 'Rive du fleuve, centre-ville',
+        note: 'LE moment iconique de Hội An — lanternes flottantes sur le fleuve, street food, artisanat. Très touristique mais ça reste joli. Viser après 21h30 pour éviter le pic de foule.' },
+      { name: 'Cours de cuisine vietnamienne', type: 'Activité / food', status: 'in',
+        prix: '~15–20€',
+        dispo: 'Toute l\'année, réservable sur place',
+        transport: 'Souvent avec navette incluse vers le marché',
+        note: 'Hội An est réputée pour ça — souvent avec marché + cours pratique. Bon rapport qualité-prix.' },
+      { name: 'Plage An Bàng', type: 'Plage', status: 'in',
+        prix: 'Gratuit — transats beach club ~3–5€',
+        dispo: 'Toute l\'année',
+        transport: 'Vélo ~15–20 min depuis le centre',
+        note: 'Beaucoup plus calme que le centre historique, bons beach clubs.' },
+      { name: 'Tailleur sur mesure', type: 'Shopping', status: 'in',
+        prix: 'Variable selon pièce — costume dès ~50€',
+        dispo: 'Toute l\'année',
+        transport: 'Nombreuses boutiques en vieille ville',
+        note: 'Hội An est réputée pour le tailoring rapide et bon marché (costumes, robes sur mesure en 24–48h). Optionnel.' },
+      { name: 'Mỹ Sơn (ruines chams)', type: 'Histoire / archéologie', status: 'optionnel',
+        prix: 'Entrée ~10€ + transport',
+        dispo: 'Toute l\'année, excursion ½ journée',
+        transport: 'Tour organisé ou taxi/scooter (~1h)',
+        note: 'Temples hindous en ruines, comparés parfois à un "petit Angkor". À juger après Angkor déjà fait au Cambodge — peut sembler redondant.' },
+    ],
+    pratique: [
+      { label: 'Déplacements', val: 'Vélo souvent gratuit via l\'hébergement — ville petite et plate, plage incluse.' },
+      { label: 'Marché nocturne', val: 'Éviter le pic touristique 19h–21h — viser après 21h30 pour des photos sans foule.' },
+      { label: 'Mỹ Sơn', val: 'Optionnel — à décider selon l\'intérêt après la visite d\'Angkor au Cambodge.' },
+    ],
+  },
+  29: {
+    country: '🇻🇳 Vietnam',
+    title: 'Huế (journée)', flag: '🇻🇳', nights: '1 nuit',
+    intro: 'Ancienne capitale impériale du Vietnam, ambiance plus posée et historique que Hội An. Format très court (1 nuit, journée seulement) donc sélectif sur l\'essentiel.',
+    lieux: [
+      { name: 'Cité impériale (Hoàng Thành)', type: 'Patrimoine UNESCO', status: 'in',
+        prix: 'Entrée ~6€',
+        dispo: 'Toute l\'année, 7h–17h30',
+        transport: 'Centre-ville, à pied ou vélo',
+        note: 'Inspirée de la Cité interdite de Pékin. Compter 2–3h de visite — incontournable et seul vrai "must" en une journée.' },
+      { name: 'Tombeau de Khải Định', type: 'Patrimoine', status: 'in',
+        prix: 'Entrée ~3€',
+        dispo: 'Toute l\'année',
+        transport: 'Taxi/scooter ~30 min depuis le centre',
+        note: 'Mausolée impérial mélangeant architecture vietnamienne et européenne. À choisir un seul tombeau vu le temps limité.' },
+      { name: 'Rivière des Parfums + pagode Thiên Mụ', type: 'Activité / paysage', status: 'optionnel',
+        prix: 'Balade bateau-dragon ~5–10€',
+        dispo: 'Toute l\'année',
+        transport: 'Bateau depuis le centre',
+        note: 'Souvent combiné avec la visite des pagodes. Sympa mais pas indispensable en format 1 nuit.' },
+      { name: 'Bún bò Huế', type: 'Food locale', status: 'in',
+        prix: '~1,50–2€',
+        dispo: 'Toute l\'année, dans toute la ville',
+        transport: 'À pied',
+        note: 'LE plat signature de la ville — soupe épicée au bœuf, différente du phở classique. À tester absolument.' },
+    ],
+    pratique: [
+      { label: 'Format court', val: '1 nuit seulement — se concentrer sur la Cité impériale + un tombeau, sans surcharger.' },
+      { label: 'Arrivée', val: 'Bus depuis Hội An (~3h) arrive en général en milieu de journée — possible de visiter la cité impériale l\'après-midi même.' },
+    ],
+  },
+  30: {
+    country: '🇻🇳 Vietnam',
+    title: 'Phong Nha', flag: '🇻🇳', nights: '3 nuits',
+    intro: 'Région karstique spectaculaire, abrite certaines des plus grandes grottes du monde (parc national Phong Nha-Kẻ Bàng, UNESCO). Ambiance nature/aventure, beaucoup moins touristique que Hội An.',
+    lieux: [
+      { name: 'Grotte Phong Nha (en bateau)', type: 'Grotte / nature', status: 'in',
+        prix: 'Entrée + bateau ~8–10€',
+        dispo: 'Toute l\'année',
+        transport: 'Bateau depuis le quai du village',
+        note: 'Visite en bateau sur la rivière souterraine. Accessible à tous, bonne intro aux grottes de la région.' },
+      { name: 'Grotte Paradise (Thiên Đường)', type: 'Grotte / nature', status: 'in',
+        prix: 'Entrée ~15€',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter ou tour organisé (~30 min du village)',
+        note: 'Une des plus grandes grottes du monde, passerelles aménagées. Possibilité de marcher plus loin pour les plus aventureux (zone non éclairée en option).' },
+      { name: 'Dark Cave (Hang Tối)', type: 'Aventure / activité', status: 'in',
+        prix: 'Combo zipline + kayak + boue ~25–30€',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter ou tour organisé (~20 min du village)',
+        note: 'Zipline + kayak + bain de boue dans la grotte. Format "fun" très différent des grottes-musées, bon pour casser le rythme contemplatif.' },
+      { name: 'Botanic Garden + cascade', type: 'Nature / rando courte', status: 'in',
+        prix: 'Entrée ~3€',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter (~20 min du village)',
+        note: 'Petite rando dans le parc national, cascade à la clé. Moins fréquenté que les grottes principales.' },
+    ],
+    pratique: [
+      { label: 'Déplacements', val: 'Scooter ou tour organisé pour rejoindre les grottes (dispersées, 30–45 min du village) — combo grottes en 1 jour courant (ex: Paradise + Dark Cave).' },
+      { label: 'Répartition 3 nuits', val: '1 jour bateau Phong Nha + Paradise, 1 jour Dark Cave, 1 jour repos/cascade.' },
+    ],
+  },
+  31: {
+    country: '🇻🇳 Vietnam',
+    title: 'Ninh Bình / Tam Cốc', flag: '🇻🇳', nights: '2 nuits',
+    intro: 'Surnommée "la baie d\'Halong terrestre" — paysages karstiques spectaculaires mais sur rivière et rizières plutôt qu\'en mer. Plus accessible et moins cher que Hạ Long elle-même. Ambiance nature/calme.',
+    lieux: [
+      { name: 'Tam Cốc — balade en barque', type: 'Nature / rivière', status: 'in',
+        prix: '~10–12€',
+        dispo: 'Toute l\'année',
+        transport: 'Quai de départ à vélo depuis le centre',
+        note: 'LE incontournable : 2h en petite barque à travers les rizières et 3 grottes naturelles. Rameurs souvent locaux (parfois aux pieds !).' },
+      { name: 'Pagode Bích Động', type: 'Patrimoine', status: 'in',
+        prix: 'Gratuit ou ~1€',
+        dispo: 'Toute l\'année',
+        transport: 'À côté de Tam Cốc, combo souvent fait le même jour',
+        note: 'Pagode accrochée à la falaise, juste à côté de Tam Cốc.' },
+      { name: 'Mua Cave + point de vue', type: 'Rando / panorama', status: 'in',
+        prix: '~3€',
+        dispo: 'Toute l\'année — privilégier fin de journée',
+        transport: 'Vélo depuis le centre (~15 min)',
+        note: 'Montée de ~500 marches jusqu\'au sommet — vue iconique sur les rizières et méandres de rivière (photo la plus connue de la région). Bon mollets requis. Coucher de soleil recommandé.' },
+      { name: 'Réserve naturelle de Vân Long', type: 'Nature / faune', status: 'in',
+        prix: '~5€ (barque incluse)',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter ou taxi (~20 min)',
+        note: 'Moins touristique que Tam Cốc, balade en barque dans une zone humide protégée, observation possible de langurs (singes endémiques).' },
+      { name: 'Trang An (alternative à Tam Cốc)', type: 'Nature / rivière', status: 'optionnel',
+        prix: '~13–15€',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter ou taxi depuis Tam Cốc (~10 min)',
+        note: '⚠️ Risque de doublon avec Tam Cốc — circuit en barque plus long (3h), grottes et temples, classé UNESCO. À faire seulement si envie de comparer les deux ou si Tam Cốc trop bondé ce jour-là.' },
+    ],
+    pratique: [
+      { label: 'Déplacements', val: 'Vélo pour se déplacer entre les sites — location facile, terrain plat.' },
+      { label: 'Tam Cốc vs Trang An', val: 'Les deux sont similaires (barque + grottes) — garder Tam Cốc en priorité pour éviter la redondance, Trang An en option seulement.' },
+    ],
+  },
+  32: {
+    country: '🇻🇳 Vietnam',
+    title: 'Pù Luông', flag: '🇻🇳', nights: '3 nuits',
+    intro: 'Réserve naturelle de montagne, rizières en terrasses, villages ethniques Thái et Mường. Beaucoup moins touristique que Sa Pa (l\'alternative la plus connue), ambiance très calme et authentique.',
+    lieux: [
+      { name: 'Rizières en terrasses + roues à eau (village de Hiếu)', type: 'Panorama / rando', status: 'in',
+        prix: 'Gratuit (rando libre)',
+        dispo: 'Toute l\'année — rizières dorées sept–oct, vertes en mars',
+        transport: 'À pied ou vélo depuis l\'hébergement',
+        note: 'Sentiers entre villages, vue sur les rizières en terrasses. Les roues à eau géantes en bambou (cọn nước) sont une signature locale.' },
+      { name: 'Rando vers le sommet Pù Luông', type: 'Trek', status: 'in',
+        prix: 'Guide ~20–25$/j',
+        dispo: 'Toute l\'année, éviter forte pluie',
+        transport: 'Départ à pied depuis un village proche, guide recommandé',
+        note: 'Plus engagé, vue sur toute la vallée. Comptez une journée complète, guide recommandé.' },
+      { name: 'Homestay village (Thái/Mường)', type: 'Immersion culturelle', status: 'in',
+        prix: '~10–20€/nuit avec repas',
+        dispo: 'Toute l\'année — réservable en ligne',
+        transport: 'Sur place, villages de Hiếu ou Kho Mường notamment',
+        note: 'Très répandu et standardisé dans la région — maisons sur pilotis traditionnelles, repas partagé. Se réserve normalement via Booking.com/Agoda comme un hôtel classique (ex: "Pu Luong Homestay & Tours" à Ban Hiếu). Pour une nuit homestay plus isolée type trek (catégorie non réservable en ligne), passer par une agence locale ou un guide sur place.' },
+      { name: 'Vélo dans la vallée', type: 'Balade', status: 'in',
+        prix: 'Location ~3–5€/j',
+        dispo: 'Toute l\'année',
+        transport: 'Location sur place',
+        note: 'Réseau de petites routes entre rizières et villages, faisable en vélo ou scooter, terrain peu accidenté.' },
+      { name: 'Piscine naturelle / cascade Hiếu', type: 'Nature / baignade', status: 'in',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année',
+        transport: 'À pied depuis le village de Hiếu',
+        note: 'Petite cascade avec piscine naturelle près du village de Hiếu, bonne pause rafraîchissante après une rando.' },
+    ],
+    pratique: [
+      { label: 'Cash', val: 'Zone moins développée touristiquement — peu de distributeurs, prévoir du cash avant d\'arriver.' },
+      { label: 'Homestay — réservation', val: 'Booking.com/Agoda référencent déjà la majorité des homestays village (Ban Hiếu, Kho Mường) — réserver en ligne plutôt que de compter sur place.' },
+      { label: 'Saison rizières', val: 'Meilleure période sept–oct pour les rizières dorées (récolte) — en mars, rizières vertes, paysage différent mais toujours beau.' },
+    ],
+  },
+  34: {
+    country: '🇻🇳 Vietnam',
+    title: 'Cao Bằng', flag: '🇻🇳', nights: '3 nuits',
+    intro: 'Région frontalière chinoise peu visitée par les touristes occidentaux, célèbre pour sa cascade emblématique et ses paysages karstiques. Beaucoup plus tranquille que Hà Giang.',
+    lieux: [
+      { name: 'Cascade de Bản Giốc', type: 'Nature / cascade', status: 'in',
+        prix: 'Entrée ~3€',
+        dispo: 'Toute l\'année — débit max mai–sept, plus faible en mars',
+        transport: 'Scooter ou tour organisé (~3h depuis Cao Bằng ville)',
+        note: 'LA star de la région — cascade large à la frontière chinoise, spectaculaire surtout après la mousson. En mars, débit plus faible mais toujours joli.' },
+      { name: 'Grotte Ngườm Ngao', type: 'Grotte', status: 'in',
+        prix: 'Entrée ~5€',
+        dispo: 'Toute l\'année',
+        transport: 'À côté de Bản Giốc, combo même jour',
+        note: 'Stalactites impressionnantes, passerelles aménagées, moins connue que les grottes de Phong Nha donc plus calme.' },
+      { name: 'Lac Thang Hen', type: 'Nature / paysage', status: 'in',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter — route de montagne sinueuse (~1h depuis Cao Bằng ville)',
+        note: 'Lac karstique entouré de montagnes, accès par route de montagne sinueuse. Très peu de touristes.' },
+      { name: 'Village Phong Nặm (rizières)', type: 'Panorama / village', status: 'in',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter, point de vue depuis une colline',
+        note: 'Point de vue connu sur les rizières en damier, vue depuis le sommet d\'une colline.' },
+      { name: 'Grotte Pác Bó (site Hồ Chí Minh)', type: 'Histoire', status: 'optionnel',
+        prix: 'Entrée ~2€',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter (~1h depuis Cao Bằng ville)',
+        note: 'Site où Hồ Chí Minh s\'est caché à son retour au Vietnam en 1941. Intéressant pour varier les sites historiques, sinon optionnel.' },
+    ],
+    pratique: [
+      { label: 'Déplacements', val: 'Scooter ou tour organisé indispensable — sites dispersés (30 min à 1h30 entre eux), peu de transport public.' },
+      { label: 'Niveau logistique', val: 'Moins développé touristiquement que Hà Giang — bonnes surprises mais logistique parfois plus rustique (routes, hébergement basique).' },
+    ],
+  },
+  35: {
+    country: '🇻🇳 Vietnam',
+    title: 'Hồ Ba Bể', flag: '🇻🇳', nights: '2 nuits',
+    intro: 'Lac d\'origine naturelle (rare en Asie), entouré de forêt primaire et de villages Tày. Très calme, peu de touristes occidentaux, étape de transition entre Cao Bằng et la suite du Vietnam.',
+    lieux: [
+      { name: 'Balade en barque sur le lac', type: 'Nature / lac', status: 'in',
+        prix: '~10–15€ (barque partagée)',
+        dispo: 'Toute l\'année',
+        transport: 'Départ du quai principal',
+        note: 'LE incontournable — 3-4h en barque traditionnelle, passage par la grotte Puông et l\'îlot Bà Góa.' },
+      { name: 'Grotte Puông', type: 'Grotte', status: 'in',
+        prix: 'Inclus dans la balade en barque',
+        dispo: 'Toute l\'année',
+        transport: 'En barque',
+        note: 'Grotte navigable en barque, traversée par une rivière souterraine. Combo classique avec la balade lac.' },
+      { name: 'Cascade Đầu Đẳng', type: 'Nature / cascade', status: 'in',
+        prix: 'Inclus dans la balade en barque',
+        dispo: 'Toute l\'année',
+        transport: 'Barque + courte marche',
+        note: 'Accessible en barque + courte marche. Rapides et cascades sur plusieurs niveaux.' },
+      { name: 'Village Tày (Pác Ngòi)', type: 'Immersion culturelle', status: 'in',
+        prix: 'Homestay ~10–15€/nuit avec repas',
+        dispo: 'Toute l\'année — réservable en ligne',
+        transport: 'Au bord du lac, accessible à pied',
+        note: 'Village au bord du lac, maisons sur pilotis. Possibilité de nuit chez l\'habitant (homestay) comme à Pù Luông, réservable sur Booking/Agoda.' },
+      { name: 'Rando courte autour du lac', type: 'Rando', status: 'in',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année',
+        transport: 'Sentiers balisés depuis le village',
+        note: 'Sentiers en forêt primaire, possibilité d\'observer la faune locale (calao, langurs si chance).' },
+    ],
+    pratique: [
+      { label: 'Répartition 2 nuits', val: '1 jour suffit pour la balade en barque complète (lac + grotte + cascade) — la 2e nuit permet repos ou rando courte.' },
+      { label: 'Homestay', val: 'Comme à Pù Luông, les homestays du village Pác Ngòi sont réservables sur Booking/Agoda.' },
+      { label: 'Transition vers Hạ Long/Cat Bà', val: 'Route de montagne — prévoir temps de trajet généreux.' },
+    ],
+  },
+  36: {
+    country: '🇻🇳 Vietnam',
+    title: 'Baie d\'Ha Long / Cat Bà', flag: '🇻🇳', nights: '3 nuits',
+    intro: 'Le spot le plus touristique du Vietnam, mais pour de bonnes raisons — paysage karstique unique. Cat Bà (la grande île) offre une alternative plus calme et nature que la baie principale bondée de croisières de masse depuis Hanoï.',
+    lieux: [
+      { name: 'Baie de Lan Hạ (croisière 1 jour ou nuit)', type: 'Croisière / paysage', status: 'in',
+        prix: 'Croisière jour ~30–40€ — nuit en cabine ~50–80€',
+        dispo: 'Toute l\'année',
+        transport: 'Départ depuis Cat Bà',
+        note: 'Alternative moins fréquentée à la baie d\'Ha Long classique, mêmes formations karstiques, kayak inclus généralement. Recommandé plutôt que la baie principale bondée.' },
+      { name: 'Parc national de Cat Bà', type: 'Rando / nature', status: 'in',
+        prix: 'Entrée ~2€',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter ou taxi depuis la ville (~20 min)',
+        note: 'Forêt tropicale, possibilité d\'observer le langur de Cat Bà (primate endémique très rare, quasi disparu). Sentiers variés selon le temps disponible.' },
+      { name: 'Plage Cat Co 1/2/3', type: 'Plage', status: 'in',
+        prix: 'Gratuit — transats ~3€',
+        dispo: 'Toute l\'année',
+        transport: 'À pied ou navette depuis la ville',
+        note: 'Plages aménagées près de la ville de Cat Bà, eau turquoise, bon pour souffler entre les activités.' },
+      { name: 'Kayak dans les lagons cachés', type: 'Activité / paysage', status: 'in',
+        prix: 'Souvent inclus en croisière, sinon location ~10€',
+        dispo: 'Toute l\'année',
+        transport: 'Départ en bateau ou depuis la ville',
+        note: 'Souvent inclus dans les croisières, sinon location possible depuis la ville. Accès à des criques inaccessibles autrement.' },
+      { name: 'Village flottant de pêcheurs', type: 'Immersion culturelle', status: 'in',
+        prix: 'Souvent inclus en croisière',
+        dispo: 'Toute l\'année',
+        transport: 'En bateau',
+        note: 'Visite en bateau, mode de vie traditionnel sur l\'eau. Souvent inclus dans les circuits croisière.' },
+    ],
+    pratique: [
+      { label: 'Lan Hạ vs Ha Long', val: 'Privilégier Lan Hạ plutôt que la baie d\'Ha Long principale — moins de bateaux-usines, paysages tout aussi spectaculaires.' },
+      { label: 'Répartition 3 nuits', val: '1 nuit croisière en bateau (souvent en cabine, ambiance sympa) + 1-2 nuits à terre pour rando parc national et plage.' },
+      { label: 'Snorkeling', val: 'Possible dans certains spots de Lan Hạ — alternative légère à la plongée si curiosité.' },
+    ],
+  },
+  37: {
+    country: '🇻🇳 Vietnam',
+    title: 'Cô Tô', flag: '🇻🇳', nights: '3 nuits',
+    intro: 'Île reculée, beaucoup moins visitée que Cat Bà ou Phú Quốc, eau claire et plages encore préservées. Format détente pure après un itinéraire Vietnam Nord assez dense.',
+    lieux: [
+      { name: 'Plage Hồng Vàn', type: 'Plage', status: 'in',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année',
+        transport: 'Scooter depuis le port (~15 min)',
+        note: 'La plus belle plage de l\'île, eau turquoise, sable fin. Peu fréquentée même en saison.' },
+      { name: 'Phare de Cô Tô + point de vue', type: 'Panorama', status: 'in',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année — coucher de soleil recommandé',
+        transport: 'Courte marche depuis le centre',
+        note: 'Petite marche jusqu\'au phare, vue sur toute l\'île et la mer environnante. Bon spot coucher de soleil.' },
+      { name: 'Snorkeling autour de l\'île', type: 'Activité nautique', status: 'in',
+        prix: 'Sortie bateau ~10–15€',
+        dispo: 'Toute l\'année, météo dépendante',
+        transport: 'Bateau depuis le port',
+        note: 'Spots accessibles en bateau depuis le port, coraux et poissons visibles par bonne visibilité. Alternative légère et sans pression à la plongée — pas d\'infrastructure plongée développée ici, le snorkeling suffit largement.' },
+      { name: 'Tour de l\'île en scooter', type: 'Balade', status: 'in',
+        prix: 'Location ~5€/j',
+        dispo: 'Toute l\'année',
+        transport: 'Location au port',
+        note: 'Île petite, faisable en une demi-journée à scooter, plusieurs criques à découvrir au passage.' },
+      { name: 'Marché aux poissons du port', type: 'Immersion locale', status: 'in',
+        prix: 'Gratuit à visiter',
+        dispo: 'Tous les matins, tôt',
+        transport: 'À pied, port principal',
+        note: 'Le matin tôt, ambiance de pêcheurs locaux, bon spot pour observer la vie de l\'île.' },
+    ],
+    pratique: [
+      { label: 'Liaison bateau', val: '⚠️ À confirmer précisément — départ depuis Cẩm Phả ou Vân Đồn (pas Cat Bà). Point ouvert à vérifier avant réservation.' },
+      { label: 'Rythme', val: 'Île au rythme lent — peu d\'activités organisées, parfait pour décompresser après le rythme intense du Nord.' },
+      { label: 'Snorkeling vs plongée', val: 'Snorkeling largement suffisant ici — pas d\'infrastructure plongée développée sur l\'île.' },
+    ],
+  },
+  38: {
+    country: '🇻🇳 Vietnam',
+    title: 'Hanoï', flag: '🇻🇳', nights: '3 nuits',
+    intro: 'Capitale millénaire, vieux quartier (Old Quarter) dense et animé, mélange architecture coloniale française et tradition vietnamienne. Plus posée que Saïgon mais tout aussi vivante côté street food.',
+    lieux: [
+      { name: 'Vieux Quartier + lac Hoàn Kiếm', type: 'Balade urbaine', status: 'in',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année',
+        transport: 'Centre-ville, à pied',
+        note: 'Cœur historique, ruelles commerçantes par corps de métier, temple Ngọc Sơn sur le lac. Base idéale pour explorer à pied.' },
+      { name: 'Train Street (rue du train)', type: 'Curiosité urbaine', status: 'in',
+        prix: 'Gratuit — café sur place ~2€',
+        dispo: 'Toute l\'année — horaires de passage variables à vérifier sur place',
+        transport: 'À pied, quartier Old Quarter',
+        note: 'Ruelle résidentielle traversée par une voie ferrée active, maisons à quelques centimètres des rails. Très photogénique. Éviter d\'y aller seul aux heures de passage — certains cafés permettent d\'observer en sécurité.' },
+      { name: 'Mausolée Hồ Chí Minh + maison sur pilotis', type: 'Histoire', status: 'in',
+        prix: 'Gratuit (mausolée) — maison sur pilotis ~1€',
+        dispo: 'Matin uniquement, fermé certains jours',
+        transport: 'À pied ou Grab depuis le centre',
+        note: 'Site officiel, dress code strict (pas d\'épaules/genoux nus), file d\'attente possible le matin.' },
+      { name: 'Temple de la Littérature', type: 'Patrimoine', status: 'in',
+        prix: 'Entrée ~1,50€',
+        dispo: 'Toute l\'année',
+        transport: 'Grab depuis le centre (~15 min)',
+        note: 'Premier "université" du Vietnam (XIe siècle), dédié à Confucius. Calme, bien préservé.' },
+      { name: 'Spectacle de marionnettes sur l\'eau', type: 'Culture / spectacle', status: 'in',
+        prix: '~5–8€',
+        dispo: 'Plusieurs séances par soir',
+        transport: 'Théâtre Thăng Long, centre-ville',
+        note: 'Tradition vietnamienne unique, marionnettes sur un bassin d\'eau avec musique live. Format court (1h).' },
+      { name: 'Street food tour (bia hơi, phở, egg coffee)', type: 'Food locale', status: 'in',
+        prix: '1–3€/consommation',
+        dispo: 'Toute l\'année, surtout fin de journée',
+        transport: 'À pied, Old Quarter',
+        note: 'Bia hơi (bière pression locale) dans les rues du Old Quarter en fin de journée, egg coffee (cà phê trứng) à tester absolument.' },
+    ],
+    pratique: [
+      { label: 'Rythme du séjour', val: '3 nuits permet un bon rythme : ville + un peu de repos avant le vol long vers Manille.' },
+      { label: 'Shopping de dernière minute', val: 'Marché Đồng Xuân pour finaliser les derniers achats avant les Philippines.' },
+    ],
+  },
+  39: {
+    country: '🇵🇭 Philippines',
+    title: 'Manille (transit, arrivée)', flag: '🇵🇭', nights: '1 nuit',
+    intro: 'Arrivée par vol direct depuis Hanoï. Simple escale avant le bus de nuit vers Banaue — pas de programme dédié, juste une nuit pour récupérer du vol et préparer le trek.',
+    lieux: [
+      { name: 'Aéroport NAIA → hébergement', type: 'Transport', status: 'in',
+        prix: 'Grab ~8–15€ selon trafic',
+        dispo: 'Trafic dense quasi en permanence à Manille',
+        transport: 'Grab recommandé plutôt que taxi de rue',
+        note: 'Privilégier un hébergement proche de la gare de bus (zone Cubao/Sampaloc) pour faciliter le départ vers Banaue le lendemain soir.' },
+    ],
+    pratique: [
+      { label: 'Visa', val: 'Exemption 30 jours pour les Français, tampon à l\'arrivée.' },
+      { label: 'Bus vers Banaue', val: 'Réserver le bus de nuit (Ohayami Trans, Coda Lines) la veille en haute saison — départ généralement en soirée depuis la zone Cubao/Sampaloc.' },
+      { label: 'SIM locale', val: 'Acheter une SIM (Globe ou Smart) directement à l\'aéroport — utile dès l\'arrivée pour Grab et navigation.' },
+    ],
+  },
+  41: {
+    country: '🇵🇭 Philippines',
+    title: 'Manille (retour de Banaue)', flag: '🇵🇭', nights: '1 nuit',
+    intro: 'Escale de transition après le trek Banaue/Batad, avant le vol vers Puerto Princesa. Nuit de récupération après le bus de nuit.',
+    lieux: [
+      { name: 'Bus nuit Banaue → Manille', type: 'Transport', status: 'in',
+        prix: '~12€',
+        dispo: '8–9h de trajet, arrivée tôt le matin',
+        transport: 'Ohayami Trans ou Coda Lines',
+        note: 'Arrivée matinale fatigante — possibilité de check-in anticipé selon l\'hébergement, sinon prévoir une sieste.' },
+    ],
+    pratique: [
+      { label: 'Vol vers Puerto Princesa', val: 'Réserver à l\'avance (~60€, ~1h15) — départs principalement depuis le Terminal 3 (NAIA), vérifier le terminal exact selon la compagnie.' },
+      { label: 'Repos', val: 'Après le trek + bus de nuit, privilégier un hébergement confortable pour récupérer avant la suite du séjour.' },
+    ],
+  },
+  42: {
+    country: '🇵🇭 Philippines',
+    title: 'Puerto Princesa', flag: '🇵🇭', nights: '2 nuits',
+    intro: 'Ville-porte de Palawan, étape de transition vers El Nido mais avec un site majeur à proximité : la rivière souterraine de Puerto Princesa, classée UNESCO et l\'une des "New 7 Wonders of Nature".',
+    lieux: [
+      { name: 'Rivière souterraine de Puerto Princesa', type: 'Nature / grotte', status: 'in',
+        prix: 'Tour organisé ~25–35€ (transport + bateau + permis inclus)',
+        dispo: 'Toute l\'année — réserver le permis à l\'avance, quota journalier limité',
+        transport: 'Tour organisé depuis la ville (~1h30 de route + bateau)',
+        note: 'Rivière navigable de 8,2 km à travers une grotte calcaire, classée UNESCO. Le permis est limité en nombre par jour — réserver via une agence à Puerto Princesa dès l\'arrivée si pas fait en ligne avant.' },
+      { name: 'Baker\'s Hill', type: 'Point de vue', status: 'optionnel',
+        prix: 'Gratuit à visiter',
+        dispo: 'Toute l\'année',
+        transport: 'Sur la route vers la rivière souterraine',
+        note: 'Petit arrêt possible sur le trajet — boulangerie + vue, optionnel.' },
+    ],
+    pratique: [
+      { label: 'Réservation rivière souterraine', val: 'Quota journalier limité — réserver le tour (incluant le permis) au moins 1 jour avant via une agence locale ou en ligne.' },
+      { label: 'Transition vers El Nido', val: 'Van direct ~5–6h le lendemain — départs matinaux recommandés.' },
+    ],
+  },
   47: {
+    country: '🇵🇭 Philippines',
+    title: 'Cebu City', flag: '🇵🇭', nights: '1 nuit',
+    intro: 'Arrivée par vol direct depuis Coron — fini le détour par Manille. Cebu City a quelques intérêts (vieille ville, Magellan\'s Cross) mais le format 1 nuit limite à l\'essentiel pratique avant de rejoindre Malapascua.',
+    lieux: [
+      { name: 'Vol direct Coron → Cebu', type: 'Transport', status: 'in',
+        prix: '60–120€ selon réservation',
+        dispo: '46 vols/semaine — Cebgo, Philippine Airlines, Sunlight Air',
+        transport: 'Aéroport Busuanga (USU) → Mactan-Cebu (CEB), ~1h15 direct',
+        note: 'Remplace avantageusement le ferry de nuit + transit Manille (gain ~10h, suppression d\'une nuit). Plusieurs vols par jour, réserver en avance en haute saison.' },
+      { name: 'Basilique Santo Niño + Magellan\'s Cross', type: 'Patrimoine', status: 'optionnel',
+        prix: 'Gratuit',
+        dispo: 'Toute l\'année',
+        transport: 'Centre historique, à pied',
+        note: 'Si le timing du vol permet une après-midi libre, petit détour possible — sinon sans incidence sur la suite.' },
+    ],
+    pratique: [
+      { label: 'Vers Malapascua', val: 'Bus ~4h depuis le terminal nord de Cebu (North Bus Terminal) + ferry ~30 min depuis Maya — départs matinaux recommandés pour la correspondance ferry.' },
+      { label: 'Aéroport', val: 'Aéroport de Cebu-Mactan (CEB) — bien desservi, Grab disponible.' },
+    ],
+  },
+  55: {
     country: '🇮🇩 Indonésie',
     title: 'Road trip Lombok → Flores 🏍️',
     nights: '10–12 jours · ~2 000 km · 3 ferries',
@@ -3024,12 +3972,33 @@ function openDestModal(stepNum) {
     </div>`;
   }).join('');
 
+  const logementsHtml = (d.logements || []).map(lg => {
+    const isReserved = lg.status === 'reserved';
+    const sb = isReserved
+      ? `<span style="background:#EAF3DE;color:#27500A;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap;flex-shrink:0;">✅ Réservé</span>`
+      : `<span style="background:#FAEEDA;color:#633806;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap;flex-shrink:0;">☐ À réserver</span>`;
+    return `<div style="border:1px solid ${isReserved ? '#5C8A3A' : 'rgba(128,128,128,0.2)'};border-radius:8px;padding:12px 14px;margin-bottom:10px;background:rgba(128,128,128,0.03);">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">
+        <div style="font-size:14px;font-weight:600;color:var(--text)">${lg.name}</div>
+        <div style="display:flex;gap:4px;flex-shrink:0;">${sb}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+        <div style="font-size:12px;"><span style="color:var(--muted);display:block;margin-bottom:2px;">TYPE</span><span style="color:var(--text);">${lg.type}</span></div>
+        <div style="font-size:12px;"><span style="color:var(--muted);display:block;margin-bottom:2px;">PRIX</span><span style="color:var(--text);font-weight:500;">${lg.prix}</span></div>
+        <div style="font-size:12px;"><span style="color:var(--muted);display:block;margin-bottom:2px;">DATES</span><span style="color:var(--text);">${lg.dates}</span></div>
+        <div style="font-size:12px;"><span style="color:var(--muted);display:block;margin-bottom:2px;">QUARTIER</span><span style="color:var(--text);">${lg.quartier}</span></div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);background:rgba(128,128,128,0.06);border-radius:6px;padding:8px 10px;line-height:1.6;">${lg.note}</div>
+    </div>`;
+  }).join('');
+
   const pratHtml = d.pratique.map(p => `
     <div style="display:grid;grid-template-columns:120px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid rgba(128,128,128,0.15);">
       <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;padding-top:2px;">${p.label}</div>
       <div style="font-size:13px;color:var(--text);line-height:1.5;">${p.val}</div>
     </div>`).join('');
 
+  const isMobileDesc = window.innerWidth <= 760;
   const overlay = document.createElement('div');
   overlay.id = 'dest-modal-overlay';
   overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;background:rgba(0,0,0,0.75);z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;overflow:hidden;';
@@ -3039,13 +4008,15 @@ function openDestModal(stepNum) {
         <div>
           <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">${d.country || ''} — ${d.nights}</div>
           <div style="font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;">${d.title}</div>
-          <div style="font-size:13px;color:var(--muted);line-height:1.6;max-width:580px;">${d.intro}</div>
+          <div id="dest-desc-${stepNum}" style="font-size:13px;color:var(--muted);line-height:1.6;max-width:580px;${isMobileDesc ? 'display:none;' : ''}">${d.intro}</div>
+          <button type="button" id="dest-desc-toggle-${stepNum}" onclick="(function(btn){var el=document.getElementById('dest-desc-${stepNum}');var hidden=el.style.display==='none';el.style.display=hidden?'block':'none';btn.textContent=hidden?'▴ Masquer la description':'▾ Afficher la description';})(this)" style="margin-top:6px;background:none;border:none;padding:0;font-size:11px;color:var(--accent2);cursor:pointer;text-decoration:underline;text-decoration-style:dotted;">${isMobileDesc ? '▾ Afficher la description' : '▴ Masquer la description'}</button>
         </div>
         <button onclick="document.getElementById('dest-modal-overlay').remove();document.documentElement.style.overflow='';document.body.style.overflow='';" style="flex-shrink:0;background:rgba(128,128,128,0.1);border:none;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;margin-top:2px;">✕</button>
       </div>
       <div style="overflow-y:auto;padding:18px 22px;flex:1;">
         <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Lieux &amp; Activités</div>
         ${lieuxHtml}
+        ${logementsHtml ? `<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;margin-top:18px;">🏨 Logement</div>${logementsHtml}` : ''}
         <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;margin-top:18px;">Infos pratiques</div>
         <div style="border:1px solid rgba(128,128,128,0.15);border-radius:8px;padding:0 14px;margin-bottom:14px;">${pratHtml}</div>
         <div style="padding:8px 12px;background:rgba(239,159,39,0.08);border-left:3px solid #EF9F27;border-radius:4px;font-size:12px;color:var(--muted);">
@@ -3061,7 +4032,9 @@ function openDestModal(stepNum) {
 
 function renderItinerary() {
   const body = document.getElementById('itinerary-body');
+  const cardsEl = document.getElementById('itinerary-cards');
   let html = '';
+  let cardsHtml = '';
   ITINERARY.forEach(group => {
     const totalNights = group.steps.reduce((s, st) => s + st.nights, 0);
     const budgets = group.steps.map(st => st.budget).filter(b => b && b !== '—');
@@ -3076,14 +4049,18 @@ function renderItinerary() {
       <td style="font-size:12px;opacity:0.85;font-family:var(--mono);white-space:nowrap;">${totalNights > 0 ? totalNights + ' n.' : ''}</td>
       <td></td>
       <td></td>
-      <td style="font-size:12px;opacity:0.85;font-family:var(--mono);white-space:nowrap;">${budgetEst}</td>
       <td></td>
+      <td style="font-size:12px;opacity:0.85;font-family:var(--mono);white-space:nowrap;">${budgetEst}</td>
       <td colspan="12"></td>
     </tr>`;
+    cardsHtml += `<div class="mcard-country"><span>${group.country}</span><span>${totalNights > 0 ? totalNights + ' n.' : ''}${budgetEst ? ' · ' + budgetEst : ''}</span></div>`;
     group.steps.forEach(step => {
-      const visaClass = step.visa.includes('exempt') ? 'visa-free' :
-                        step.visa.includes('eVisa') ? 'visa-evisa' :
-                        step.visa.includes('VoA') ? 'visa-voa' : 'visa-required';
+      const linkedVisa = getVisa(step.flag);
+      const visaClass = linkedVisa
+        ? (linkedVisa.type === 'exempt' ? 'visa-free' : linkedVisa.type === 'evisa' ? 'visa-evisa' : 'visa-voa')
+        : (step.visa.includes('exempt') ? 'visa-free' :
+           step.visa.includes('eVisa') ? 'visa-evisa' :
+           step.visa.includes('VoA') ? 'visa-voa' : 'visa-required');
 
       const monthCells = step.meteo.map((m,i) => {
         const cls = METEO_COLOR[m] || 'm-gray';
@@ -3129,117 +4106,67 @@ function renderItinerary() {
           <td class="budget-cell">${step.budget}</td>
           ${monthCells}
         </tr>`;
+
+      const riskBadge = step.transportRisk === 'high'   ? ' <span class="risk-badge risk-high" title="Transport risqué">⚠</span>' :
+                         step.transportRisk === 'medium' ? ' <span class="risk-badge risk-medium" title="Transport délicat">⚡</span>' :
+                         step.transportRisk === 'low'    ? ' <span class="risk-badge risk-low" title="1 départ/jour">⏱</span>' : '';
+      const cardCityCell = hasDetail
+        ? `<span class="city-flag">${step.flag}</span><span class="city-name city-clickable" onclick="openDestModal('${step.num}')" title="Voir la fiche détail">${step.city} <span style="font-size:10px;opacity:0.5;margin-left:2px;">›</span></span>`
+        : `<span class="city-flag">${step.flag}</span><span class="city-name">${step.city}</span>`;
+      cardsHtml += `<div class="mcard">
+          <div class="mcard-top">
+            <div class="mcard-title"><span class="step-num" style="margin-right:6px;">${step.num}</span>${cardCityCell}</div>
+            <span class="nights-badge">${step.nights > 0 ? step.nights + ' n.' : 'Transit'}</span>
+          </div>
+          <div class="mcard-row"><span class="mcard-label">Transport</span><span class="mcard-val">${step.transport}${riskBadge}</span></div>
+          <div class="mcard-row"><span class="mcard-label">Visa</span><span class="mcard-val"><span class="visa-pill ${visaClass}">${step.visa}</span></span></div>
+          <div class="mcard-row"><span class="mcard-label">Budget</span><span class="mcard-val budget-cell">${step.budget}</span></div>
+        </div>`;
     });
   });
   body.innerHTML = html;
+  if (cardsEl) cardsEl.innerHTML = cardsHtml;
 }
-
-function renderItineraryCards() {
-  const container = document.getElementById('itinerary-cards');
-  if (!container) return;
-  let html = '';
-
-  ITINERARY.forEach(group => {
-    const isTransitGroup = group.country.includes('Transit') || group.country.includes('\u{1F500}');
-
-    // Country header (skip for transit groups)
-    if (!isTransitGroup) {
-      html += `<div class="itin-card is-country-header">
-        <span class="itin-card-country-label">${group.country}</span>
-      </div>`;
-    }
-
-    group.steps.forEach(step => {
-      const isTransit = String(step.num).startsWith('T') || isTransitGroup;
-      const hasDetail = DEST_DETAILS[step.num] !== undefined;
-      const riskIcon = step.transportRisk === 'high' ? ' <span class="risk-badge risk-high">⚠</span>'
-                     : step.transportRisk === 'medium' ? ' <span class="risk-badge risk-medium">⚡</span>'
-                     : step.transportRisk === 'low'    ? ' <span class="risk-badge risk-low">⏱</span>'
-                     : '';
-
-      if (isTransit) {
-        html += `<div class="itin-card is-transit">
-          <div class="itin-card-header">
-            <div class="itin-card-left">
-              <span class="itin-card-city" style="font-weight:400;font-size:12px;">${step.city}</span>
-              ${riskIcon}
-            </div>
-            <span class="itin-card-nights">${step.transport || ''}</span>
-          </div>
-        </div>`;
-        return;
-      }
-
-      html += `<div class="itin-card${hasDetail ? ' has-detail' : ''}" onclick="${hasDetail ? `toggleItinCard(this, '${step.num}')` : ''}">
-        <div class="itin-card-header">
-          <div class="itin-card-left">
-            <span class="itin-card-num">#${step.num}</span>
-            <span class="itin-card-city">${step.flag || ''} ${step.city}</span>
-          </div>
-          <div class="itin-card-right">
-            ${step.nights ? `<span class="itin-card-nights">${step.nights}n</span>` : ''}
-            ${step.budget ? `<span class="itin-card-budget">${step.budget}</span>` : ''}
-            ${riskIcon}
-            ${hasDetail ? '<span class="itin-card-arrow">›</span>' : ''}
-          </div>
-        </div>
-        <div class="itin-card-detail">
-          <div class="itin-card-detail-row">
-            <span class="itin-card-detail-label">Transport</span>
-            <span>${step.transport || '—'}</span>
-          </div>
-          <div class="itin-card-detail-row">
-            <span class="itin-card-detail-label">Visa</span>
-            <span>${step.visa || '—'}</span>
-          </div>
-          <div class="itin-card-detail-row">
-            <span class="itin-card-detail-label">Dates</span>
-            <span>${step.dateIn || '—'} → ${step.dateOut || '—'}</span>
-          </div>
-          ${hasDetail ? `<div style="margin-top:8px"><span onclick="event.stopPropagation();openDestModal('${step.num}')" style="font-size:12px;color:var(--accent);text-decoration:underline dotted;cursor:pointer;">→ Voir la fiche détail</span></div>` : ''}
-        </div>
-      </div>`;
-    });
-  });
-
-  container.innerHTML = html;
-}
-
-function toggleItinCard(card, num) {
-  card.classList.toggle('open');
-}
-
+// ============================================================
+// VISA DATA & RENDER
+// ============================================================
 const VISAS = [
   {
-    country: '🇹🇼 Taïwan', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '90 jours', status: 'todo',
-    steps: ['Passeport valide 6 mois au-delà du séjour', 'Billet retour ou onward ticket exigé', 'Preuve de fonds suffisants peut être demandée'],
-    warning: 'Durée exacte à confirmer pour passeport français — vérifier avant départ.'
+    country: '🇹🇼 Taïwan', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '90 jours', shortLabel: 'Exemption 90j', status: 'todo',
+    steps: ['Passeport valide 6 mois au-delà du séjour', 'Billet retour ou onward ticket exigé', 'Preuve de fonds suffisants peut être demandée', 'TWAC (Taiwan Arrival Card) à compléter en ligne sur twac.immigration.gov.tw dans les 7 jours précédant l\'arrivée — obligatoire pour tous, exemption de visa incluse'],
+    warning: 'Durée de 90 jours confirmée (France Diplomatie, source officielle, MàJ 09/06/2026). Sans TWAC complété, embarquement/entrée peuvent être refusés.'
   },
   {
-    country: '🇱🇦 Laos', type: 'voa', typeLabel: 'Visa on Arrival', cost: '40$ US', duration: '30 jours', status: 'todo',
-    steps: ['40$ US en billets impeccables (non froissés)', '2 photos d\'identité format passeport', 'Formulaire rempli sur place', 'Passeport valide 6 mois minimum', 'Passage au Pont de l\'Amitié (Nong Khai → Vientiane)'],
-    warning: 'Prévoir cash USD. Les DAB du côté laotien sont peu fiables.'
+    country: '🇱🇦 Laos', type: 'evisa', typeLabel: 'e-Visa', cost: '50$ US', duration: '30 jours', shortLabel: 'e-Visa 50$', status: 'todo',
+    steps: ['Demande en ligne sur laoevisa.gov.la — passeport, photo numérique, paiement CB (50$ US)', 'Délai de traitement 3 à 5 jours ouvrés — à faire bien avant le départ', 'Lettre d\'approbation à imprimer ou garder sur le téléphone', 'LDIF (carte d\'arrivée numérique) à remplir en ligne 3 jours avant — obligatoire au Pont de l\'Amitié I depuis sept. 2025', 'Vérifier que l\'agent d\'immigration appose bien la date d\'entrée sur le passeport avant de quitter le poste'],
+    warning: 'Choisi plutôt que le VOA cash (40$) : évite d\'avoir à trouver des billets USD "impeccables" et des photos d\'identité physiques. Sans tampon de date d\'entrée : amende ≥200$ US pour séjour illégal (France Diplomatie).'
   },
   {
-    country: '🇰🇭 Cambodge', type: 'evisa', typeLabel: 'e-Visa', cost: '36$', duration: '30 jours', status: 'todo',
+    country: '🇰🇭 Cambodge', type: 'evisa', typeLabel: 'e-Visa', cost: '36$', duration: '30 jours', shortLabel: 'e-Visa 36$', status: 'todo',
     steps: ['Faire la demande sur evisa.gov.kh 3–7j avant', 'Paiement carte bancaire en ligne', 'Imprimer ou avoir le QR code sur le téléphone', 'Valable pour entrée terrestre + aérien'],
     warning: null
   },
   {
-    country: '🇻🇳 Vietnam', type: 'evisa', typeLabel: 'e-Visa', cost: '25$', duration: '90 jours', status: 'todo',
-    steps: ['Demande sur evisa.xuatnhapcanh.gov.vn', 'Délai traitement : 3 jours ouvrés', 'Multi-entrées possible', 'Valable 90 jours — largement suffisant'],
-    warning: null
+    country: '🇻🇳 Vietnam', type: 'exempt', typeLabel: 'Exemption visa (45j)', cost: '0€', duration: '45 jours', shortLabel: 'Exemption 45j', status: 'todo',
+    steps: [
+      'Exemption sans visa pour les Français — séjour ≤ 45 jours, entrée unique',
+      'Itinéraire actuel : ~33–34 nuits en entrée unique (Cambodge → Vietnam → vol Philippines) → l\'exemption suffit, aucune démarche à faire',
+      'Passeport valide 6 mois minimum au-delà de l\'entrée',
+      'Alternative si besoin — e-Visa : evisa.xuatnhapcanh.gov.vn, 25$ (entrée simple) / 50$ (entrées multiples), valable jusqu\'à 90 jours, délai 3 jours ouvrés',
+      'Passer à l\'e-Visa entrées multiples uniquement si ressortie temporaire du Vietnam puis retour (ex: aller-retour Laos/Cambodge)'
+    ],
+    warning: 'L\'exemption ne permet qu\'une entrée unique — vérifier avant de la choisir si le tracé final implique de ressortir puis rerentrer au Vietnam.'
   },
   {
-    country: '🇵🇭 Philippines', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '30 jours', status: 'todo',
+    country: '🇵🇭 Philippines', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '30 jours', shortLabel: 'Exemption 30j', status: 'todo',
     steps: ['Entrée libre sans visa pour français', 'Extension possible sur place (Bureau d\'Immigration)', 'Billet de sortie du territoire requis'],
     warning: 'Durée séjour et extension à confirmer. ❓ Décision ouverte dans le doc.'
   },
   
   {
-    country: '🇮🇩 Indonésie', type: 'voa', typeLabel: 'Visa on Arrival', cost: 'Gratuit', duration: '30 jours', status: 'todo',
-    steps: ['Exemption VoA gratuite pour passeport français', 'Valable pour entrée à Bali (DPS), Jakarta (CGK), etc.', 'Extension 30j possible sur place (250 000 IDR)'],
-    warning: null
+    country: '🇮🇩 Indonésie', type: 'voa', typeLabel: 'Visa on Arrival', cost: '~28€ (500 000 IDR)', duration: '30 jours', shortLabel: 'VoA ~28€', status: 'todo',
+    steps: ['VoA payant à l\'arrivée (500 000 IDR, ~28€)', 'Valable pour entrée à Bali (DPS), Jakarta (CGK), etc.', 'Extension 30j possible sur place (250 000 IDR)'],
+    warning: 'Corrigé le 26/08/2026 (audit visas) : le VoA n\'est pas gratuit comme indiqué précédemment, il coûte ~28€. D\'autres points de l\'audit (taxe Love Bali, déclaration All Indonesia) restent en attente de validation avant intégration ici.'
   },
 ];
 
@@ -3279,22 +4206,80 @@ function renderVisas() {
 }
 
 // ============================================================
+// LIENS ENTRE DONNÉES — VISAS est la source unique pour tout
+// libellé/coût de visa. ITINERARY et BUDGET_RATES ne stockent
+// plus leurs propres copies : ils référencent VISAS via ces
+// fonctions (voir AGENT_RULES.md §7).
+// ============================================================
+function getVisa(flag) {
+  return VISAS.find(v => v.country.includes(flag)) || null;
+}
+
+// Aligne le libellé visa affiché sur chaque étape de nuit (nights > 0)
+// avec la fiche VISAS du pays correspondant — évite toute désynchro
+// entre le tableau visa (onglet Visas) et l'itinéraire jour par jour.
+// Les étapes de transit/rappel (0 nuit, ex: "eVisa requis avant...")
+// gardent leur texte manuel, elles ne sont pas concernées.
+function syncVisaLabels() {
+  ITINERARY.forEach(group => {
+    group.steps.forEach(step => {
+      if (step.nights > 0) {
+        const v = getVisa(step.flag);
+        if (v && v.shortLabel) step.visa = v.shortLabel;
+      }
+    });
+  });
+}
+
+function getTotalNights() {
+  return ITINERARY.reduce((sum, group) => sum + group.steps.reduce((a, s) => a + (s.nights || 0), 0), 0);
+}
+
+function getPhase1CountryCount() {
+  return ITINERARY.filter(g => g.country && !g.country.includes('Transit') && !g.country.includes('🔀')).length;
+}
+
+// Injecte GLOBAL_STATS + valeurs dérivées (nuits, pays) dans le header
+// et les onglets Budget/Assurance/eSIM — seul endroit qui écrit ces
+// chiffres dans le DOM, à partir d'une unique source (GLOBAL_STATS,
+// ITINERARY, INSURANCE_RATE).
+function renderGlobalStats() {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  set('stat-countries', getPhase1CountryCount());
+  set('stat-nights', '~' + getTotalNights());
+  set('stat-budget', GLOBAL_STATS.budgetTotal.toLocaleString('fr-FR') + ' €');
+
+  set('budget-total', GLOBAL_STATS.budgetTotal.toLocaleString('fr-FR') + '€');
+  set('budget-daily', `${GLOBAL_STATS.dailyBudget.low}–${GLOBAL_STATS.dailyBudget.high}€`);
+  set('budget-accommodation', `${GLOBAL_STATS.accommodation.low}–${GLOBAL_STATS.accommodation.high}€`);
+  set('budget-food', `${GLOBAL_STATS.food.low}–${GLOBAL_STATS.food.high}€`);
+  set('budget-transition', `~${GLOBAL_STATS.transitionTaiwanLaos}€`);
+  set('budget-insurance', `~${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€`);
+  set('budget-esim', `~${GLOBAL_STATS.esimCost}€`);
+
+  set('assurance-price', `~${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€`);
+  set('esim-budget', `~${GLOBAL_STATS.esimCost}€`);
+}
+
+// ============================================================
 // BUDGET RENDER
 // ============================================================
 // BUDGET_DATA is now computed dynamically from ITINERARY
 // Daily rate ranges per country key (used for estimation)
+// Coût de vie quotidien uniquement — le coût du visa est lu depuis
+// VISAS (source unique), voir getVisa() dans renderBudget().
 const BUDGET_RATES = {
-  'taïwan':      { low:45, high:55, visa:'0€',   visaNote:'Exemption' },
-  'laos':        { low:30, high:40, visa:'40$',  visaNote:'VoA' },
-  'cambodge':    { low:35, high:45, visa:'36$',  visaNote:'eVisa' },
-  'vietnam':     { low:35, high:50, visa:'25$',  visaNote:'eVisa' },
-  'philippines': { low:45, high:65, visa:'0€',   visaNote:'Exempt' },
-  'indonésie':   { low:35, high:55, visa:'0€',   visaNote:'VoA gratuit' },
-  'transit':     { low:0,  high:0,  visa:'—',    visaNote:'—' },
+  'taïwan':      { low:45, high:55 },
+  'laos':        { low:30, high:40 },
+  'cambodge':    { low:35, high:45 },
+  'vietnam':     { low:35, high:50 },
+  'philippines': { low:45, high:65 },
+  'indonésie':   { low:35, high:55 },
+  'transit':     { low:0,  high:0  },
 };
 
 const BUDGET_NOTES = {
-  'taïwan':      'Transport train excellent inclus. Hébergement légèrement plus cher qu\'ASE.',
+  'taïwan':      'Transport train excellent inclus. Hébergement légèrement plus cher qu\'ASE. Taipei confirmé : 155€/4 nuits (~39€/nuit, dortoir Backpackers Hostel Ximen).',
   'laos':        'Très bon marché. Peu d\'ATM en zone rurale — prévoir cash USD/EUR.',
   'cambodge':    'Pass Angkor 37$/j. Mondolkiri/Ratanakiri très peu cher (~25€/j).',
   'vietnam':     'Sens HCMC→Nord. Ha Giang Loop + train Reunification Express inclus.',
@@ -3390,8 +4375,11 @@ function openSavingsModal(countryKey) {
   document.body.style.overflow = 'hidden';
 }
 
+// Assurance voyage — AVA Plan Santé AVAnture (avec code promo NOVO -5%)
+const INSURANCE_RATE = { low: 44, high: 59 }; // €/mois, code NOVO -5% appliqué
+
 function renderBudget() {
-  const TOTAL_BUDGET = 10000;
+  const TOTAL_BUDGET = GLOBAL_STATS.budgetTotal;
   const body = document.getElementById('budget-body');
 
   // Compute per-country stats from ITINERARY
@@ -3409,6 +4397,7 @@ function renderBudget() {
     const rate = BUDGET_RATES[match];
     const totalLow  = rate.low  * nights;
     const totalHigh = rate.high * nights;
+    const visaInfo = getVisa(group.steps[0] ? group.steps[0].flag : '');
 
     countries.push({
       country: group.country,
@@ -3416,16 +4405,33 @@ function renderBudget() {
       daily: `${rate.low}–${rate.high}€`,
       total: totalLow > 0 ? `${totalLow.toLocaleString('fr-FR')}–${totalHigh.toLocaleString('fr-FR')}€` : '—',
       totalLow,
-      visa: rate.visa,
-      visaNote: rate.visaNote,
+      visa: visaInfo ? visaInfo.cost : '—',
+      visaNote: visaInfo ? visaInfo.shortLabel : '',
       notes: BUDGET_NOTES[match] || '',
       matchKey: match,
     });
   });
 
   // Totals
+  const grandNightsCountries = countries.reduce((a, c) => a + c.nights, 0);
+  const months = grandNightsCountries / 30; // durée Phase 1 dérivée dynamiquement des nuits totales
+  const insuranceLow = Math.round(INSURANCE_RATE.low * months);
+  const insuranceHigh = Math.round(INSURANCE_RATE.high * months);
+  countries.push({
+    country: '🛡 Assurance voyage',
+    nights: grandNightsCountries,
+    daily: `${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€/mois`,
+    total: `${insuranceLow.toLocaleString('fr-FR')}–${insuranceHigh.toLocaleString('fr-FR')}€`,
+    totalLow: insuranceLow,
+    visa: '—',
+    visaNote: '',
+    notes: 'AVA Plan Santé AVAnture · code NOVO (-5%) · couvre toute la Phase 1',
+    matchKey: 'assurance',
+    isFixedCost: true,
+  });
+
   const grandLow  = countries.reduce((a, c) => a + c.totalLow, 0);
-  const grandNights = countries.reduce((a, c) => a + c.nights, 0);
+  const grandNights = grandNightsCountries;
 
   body.innerHTML = countries.map(d => {
     const pct = d.totalLow > 0 ? Math.round((d.totalLow / TOTAL_BUDGET) * 100) : 0;
@@ -3436,7 +4442,7 @@ function renderBudget() {
     return `
       <tr>
         <td style="font-weight:500;white-space:nowrap">${d.country}</td>
-        <td style="color:var(--muted);font-family:var(--mono);white-space:nowrap">${d.nights} nuits</td>
+        <td style="color:var(--muted);font-family:var(--mono);white-space:nowrap">${d.isFixedCost ? `${months.toFixed(1)} mois` : `${d.nights} nuits`}</td>
         <td style="font-family:var(--mono);white-space:nowrap">${d.daily}</td>
         <td style="font-family:var(--mono);font-weight:500;color:var(--accent2);white-space:nowrap">${d.total}</td>
         <td style="font-family:var(--mono);color:var(--muted);white-space:nowrap">${d.visa}</td>
@@ -3458,6 +4464,33 @@ function renderBudget() {
           <div style="font-size:11px;color:var(--accent);font-family:var(--mono);font-weight:700">${Math.round(grandLow/TOTAL_BUDGET*100)}% budget</div>
         </td>
       </tr>`;
+
+  const cardsEl = document.getElementById('budget-cards');
+  if (cardsEl) {
+    cardsEl.innerHTML = countries.map(d => {
+      const pct = d.totalLow > 0 ? Math.round((d.totalLow / TOTAL_BUDGET) * 100) : 0;
+      const savings = BUDGET_SAVINGS[d.matchKey];
+      const savingsBadge = savings
+        ? `<span onclick="openSavingsModal('${d.matchKey}')" style="cursor:pointer;display:inline-flex;align-items:center;gap:3px;background:rgba(74,222,128,0.15);color:#4ade80;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap;margin-left:6px;" title="Voir les leviers d'économie">💡 −${savings.potentialSavings}</span>`
+        : '';
+      return `<div class="mcard">
+          <div class="mcard-top">
+            <div class="mcard-title">${d.country}</div>
+            <span class="nights-badge">${d.isFixedCost ? `${months.toFixed(1)} mois` : `${d.nights} n.`}</span>
+          </div>
+          <div class="mcard-row"><span class="mcard-label">Coût/jour</span><span class="mcard-val budget-cell">${d.daily}</span></div>
+          <div class="mcard-row"><span class="mcard-label">Total est.</span><span class="mcard-val" style="font-family:var(--mono);font-weight:500;color:var(--accent2);">${d.total}</span></div>
+          <div class="mcard-row"><span class="mcard-label">Dont visa</span><span class="mcard-val budget-cell">${d.visa}</span></div>
+          <div class="mcard-row"><span class="mcard-label">Part budget</span><span class="mcard-val">${pct}%</span></div>
+          <div class="mcard-notes">${d.notes}${savingsBadge}</div>
+        </div>`;
+    }).join('') + `<div class="mcard" style="border-color:var(--border2);">
+          <div class="mcard-top"><div class="mcard-title" style="font-weight:600;">TOTAL Phase 1</div><span class="nights-badge">${grandNights} n.</span></div>
+          <div class="mcard-row"><span class="mcard-label">Total min.</span><span class="mcard-val" style="font-family:var(--mono);font-weight:700;color:var(--accent);">${grandLow.toLocaleString('fr-FR')}€</span></div>
+          <div class="mcard-row"><span class="mcard-label">Part budget</span><span class="mcard-val" style="color:var(--accent);font-weight:700;">${Math.round(grandLow/TOTAL_BUDGET*100)}%</span></div>
+          <div class="mcard-notes">Hors vols internationaux et activités premium</div>
+        </div>`;
+  }
 }
 
 // ============================================================
@@ -3621,16 +4654,47 @@ const METEO_DETAIL = [
     ]},
 ];
 
+const METEO_COUNTRY_KEYWORDS = ['Taïwan','Laos','Cambodge','Vietnam','Philippines','Indonésie'];
+
+function getActiveMonthSet(label) {
+  const keyword = METEO_COUNTRY_KEYWORDS.find(k => label.includes(k));
+  const active = new Set();
+  if (!keyword) return active;
+  ITINERARY.forEach(group => {
+    if (!group.country || !group.country.includes(keyword)) return;
+    group.steps.forEach(step => {
+      if (!step.dateIn || !step.dateOut) return;
+      const start = parseDate(step.dateIn);
+      const end = parseDate(step.dateOut);
+      if (!start || !end) return;
+      for (let i = 0; i < 12; i++) {
+        const yr = start.getFullYear();
+        const mStart = new Date(yr, i, 1);
+        const mEnd = new Date(yr, i + 1, 0);
+        const yr2 = end.getFullYear();
+        const mStart2 = new Date(yr2, i, 1);
+        const mEnd2 = new Date(yr2, i + 1, 0);
+        if ((start <= mEnd && end >= mStart) || (start <= mEnd2 && end >= mStart2)) {
+          active.add(i);
+        }
+      }
+    });
+  });
+  return active;
+}
+
 function renderMeteo() {
   const maxRain = 320;
   const grid = document.getElementById('meteo-grid');
   grid.innerHTML = METEO_DETAIL.map(c => {
+    const activeMonths = getActiveMonthSet(c.country);
     const cells = c.months.map((m, i) => {
       const rainH = Math.round((parseInt(m.r) / maxRain) * 30);
       const rainColor = m.q==='G'?'#16a34a':m.q==='Y'?'#ca8a04':m.q==='O'?'#ea580c':'#dc2626';
       const tempColor = m.q==='G'?'#4ade80':m.q==='Y'?'#fbbf24':m.q==='O'?'#fb923c':'#f87171';
+      const activeCls = activeMonths.has(i) ? ' meteo-active' : '';
       return `
-        <div class="meteo-month-cell">
+        <div class="meteo-month-cell${activeCls}" ${activeCls ? 'title="Vous êtes prévu ici à cette période"' : ''}>
           <div class="meteo-month-name">${MONTHS[i]}</div>
           <div class="meteo-bar-wrap">
             <div class="meteo-bar" style="height:${rainH}px;background:${rainColor};opacity:0.6;"></div>
@@ -3642,62 +4706,7 @@ function renderMeteo() {
     return `
       <div class="meteo-card">
         <div class="meteo-card-header">${c.country} <span style="font-size:11px;color:var(--muted);margin-left:auto">${c.lang}</span></div>
-        <div class="meteo-month-grid">${cells}</div>
-      </div>`;
-  }).join('');
-}
-
-// ============================================================
-// PHRASES CLÉS
-// ============================================================
-const PHRASES_DATA = [
-  { country:'🇹🇼 Taïwan', lang:'Mandarin (chinois traditionnel)', phrases:[
-    ['Bonjour','Nǐ hǎo (你好)'],['Merci','Xièxie (謝謝)'],['Combien ?','Duōshǎo qián? (多少錢?)'],
-    ['Trop cher','Tài guì le (太貴了)'],['Toilettes','Cèsuǒ (廁所)'],['Où est… ?','…zài nǎlǐ? (在哪裡?)'],
-    ['Eau','Shuǐ (水)'],['Hôpital','Yīyuàn (醫院)'],['Pas épicé','Bù là (不辣)'],['Au revoir','Zàijiàn (再見)'],
-  ]},
-  { country:'🇱🇦 Laos', lang:'Laotien', phrases:[
-    ['Bonjour','Sabaidee (ສະບາຍດີ)'],['Merci','Khop chai (ຂອບໃຈ)'],['Combien ?','Tao dai? (ເທົ່າໃດ?)'],
-    ['Trop cher','Phaeng lai (ແພງຫຼາຍ)'],['Toilettes','Hong suam (ຫ້ອງນ້ຳ)'],['Eau','Nam (ນ້ຳ)'],
-    ['Non épicé','Bo phet (ບໍ່ເຜັດ)'],['Hôpital','Hong maw (ໂຮງໝໍ)'],['Oui','Mèn (ແມ່ນ)'],['Non','Bor (ບໍ່)'],
-  ]},
-  { country:'🇰🇭 Cambodge', lang:'Khmer', phrases:[
-    ['Bonjour','Chum reap suor (ជំរាបសួរ)'],['Merci','Aw koun (អរគុណ)'],['Combien ?','Thlai ponmaan? (ថ្លៃប៉ុន្មាន?)'],
-    ['Trop cher','Thlai nas (ថ្លៃណាស់)'],['Toilettes','Bantob tuk (បន្ទប់ទឹក)'],['Eau','Tuk (ទឹក)'],
-    ['Hôpital','Moom pét (មន្ទីរពេទ្យ)'],['Oui','Baat / Jah'],['Non','Te (ទេ)'],['À l\'aide !','Juoy phong! (ជួយផង!)'],
-  ]},
-  { country:'🇻🇳 Vietnam', lang:'Vietnamien', phrases:[
-    ['Bonjour','Xin chào'],['Merci','Cảm ơn'],['Combien ?','Bao nhiêu tiền?'],
-    ['Trop cher','Đắt quá'],['Toilettes','Nhà vệ sinh'],['Eau','Nước'],
-    ['Non épicé','Không cay'],['Hôpital','Bệnh viện'],['Oui','Vâng'],['Non','Không'],
-  ]},
-  { country:'🇵🇭 Philippines', lang:'Filipino / Anglais', phrases:[
-    ['Bonjour','Magandang araw'],['Merci','Salamat'],['Combien ?','Magkano?'],
-    ['Trop cher','Mahal na mahal'],['Toilettes','CR (Comfort Room)'],['Eau','Tubig'],
-    ['Hôpital','Ospital'],['Oui','Oo'],['Non','Hindi'],['Bonne cuisine','Masarap!'],
-  ]},
-    { country:'🇮🇩 Indonésie', lang:'Bahasa Indonesia', phrases:[
-    ['Bonjour','Selamat pagi/siang'],['Merci','Terima kasih'],['Combien ?','Berapa harganya?'],
-    ['Trop cher','Terlalu mahal'],['Toilettes','Kamar mandi / WC'],['Eau','Air'],
-    ['Non épicé','Tidak pedas'],['Hôpital','Rumah sakit'],['Oui','Ya'],['Non','Tidak / Bukan'],
-  ]},
-];
-
-function renderPhrases() {
-  const grid = document.getElementById('phrases-grid');
-  grid.innerHTML = PHRASES_DATA.map(c => {
-    const rows = c.phrases.map(p => `
-      <div class="phrase-row">
-        <div class="phrase-fr">${p[0]}</div>
-        <div class="phrase-local">${p[1]}</div>
-      </div>`).join('');
-    return `
-      <div class="phrases-card">
-        <div class="phrases-card-header">
-          ${c.country}
-          <span class="phrases-lang">${c.lang}</span>
-        </div>
-        ${rows}
+        <div class="meteo-scroll"><div class="meteo-month-grid">${cells}</div></div>
       </div>`;
   }).join('');
 }
@@ -3809,10 +4818,20 @@ function renderApps() {
 // ============================================================
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
   if (name === 'carte') setTimeout(initMap, 50);
+}
+
+function switchGroup(name, btn) {
+  document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.subgroup').forEach(s => s.classList.remove('active'));
+  const sub = document.querySelector('.subgroup[data-group="' + name + '"]');
+  sub.classList.add('active');
+  const firstTabBtn = sub.querySelector('.tab-btn');
+  if (firstTabBtn) firstTabBtn.click();
 }
 
 // ============================================================
@@ -3847,13 +4866,13 @@ function initTheme() {
 // ============================================================
 initTheme();
 renderTimeline();
+syncVisaLabels();   // doit tourner avant renderItinerary() : aligne les libellés visa sur VISAS
 renderItinerary();
-renderItineraryCards();
 renderVisas();
 renderBudget();
+renderGlobalStats(); // header + onglets Budget/Assurance/eSIM — lit GLOBAL_STATS/INSURANCE_RATE
 renderChecklist();
 renderMeteo();
-renderPhrases();
 renderApps();
 updateCountdown();
 </script>
@@ -3868,56 +4887,70 @@ updateCountdown();
 // CARTE LEAFLET
 // ============================================================
 const MAP_STEPS = [
-  { num:1,  city:'Taipei',              lat:25.033,  lng:121.565, country:'taiwan',      dateIn:'28 déc 2026', dateOut:'01 jan 2027' },
-  { num:2,  city:'Ruifang',             lat:25.107,  lng:121.844, country:'taiwan',      dateIn:'01 jan 2027', dateOut:'03 jan 2027' },
-  { num:3,  city:'Yuchi (Sun Moon Lake)',lat:23.865,  lng:120.917, country:'taiwan',      dateIn:'03 jan 2027', dateOut:'05 jan 2027' },
-  { num:4,  city:'Alishan',             lat:23.510,  lng:120.804, country:'taiwan',      dateIn:'05 jan 2027', dateOut:'07 jan 2027' },
-  { num:5,  city:'Tainan',              lat:22.998,  lng:120.217, country:'taiwan',      dateIn:'07 jan 2027', dateOut:'09 jan 2027' },
-  { num:6,  city:'Kaohsiung',           lat:22.627,  lng:120.302, country:'taiwan',      dateIn:'09 jan 2027', dateOut:'10 jan 2027' },
-  { num:7,  city:'Hengchun',            lat:22.002,  lng:120.744, country:'taiwan',      dateIn:'10 jan 2027', dateOut:'12 jan 2027' },
-  { num:8,  city:'Hualien City',        lat:23.991,  lng:121.601, country:'taiwan',      dateIn:'12 jan 2027', dateOut:'15 jan 2027' },
-  { num:9,  city:'Dulan',               lat:23.108,  lng:121.381, country:'taiwan',      dateIn:'15 jan 2027', dateOut:'18 jan 2027' },
-  { num:10, city:'Bangkok (transit)',    lat:13.757,  lng:100.502, country:'transit',     dateIn:'18 jan 2027', dateOut:'20 jan 2027' },
-  { num:11, city:'Vientiane',           lat:17.967,  lng:102.600, country:'laos',        dateIn:'20 jan 2027', dateOut:'25 jan 2027' },
-  { num:12, city:'Luang Prabang',       lat:19.889,  lng:102.135, country:'laos',        dateIn:'25 jan 2027', dateOut:'30 jan 2027' },
-  { num:13, city:'Vang Vieng',          lat:18.921,  lng:102.445, country:'laos',        dateIn:'30 jan 2027', dateOut:'01 fév 2027' },
-  { num:14, city:'Thakhek Loop',        lat:17.407,  lng:104.800, country:'laos',        dateIn:'01 fév 2027', dateOut:'06 fév 2027' },
-  { num:15, city:'Pakse + Bolaven',     lat:15.120,  lng:105.800, country:'laos',        dateIn:'06 fév 2027', dateOut:'11 fév 2027' },
-  { num:16, city:'Si Phan Don',         lat:13.950,  lng:105.983, country:'laos',        dateIn:'11 fév 2027', dateOut:'14 fév 2027' },
-  { num:17, city:'Phnom Penh',          lat:11.562,  lng:104.916, country:'cambodge',    dateIn:'14 fév 2027', dateOut:'18 fév 2027' },
-  { num:18, city:'Kampot',              lat:10.611,  lng:104.181, country:'cambodge',    dateIn:'18 fév 2027', dateOut:'22 fév 2027' },
-  { num:19, city:'Kep + Koh Tonsay',    lat:10.480,  lng:104.317, country:'cambodge',    dateIn:'22 fév 2027', dateOut:'25 fév 2027' },
-  { num:20, city:'Koh Ta Kiev',         lat:10.625,  lng:103.500, country:'cambodge',    dateIn:'25 fév 2027', dateOut:'28 fév 2027' },
-  { num:21, city:'Koh Rong Sanloem',    lat:10.530,  lng:103.200, country:'cambodge',    dateIn:'28 fév 2027', dateOut:'03 mar 2027' },
-  { num:22, city:'Mondolkiri',          lat:12.450,  lng:107.183, country:'cambodge',    dateIn:'03 mar 2027', dateOut:'08 mar 2027' },
-  { num:23, city:'Ratanakiri',          lat:13.739,  lng:106.987, country:'cambodge',    dateIn:'08 mar 2027', dateOut:'13 mar 2027' },
-  { num:24, city:'Kratie',              lat:12.489,  lng:106.018, country:'cambodge',    dateIn:'13 mar 2027', dateOut:'15 mar 2027' },
-  { num:25, city:'Siem Reap (Angkor)',  lat:13.363,  lng:103.860, country:'cambodge',    dateIn:'15 mar 2027', dateOut:'20 mar 2027' },
-  { num:26, city:'Hô Chi Minh-Ville',  lat:10.823,  lng:106.630, country:'vietnam',     dateIn:'20 mar 2027', dateOut:'25 mar 2027' },
-  { num:27, city:'Hội An',             lat:15.880,  lng:108.335, country:'vietnam',     dateIn:'25 mar 2027', dateOut:'30 mar 2027' },
-  { num:28, city:'Hanoï',              lat:21.028,  lng:105.834, country:'vietnam',     dateIn:'30 mar 2027', dateOut:'03 avr 2027' },
-  { num:29, city:'Baie d\'Halong',     lat:20.910,  lng:107.183, country:'vietnam',     dateIn:'03 avr 2027', dateOut:'06 avr 2027' },
-  { num:30, city:'Ha Giang Loop',      lat:22.823,  lng:104.984, country:'vietnam',     dateIn:'06 avr 2027', dateOut:'12 avr 2027' },
-  { num:31, city:'Manille (transit)',  lat:14.599,  lng:120.984, country:'philippines', dateIn:'12 avr 2027', dateOut:'13 avr 2027' },
-  { num:32, city:'Banaue / Batad',     lat:16.908,  lng:121.057, country:'philippines', dateIn:'13 avr 2027', dateOut:'17 avr 2027' },
-  { num:33, city:'Manille (retour)',   lat:14.599,  lng:120.984, country:'philippines', dateIn:'17 avr 2027', dateOut:'18 avr 2027' },
-  { num:34, city:'Puerto Princesa',    lat:9.744,   lng:118.736, country:'philippines', dateIn:'18 avr 2027', dateOut:'20 avr 2027' },
-  { num:35, city:'El Nido',            lat:11.175,  lng:119.383, country:'philippines', dateIn:'20 avr 2027', dateOut:'25 avr 2027' },
-  { num:36, city:'Croisière El Nido↔Coron', lat:11.990, lng:120.201, country:'philippines', dateIn:'25 avr 2027', dateOut:'29 avr 2027' },
-  { num:37, city:'Coron',              lat:12.012,  lng:120.205, country:'philippines', dateIn:'29 avr 2027', dateOut:'02 mai 2027' },
-  { num:38, city:'Manille (retour Coron)', lat:14.599, lng:120.984, country:'philippines', dateIn:'02 mai 2027', dateOut:'03 mai 2027' },
-  { num:39, city:'Cebu City (transit)', lat:10.317, lng:123.906, country:'philippines', dateIn:'03 mai 2027', dateOut:'04 mai 2027' },
-  { num:40, city:'Malapascua',         lat:11.327,  lng:124.123, country:'philippines', dateIn:'04 mai 2027', dateOut:'08 mai 2027' },
-  { num:41, city:'Moalboal',           lat:9.943,   lng:123.395, country:'philippines', dateIn:'08 mai 2027', dateOut:'12 mai 2027' },
-  { num:42, city:'Siquijor',           lat:9.218,   lng:123.512, country:'philippines', dateIn:'12 mai 2027', dateOut:'17 mai 2027' },
-  { num:43, city:'Bohol / Panglao',    lat:9.647,   lng:123.853, country:'philippines', dateIn:'17 mai 2027', dateOut:'20 mai 2027' },
-  { num:44, city:'Camiguin',           lat:9.173,   lng:124.713, country:'philippines', dateIn:'20 mai 2027', dateOut:'24 mai 2027' },
-  { num:45, city:'Siargao',            lat:9.848,   lng:126.045, country:'philippines', dateIn:'24 mai 2027', dateOut:'30 mai 2027' },
-  { num:46, city:'Bali',               lat:-8.340,  lng:115.092, country:'indonesie',   dateIn:'30 mai 2027', dateOut:'04 jun 2027' },
-  { num:47, city:'Lombok',             lat:-8.650,  lng:116.324, country:'indonesie',   dateIn:'04 jun 2027', dateOut:'08 jun 2027' },
-  { num:48, city:'Sumbawa',            lat:-8.700,  lng:118.000, country:'indonesie',   dateIn:'08 jun 2027', dateOut:'10 jun 2027' },
-  { num:49, city:'Komodo',             lat:-8.543,  lng:119.489, country:'indonesie',   dateIn:'10 jun 2027', dateOut:'13 jun 2027' },
-  { num:50, city:'Labuan Bajo/Flores', lat:-8.520,  lng:119.889, country:'indonesie',   dateIn:'13 jun 2027', dateOut:'18 jun 2027' },
+  // Taiwan
+  { num:1,  city:'Taipei',              lat:25.033,  lng:121.565, country:'taiwan',      dateIn:'29 déc 2026', dateOut:'02 jan 2027' },
+  { num:2,  city:'Ruifang',             lat:25.107,  lng:121.844, country:'taiwan',      dateIn:'02 jan 2027', dateOut:'04 jan 2027' },
+  { num:3,  city:'Yuchi (Sun Moon Lake)',lat:23.865,  lng:120.917, country:'taiwan',      dateIn:'04 jan 2027', dateOut:'06 jan 2027' },
+  { num:4,  city:'Alishan',             lat:23.510,  lng:120.804, country:'taiwan',      dateIn:'06 jan 2027', dateOut:'08 jan 2027' },
+  { num:5,  city:'Tainan',              lat:22.998,  lng:120.217, country:'taiwan',      dateIn:'08 jan 2027', dateOut:'10 jan 2027' },
+  { num:6,  city:'Kaohsiung',           lat:22.627,  lng:120.302, country:'taiwan',      dateIn:'10 jan 2027', dateOut:'11 jan 2027' },
+  { num:7,  city:'Hengchun',            lat:22.002,  lng:120.744, country:'taiwan',      dateIn:'11 jan 2027', dateOut:'13 jan 2027' },
+  { num:8,  city:'Hualien City',        lat:23.991,  lng:121.601, country:'taiwan',      dateIn:'13 jan 2027', dateOut:'16 jan 2027' },
+  { num:9,  city:'Dulan',               lat:23.108,  lng:121.381, country:'taiwan',      dateIn:'16 jan 2027', dateOut:'19 jan 2027' },
+  // Transit
+  { num:10, city:'Bangkok (transit)',    lat:13.757,  lng:100.502, country:'transit',     dateIn:'19 jan 2027', dateOut:'21 jan 2027' },
+  // Laos
+  { num:11, city:'Vientiane',           lat:17.967,  lng:102.600, country:'laos',        dateIn:'21 jan 2027', dateOut:'26 jan 2027' },
+  { num:12, city:'Luang Prabang',       lat:19.889,  lng:102.135, country:'laos',        dateIn:'26 jan 2027', dateOut:'31 jan 2027' },
+  { num:13, city:'Vang Vieng',          lat:18.921,  lng:102.445, country:'laos',        dateIn:'31 jan 2027', dateOut:'02 fév 2027' },
+  { num:14, city:'Thakhek Loop',        lat:17.407,  lng:104.800, country:'laos',        dateIn:'02 fév 2027', dateOut:'07 fév 2027' },
+  { num:15, city:'Pakse + Bolaven',     lat:15.120,  lng:105.800, country:'laos',        dateIn:'07 fév 2027', dateOut:'10 fév 2027' },
+  { num:16, city:'Si Phan Don',         lat:13.950,  lng:105.983, country:'laos',        dateIn:'10 fév 2027', dateOut:'13 fév 2027' },
+  // Cambodge
+  { num:17, city:'Phnom Penh',          lat:11.562,  lng:104.916, country:'cambodge',    dateIn:'13 fév 2027', dateOut:'17 fév 2027' },
+  { num:18, city:'Kampot',              lat:10.611,  lng:104.181, country:'cambodge',    dateIn:'17 fév 2027', dateOut:'21 fév 2027' },
+  { num:19, city:'Kep + Koh Tonsay',    lat:10.480,  lng:104.317, country:'cambodge',    dateIn:'21 fév 2027', dateOut:'24 fév 2027' },
+  { num:20, city:'Koh Ta Kiev',         lat:10.625,  lng:103.500, country:'cambodge',    dateIn:'24 fév 2027', dateOut:'27 fév 2027' },
+  { num:21, city:'Koh Rong Sanloem',    lat:10.530,  lng:103.200, country:'cambodge',    dateIn:'27 fév 2027', dateOut:'02 mar 2027' },
+  { num:22, city:'Mondolkiri',          lat:12.450,  lng:107.183, country:'cambodge',    dateIn:'02 mar 2027', dateOut:'07 mar 2027' },
+  { num:23, city:'Ratanakiri',          lat:13.739,  lng:106.987, country:'cambodge',    dateIn:'07 mar 2027', dateOut:'12 mar 2027' },
+  { num:24, city:'Kratie',              lat:12.489,  lng:106.018, country:'cambodge',    dateIn:'12 mar 2027', dateOut:'14 mar 2027' },
+  { num:25, city:'Siem Reap (Angkor)',  lat:13.363,  lng:103.860, country:'cambodge',    dateIn:'14 mar 2027', dateOut:'19 mar 2027' },
+  // Vietnam
+    { num:26, city:'Hô Chi Minh-Ville', lat:10.823, lng:106.630, country:'vietnam', dateIn:'19 mar 2027', dateOut:'22 mar 2027' },
+  { num:27, city:'Đà Lạt', lat:11.940, lng:108.458, country:'vietnam', dateIn:'22 mar 2027', dateOut:'24 mar 2027' },
+  { num:28, city:'Hội An', lat:15.880, lng:108.335, country:'vietnam', dateIn:'24 mar 2027', dateOut:'27 mar 2027' },
+  { num:29, city:'Huế', lat:16.463, lng:107.585, country:'vietnam', dateIn:'27 mar 2027', dateOut:'28 mar 2027' },
+  { num:30, city:'Phong Nha', lat:17.585, lng:106.283, country:'vietnam', dateIn:'28 mar 2027', dateOut:'31 mar 2027' },
+  { num:31, city:'Ninh Bình', lat:20.250, lng:105.974, country:'vietnam', dateIn:'31 mar 2027', dateOut:'02 avr 2027' },
+  { num:32, city:'Pù Luông', lat:20.450, lng:105.150, country:'vietnam', dateIn:'02 avr 2027', dateOut:'05 avr 2027' },
+  { num:33, city:'Hà Giang Loop', lat:22.823, lng:104.984, country:'vietnam', dateIn:'05 avr 2027', dateOut:'09 avr 2027' },
+  { num:34, city:'Cao Bằng', lat:22.665, lng:106.263, country:'vietnam', dateIn:'09 avr 2027', dateOut:'12 avr 2027' },
+  { num:35, city:'Hồ Ba Bể', lat:22.450, lng:105.617, country:'vietnam', dateIn:'12 avr 2027', dateOut:'14 avr 2027' },
+  { num:36, city:'Baie d\'Halong / Cat Bà', lat:20.910, lng:107.183, country:'vietnam', dateIn:'14 avr 2027', dateOut:'17 avr 2027' },
+  { num:37, city:'Cô Tô', lat:20.983, lng:107.767, country:'vietnam', dateIn:'17 avr 2027', dateOut:'20 avr 2027' },
+  { num:38, city:'Hanoï', lat:21.028, lng:105.834, country:'vietnam', dateIn:'20 avr 2027', dateOut:'23 avr 2027' },
+  
+{ num:39, city:'Manille (transit)',  lat:14.599,  lng:120.984, country:'philippines', dateIn:'03 avr 2027', dateOut:'04 avr 2027' },
+  { num:40, city:'Banaue / Batad',     lat:16.908,  lng:121.057, country:'philippines', dateIn:'04 avr 2027', dateOut:'08 avr 2027' },
+  { num:41, city:'Manille (retour)',   lat:14.599,  lng:120.984, country:'philippines', dateIn:'08 avr 2027', dateOut:'09 avr 2027' },
+  { num:42, city:'Puerto Princesa',    lat:9.744,   lng:118.736, country:'philippines', dateIn:'09 avr 2027', dateOut:'11 avr 2027' },
+  { num:43, city:'El Nido',            lat:11.175,  lng:119.383, country:'philippines', dateIn:'11 avr 2027', dateOut:'16 avr 2027' },
+  { num:44, city:'Croisière El Nido↔Coron', lat:11.990, lng:120.201, country:'philippines', dateIn:'16 avr 2027', dateOut:'20 avr 2027' },
+  { num:45, city:'Coron',              lat:12.012,  lng:120.205, country:'philippines', dateIn:'20 avr 2027', dateOut:'23 avr 2027' },
+  { num:47, city:'Cebu City',          lat:10.317, lng:123.906, country:'philippines', dateIn:'25 avr 2027', dateOut:'26 avr 2027' },
+  { num:48, city:'Malapascua',         lat:11.327,  lng:124.123, country:'philippines', dateIn:'26 avr 2027', dateOut:'30 avr 2027' },
+  { num:49, city:'Moalboal',           lat:9.943,   lng:123.395, country:'philippines', dateIn:'30 avr 2027', dateOut:'04 mai 2027' },
+  { num:50, city:'Siquijor',           lat:9.218,   lng:123.512, country:'philippines', dateIn:'04 mai 2027', dateOut:'09 mai 2027' },
+  { num:51, city:'Bohol / Panglao',    lat:9.647,   lng:123.853, country:'philippines', dateIn:'09 mai 2027', dateOut:'12 mai 2027' },
+  { num:52, city:'Camiguin',           lat:9.173,   lng:124.713, country:'philippines', dateIn:'12 mai 2027', dateOut:'16 mai 2027' },
+  { num:53, city:'Siargao',            lat:9.848,   lng:126.045, country:'philippines', dateIn:'16 mai 2027', dateOut:'22 mai 2027' },
+  // Indonésie
+  { num:54, city:'Bali',               lat:-8.340,  lng:115.092, country:'indonesie',   dateIn:'22 mai 2027', dateOut:'27 mai 2027' },
+  { num:55, city:'Lombok',             lat:-8.650,  lng:116.324, country:'indonesie',   dateIn:'27 mai 2027', dateOut:'31 mai 2027' },
+  { num:56, city:'Sumbawa',            lat:-8.700,  lng:118.000, country:'indonesie',   dateIn:'31 mai 2027', dateOut:'02 juin 2027' },
+  { num:57, city:'Komodo',             lat:-8.543,  lng:119.489, country:'indonesie',   dateIn:'02 juin 2027', dateOut:'05 juin 2027' },
+  { num:58, city:'Labuan Bajo/Flores', lat:-8.520,  lng:119.889, country:'indonesie',   dateIn:'05 juin 2027', dateOut:'09 juin 2027' },
 ];
 
 const MAP_COLORS = {
