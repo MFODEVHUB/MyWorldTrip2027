@@ -1625,7 +1625,7 @@
 </main>
 
 <footer>
-  <span>v3.0</span>
+  <span>v3.1</span>
   <span id="last-updated">Dernière mise à jour : 28 septembre 2026</span>
 </footer>
 
@@ -1648,9 +1648,11 @@ const GLOBAL_STATS = {
   food: { low: 5, high: 15 },
   localTransport: { low: 3, high: 10 },
   activities: { low: 5, high: 20 },
-  transitionTaiwanLaos: 180,
+  transitionTaiwanLaosRange: { low: 160, high: 200 },
+  transitionTaiwanLaos: 0,   // milieu de la fourchette ci-dessus, recalculé juste après — ne pas modifier ici
   esimCost: 70,
 };
+GLOBAL_STATS.transitionTaiwanLaos = Math.round((GLOBAL_STATS.transitionTaiwanLaosRange.low + GLOBAL_STATS.transitionTaiwanLaosRange.high) / 2);
 
 // G=green, Y=yellow, O=orange, R=red, X=not concerned
 // Météo qualitative par étape × 12 mois (Jan→Déc)
@@ -1674,16 +1676,19 @@ const ITINERARY = [
       meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'13 jan 2027', dateOut:'16 jan 2027'},
     { num:9, city:'Dulan', flag:'🇹🇼', nights:3, transport:'Train · 4h34', visa:'exempt', budget:'30–45€', health:['ok'],
       meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'16 jan 2027', dateOut:'19 jan 2027'},
+    { num:'9b', city:'Taipei (dernière nuit)', flag:'🇹🇼', nights:1, transport:'Train · ~4h–6h depuis Dulan (à confirmer sur le site TRA)', visa:'', budget:'40–55€', health:['ok'],
+      meteo:['G','G','G','G','Y','O','R','R','O','Y','G','G'], active:[0], dateIn:'19 jan 2027', dateOut:'20 jan 2027'},
   ]},
   { country: '🔀 Transit', steps: [
+    // overnight:1 = nuit passée dans le train couchette (pas d'hébergement, non comptée dans nights) — voir AGENT_RULES §3
     { num:10, city:'Bangkok (transit)', flag:'🇹🇭', nights:0, transport:'Train nuit → Nong Khai', visa:'exempt 30j', budget:'—', health:['dengue'],
-      meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[], dateIn:'19 jan 2027', dateOut:'21 jan 2027'},
+      meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[], overnight:1, dateIn:'20 jan 2027', dateOut:'21 jan 2027'},
   ]},
   { country: '🇱🇦 Laos', steps: [
     // Visa Laos : ne PAS écrire en dur — rempli par syncVisaLabels() depuis VISAS (source unique, AGENT_RULES §7)
     { num:11, city:'Vientiane', flag:'🇱🇦', nights:5, transport:'Bus · Pont Amitié', visa:'', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[1], dateIn:'21 jan 2027', dateOut:'26 jan 2027'},
-    { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Bus / avion', visa:'', budget:'30–45€', health:['dengue','malaria'],
+    { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Train · ~2h (ou avion / bus)', visa:'', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','O','O','G','G'], active:[1], dateIn:'26 jan 2027', dateOut:'31 jan 2027'},
     { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Train · ~1h15 (ou minivan 4–6h) depuis Luang Prabang', visa:'', budget:'25–40€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','R','R','R','R','R','O','G','G'], active:[1], dateIn:'31 jan 2027', dateOut:'02 fév 2027'},
@@ -1951,7 +1956,7 @@ const DEST_DETAILS = {
   10: {
     country: '🔀 Transit',
     title: 'Taipei → Bangkok → Vientiane', flag: '🔀', nights: 'Transit 24–30h',
-    intro: 'Le transit le plus économique et immersif pour rejoindre le Laos depuis Taïwan. Vol bas coût vers Bangkok, puis train de nuit jusqu\'à la frontière laotienne. Compter 24 à 30h porte-à-porte, pour environ 160–200€ tout compris.',
+    intro: 'Le transit le plus économique et immersif pour rejoindre le Laos depuis Taïwan. Vol bas coût vers Bangkok, puis train de nuit jusqu\'à la frontière laotienne. Compter 24 à 30h porte-à-porte, pour environ {{stat:transitionTaiwanLaosRange}} tout compris.',
     lieux: [
       {
         name: 'Vol Taipei TPE → Bangkok DMK', status: 'in', type: 'Transport',
@@ -1976,7 +1981,8 @@ const DEST_DETAILS = {
       },
     ],
     pratique: [
-      { label: 'Budget total', val: '160–200€ tout compris (vol + train + visa + taxis)' },
+      { label: 'Budget total', val: '{{stat:transitionTaiwanLaosRange}} tout compris (vol + train + visa + taxis)' },
+      { label: 'Veille du départ', val: 'Nuit à Taipei la veille du vol (étape dédiée du dashboard) pour attraper le vol du matin. La nuit suivante se passe dans le train couchette : aucun hébergement à prévoir, elle est comprise dans le prix du billet.' },
       { label: 'Durée porte-à-porte', val: '24 à 30h depuis Taipei jusqu\'au centre de Vientiane' },
       { label: 'Visa Laos', val: '{{visa:laos:typeLabel}} {{visa:laos:cost}} à demander en ligne sur {{visa:laos:site}} plusieurs jours avant (délai 3 à 5 jours ouvrés) — plus besoin de cash USD ni de photos d\'identité.' },
       { label: 'Réservation train', val: 'À faire 30–90 jours avant sur D-Ticket (site officiel SRT) — couchette basse, 2ème classe, Express n°25' },
@@ -1985,7 +1991,7 @@ const DEST_DETAILS = {
   },
   12: {
     country: '\U0001f1f1\U0001f1e6 Laos',
-    title: 'Luang Prabang', flag: '\U0001f1f1\U0001f1e6', nights: '5 nuits',
+    title: 'Luang Prabang', flag: '\U0001f1f1\U0001f1e6', nights: '',
     intro: 'La ville la plus belle du Laos, class\u00e9e UNESCO. Situ\u00e9e \u00e0 la confluence du M\u00e9kong et de la Nam Khan, elle a conserv\u00e9 un charme colonial intact et une atmosph\u00e8re contemplative rare en Asie du Sud-Est. Rythme lent, architecture pr\u00e9serv\u00e9e, vie monacale visible au quotidien.',
     lieux: [
       {
@@ -2032,7 +2038,7 @@ const DEST_DETAILS = {
       },
     ],
     pratique: [
-      { label: 'Transport LP', val: 'Bus depuis Vientiane 10h (~8\u20ac) ou avion 45 min (~50\u201380\u20ac selon dispo). Bus recommand\u00e9 \u2014 la route longe la Nam Ou, paysages superbes.' },
+      { label: 'Transport LP', val: 'Train Laos-China Railway depuis Vientiane : ~2h pour environ 20 $ (+ transfert gare \u2194 centre : la gare de Vientiane est \u00e0 ~15 km). En haute saison (d\u00e9c.\u2013f\u00e9v.), les billets partent d\u00e8s l\u2019ouverture des ventes (souvent 7 \u00e0 14 jours avant, 3 jours hors saison) : r\u00e9server via l\u2019appli LCR ou une agence, et pr\u00e9voir un plan B. Alternatives : avion ~45 min (~50 $) ou bus/minivan 8\u201310h.' },
       { label: 'V\u00e9lo en ville', val: 'Location ~3\u20ac/j \u2014 id\u00e9al pour les villages de tisserands (Ban Xang Khong, Ban Phanom) \u00e0 5\u201310 min du centre.' },
       { label: 'Nuits recommand\u00e9es', val: '3 nuits LP + 2 nuits Nong Khiaw (+ 1 Muang Ngoi si disponible) \u2014 ajustable selon le rythme.' },
       { label: 'Option Nola (non valid\u00e9e)', val: '\ud83d\udc8e Nola Guest House \u2014 recommandation d\'un ami, nuits NON d\u00e9cid\u00e9es. Guesthouse familiale au bord de la Nam Lik (village de Phokham, district de Kasi), ~50 km au nord de Vang Vieng, sur la route Luang Prabang \u2194 Vang Vieng. Chambres en bois basiques, pas de wifi, ~80 000 kip/nuit en solo (haute saison, source : site de la guesthouse), d\u00eener en famille, trek jusqu\'\u00e0 une cascade, tubing, caf\u00e9iers. Acc\u00e8s depuis Vang Vieng : transport local jusqu\'\u00e0 Kasi (~1h, ~30 000 kip), la famille vient chercher au carrefour. 2\u20133 nuits envisag\u00e9es \u2014 \u00e0 absorber dans les 25 nuits Laos ou \u00e0 ajouter (d\u00e9cale toute la suite) : d\u00e9cision en attente. Confirmer la dispo avant de venir.' },
@@ -2040,7 +2046,7 @@ const DEST_DETAILS = {
   },
   16: {
     country: '\U0001f1f1\U0001f1e6 Laos',
-    title: 'Si Phan Don \u2014 4 000 \u00eeles', flag: '\U0001f1f1\U0001f1e6', nights: '3 nuits',
+    title: 'Si Phan Don \u2014 4 000 \u00eeles', flag: '\U0001f1f1\U0001f1e6', nights: '',
     intro: 'L\'archipel de 4 000 \u00eeles sur le M\u00e9kong, tout au sud du Laos \u00e0 la fronti\u00e8re cambodgienne. Atmosph\u00e8re hors du temps, hamacs, couchers de soleil sur le fleuve, dauphins d\'eau douce et les plus grandes cascades d\'Asie en d\u00e9bit. \u00c9tape de transition naturelle vers le Cambodge.',
     lieux: [
       {
@@ -2082,7 +2088,7 @@ const DEST_DETAILS = {
 
   11: {
     country: '\U0001f1f1\U0001f1e6 Laos',
-    title: 'Vientiane', flag: '\U0001f1f1\U0001f1e6', nights: '5 nuits',
+    title: 'Vientiane', flag: '\U0001f1f1\U0001f1e6', nights: '',
     intro: 'La capitale la plus tranquille d\'Asie du Sud-Est. Rien \u00e0 voir avec Bangkok ou Hano\u00ef \u2014 pas de gratte-ciels, peu de circulation, des temples dor\u00e9s entre les bougainvill\u00e9ers. Ville id\u00e9ale pour se poser apr\u00e8s le transit et s\'acclimater au rythme laotien avant de partir vers le nord.',
     lieux: [
       {
@@ -2130,7 +2136,7 @@ const DEST_DETAILS = {
   },
   13: {
     country: '\U0001f1f1\U0001f1e6 Laos',
-    title: 'Vang Vieng', flag: '\U0001f1f1\U0001f1e6', nights: '2 nuits',
+    title: 'Vang Vieng', flag: '\U0001f1f1\U0001f1e6', nights: '',
     intro: '\u00c9tape de transit entre Luang Prabang et Vientiane (retour vers le sud avant Thakhek). Cadre naturel exceptionnel \u2014 karsts karstiques, rivi\u00e8re Nam Song turquoise, grottes \u2014 mais r\u00e9putation de ville festive backpacker qui a transform\u00e9 le centre en rue de bars et restaurants. 2 nuits suffisent largement \u2014 profiter des paysages et passer.',
     lieux: [
       {
@@ -2165,7 +2171,7 @@ const DEST_DETAILS = {
 
   17: {
     country: '\U0001f1f0\U0001f1ed Cambodge',
-    title: 'Phnom Penh', flag: '\U0001f1f0\U0001f1ed', nights: '4 nuits',
+    title: 'Phnom Penh', flag: '\U0001f1f0\U0001f1ed', nights: '',
     intro: 'Capitale cosmopolite et r\u00e9siliente. Moins d\u00e9velopp\u00e9e que Bangkok ou Ho Chi Minh, mais attachante — architecture khmère, march\u00e9s vivants, bord du M\u00e9kong anim\u00e9. Un passage oblig\u00e9 pour comprendre l\u2019histoire tragique du pays avant d\u2019explorer le reste.',
     lieux: [
       {
@@ -2213,7 +2219,7 @@ const DEST_DETAILS = {
   },
   18: {
     country: '\U0001f1f0\U0001f1ed Cambodge',
-    title: 'Kampot', flag: '\U0001f1f0\U0001f1ed', nights: '4 nuits',
+    title: 'Kampot', flag: '\U0001f1f0\U0001f1ed', nights: '',
     intro: 'Ville fluviale coloniale au bord de la rivi\u00e8re Kampot, au pied des montagnes des Cardamomes. Rythme lent, architecture pr\u00e9serv\u00e9e, gastronomie locale excellente. Base id\u00e9ale pour explorer le sud du Cambodge. Score 42% dans l\u2019enqu\u00eate.',
     lieux: [
       {
@@ -2260,7 +2266,7 @@ const DEST_DETAILS = {
   },
   19: {
     country: '\U0001f1f0\U0001f1ed Cambodge',
-    title: 'Kep + Koh Tonsay', flag: '\U0001f1f0\U0001f1ed', nights: '3 nuits',
+    title: 'Kep + Koh Tonsay', flag: '\U0001f1f0\U0001f1ed', nights: '',
     intro: 'Ancienne station balni\u00e9aire coloniale fran\u00e7aise devenue un coin tranquille au bord du golfe de Tha\u00eflande. R\u00e9put\u00e9e pour son crabe. Koh Tonsay (Rabbit Island) est \u00e0 30 min en bateau \u2014 plages d\u00e9sertes et bungalows rustiques.',
     lieux: [
       {
@@ -2292,7 +2298,7 @@ const DEST_DETAILS = {
   },
   20: {
     country: '\U0001f1f0\U0001f1ed Cambodge',
-    title: 'Koh Ta Kiev', flag: '\U0001f1f0\U0001f1ed', nights: '3 nuits',
+    title: 'Koh Ta Kiev', flag: '\U0001f1f0\U0001f1ed', nights: '',
     intro: 'Score 71% — la deuxi\u00e8me destination la plus appr\u00e9ci\u00e9e du Cambodge selon l\u2019enqu\u00eate. L\u2019\u00eele Robinson du pays : pas d\u2019\u00e9lectricit\u00e9 permanente, 4 km de Sihanoukville, plages de sable blanc, snorkeling, jungle. D\u00e9connexion totale garantie.',
     lieux: [
       {
@@ -2325,7 +2331,7 @@ const DEST_DETAILS = {
   },
   21: {
     country: '\U0001f1f0\U0001f1ed Cambodge',
-    title: 'Koh Rong Sanloem', flag: '\U0001f1f0\U0001f1ed', nights: '3 nuits',
+    title: 'Koh Rong Sanloem', flag: '\U0001f1f0\U0001f1ed', nights: '',
     intro: 'Score 66% — l\u2019\u00eele parfaite : plus petite et plus calme que Koh Rong, baie de Saracen en fer \u00e0 cheval, eaux turquoise translucides, plancton bioluminescent la nuit. La meilleure des deux \u00eeles selon l\u2019enqu\u00eate.',
     lieux: [
       {
@@ -2365,7 +2371,7 @@ const DEST_DETAILS = {
   },
   22: {
     country: '\U0001f1f0\U0001f1ed Cambodge',
-    title: 'Mondolkiri', flag: '\U0001f1f0\U0001f1ed', nights: '3 nuits',
+    title: 'Mondolkiri', flag: '\U0001f1f0\U0001f1ed', nights: '',
     intro: 'Score 51% — hauts plateaux du Nord-Est, province la moins peupl\u00e9e du Cambodge. Jungle, cascades puissantes, villages Bunong (ethnie autochtone des hautes terres). Un des coins les plus authentiques et les moins touristiques du pays.',
     lieux: [
       {
@@ -2398,7 +2404,7 @@ const DEST_DETAILS = {
   },
   23: {
     country: '\U0001f1f0\U0001f1ed Cambodge',
-    title: 'Ratanakiri', flag: '\U0001f1f0\U0001f1ed', nights: '3 nuits',
+    title: 'Ratanakiri', flag: '\U0001f1f0\U0001f1ed', nights: '',
     intro: 'Score 46% — province de l\u2019extr\u00eame Nord-Est, fronti\u00e8re Vietnam et Laos. Lac de crat\u00e8re aux eaux translucides, ethnies minoritaires, jungles peu explor\u00e9es. Plus sauvage et plus authentique que Mondolkiri.',
     lieux: [
       {
@@ -2438,7 +2444,7 @@ const DEST_DETAILS = {
   },
   25: {
     country: '\U0001f1f0\U0001f1ed Cambodge',
-    title: 'Siem Reap — Angkor', flag: '\U0001f1f0\U0001f1ed', nights: '5 nuits',
+    title: 'Siem Reap — Angkor', flag: '\U0001f1f0\U0001f1ed', nights: '',
     intro: 'Score 77% — la destination la mieux not\u00e9e du Cambodge. Les temples d\u2019Angkor sont parmi les plus belles merveilles arch\u00e9ologiques du monde. Siem Reap est la porte d\u2019entr\u00e9e — ville touristique mais agr\u00e9able, avec une sc\u00e8ne gastro et culturelle vivante.',
     lieux: [
       {
@@ -2546,7 +2552,7 @@ const DEST_DETAILS = {
   },
   40: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'Banaue / Batad \U0001f48e', flag: '\U0001f1f5\U0001f1ed', nights: '4 nuits',
+    title: 'Banaue / Batad \U0001f48e', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 82% \u2014 la destination la mieux not\u00e9e de tout le pays selon l\u2019enqu\u00eate de 619 voyageurs. Rizi\u00e8res en terrasses creus\u00e9es \u00e0 la main il y a 2000 ans, class\u00e9es UNESCO. Province d\u2019Ifugao, montagnes du centre de Luzon.',
     lieux: [
       {
@@ -2580,7 +2586,7 @@ const DEST_DETAILS = {
   },
   43: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'El Nido — Palawan', flag: '\U0001f1f5\U0001f1ed', nights: '5 nuits',
+    title: 'El Nido — Palawan', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 58% \u2014 baie de Bacuit, une quarantaine d\u2019\u00eeles et \u00eelots aux formations karstiques vertigineuses. Village c\u00f4tier festif, point de d\u00e9part id\u00e9al pour explorer les lagons turquoise.',
     lieux: [
       {
@@ -2613,7 +2619,7 @@ const DEST_DETAILS = {
   },
   45: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'Coron — Palawan', flag: '\U0001f1f5\U0001f1ed', nights: '3 nuits',
+    title: 'Coron — Palawan', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 53% \u2014 paysages \u00e0 couper le souffle au nord de Palawan. Lacs ferm\u00e9s aux eaux cristallines, \u00e9paves de la Seconde Guerre mondiale, falaises calcaires.',
     lieux: [
       {
@@ -2653,7 +2659,7 @@ const DEST_DETAILS = {
   },
   48: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'Malapascua', flag: '\U0001f1f5\U0001f1ed', nights: '4 nuits',
+    title: 'Malapascua', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 54% \u2014 petite \u00eele au nord de Cebu, c\u00e9l\u00e8bre pour ses requins-renards. Plages magnifiques, destination éco-touristique avec un nombre de plongeurs limit\u00e9.',
     lieux: [
       {
@@ -2686,7 +2692,7 @@ const DEST_DETAILS = {
   },
   49: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'Moalboal', flag: '\U0001f1f5\U0001f1ed', nights: '4 nuits',
+    title: 'Moalboal', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 35% \u2014 c\u00f4te sud-ouest de Cebu. C\u00e9l\u00e8bre pour le sardine run (bancs de sardines visibles en snorkeling depuis la plage) et l\u2019Osmeña Peak, sommet offrant une vue sur les volcans voisins.',
     lieux: [
       {
@@ -2719,7 +2725,7 @@ const DEST_DETAILS = {
   },
   50: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'Siquijor \U0001f48e', flag: '\U0001f1f5\U0001f1ed', nights: '5 nuits',
+    title: 'Siquijor \U0001f48e', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 68% \u2014 3ème destination la mieux notée du pays. Île mystérieuse surnommée « l\u2019île aux sorcières », atmosphère sauvage et paisible, parfaite pour ralentir le rythme.',
     lieux: [
       {
@@ -2759,7 +2765,7 @@ const DEST_DETAILS = {
   },
   51: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'Bohol / Panglao', flag: '\U0001f1f5\U0001f1ed', nights: '3 nuits',
+    title: 'Bohol / Panglao', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 32% — le moins consensuel de ton parcours selon l\u2019enquête, mais les Chocolate Hills et le sanctuaire des tarsiers restent des incontournables culturels du pays.',
     lieux: [
       {
@@ -2791,7 +2797,7 @@ const DEST_DETAILS = {
   },
   52: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'Camiguin', flag: '\U0001f1f5\U0001f1ed', nights: '4 nuits',
+    title: 'Camiguin', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 57% \u2014 petite île volcanique encore peu touristique au large de Mindanao. Surnommée l\u2019île aux volcans, grande diversité de paysages sur un territoire minuscule.',
     lieux: [
       {
@@ -2824,7 +2830,7 @@ const DEST_DETAILS = {
   },
   53: {
     country: '\U0001f1f5\U0001f1ed Philippines',
-    title: 'Siargao \U0001f3c4', flag: '\U0001f1f5\U0001f1ed', nights: '6 nuits',
+    title: 'Siargao \U0001f3c4', flag: '\U0001f1f5\U0001f1ed', nights: '',
     intro: 'Score 69% \u2014 île la plus prisée des surfeurs du pays, nord-est de Mindanao. Réputation construite sur des vagues de qualité mondiale, mais bien plus à offrir au-delà du surf.',
     lieux: [
       {
@@ -2911,7 +2917,7 @@ const DEST_DETAILS = {
 
   1: {
     country: '🇹🇼 Taïwan',
-    title: 'Taipei', flag: '🇹🇼', nights: '4 nuits',
+    title: 'Taipei', flag: '🇹🇼', nights: '',
     intro: 'Première ville du voyage, arrivée le 28 décembre. Taipei est dense, sûre, ultra-connectée. Le métro couvre 90 % des sites touristiques pour moins d\'un euro le trajet. Idéale pour se remettre du décalage horaire tout en explorant.',
     lieux: [
       {
@@ -2972,7 +2978,7 @@ const DEST_DETAILS = {
     ]
   },
   2: {
-    title: 'Ruifang — Jiufen', flag: '🇹🇼', nights: '2 nuits',
+    title: 'Ruifang — Jiufen', flag: '🇹🇼', nights: '',
     intro: 'Ruifang est une ville de service ordinaire à 40 km au nord-est de Taipei — c\'est là qu\'on loge. Jiufen, à 15 min en bus, est l\'une des adresses les plus photographiées de Taïwan : ruelles en escalier, lanternes rouges suspendues, thé chaud avec vue sur la mer. Aller en semaine, impérativement.',
     lieux: [
       {
@@ -3011,7 +3017,7 @@ const DEST_DETAILS = {
     ]
   },
   3: {
-    title: 'Yuchi — Sun Moon Lake', flag: '🇹🇼', nights: '2 nuits',
+    title: 'Yuchi — Sun Moon Lake', flag: '🇹🇼', nights: '',
     intro: 'Le plus grand lac naturel de Taïwan, perché à 760 m d\'altitude dans les montagnes du centre. Eau d\'un bleu-vert miroir le matin, temples bouddhistes sur les rives, vélo au bord de l\'eau. Rythme beaucoup plus lent que Taipei — c\'est le but.',
     lieux: [
       {
@@ -3050,7 +3056,7 @@ const DEST_DETAILS = {
     ]
   },
   4: {
-    title: 'Alishan', flag: '🇹🇼', nights: '2 nuits',
+    title: 'Alishan', flag: '🇹🇼', nights: '',
     intro: 'Forêt nationale d\'altitude à 2 200–2 400 m, connue pour ses cyprès vieux de 2 000 ans et sa "mer de nuages" au lever du soleil. Le train forestier qui monte depuis Chiayi est lui-même une attraction. En janvier : température fraîche (5–12°C le matin), peu de pluie, brume garantie.',
     lieux: [
       {
@@ -3082,7 +3088,7 @@ const DEST_DETAILS = {
     ]
   },
   5: {
-    title: 'Tainan', flag: '🇹🇼', nights: '2 nuits',
+    title: 'Tainan', flag: '🇹🇼', nights: '',
     intro: 'Ancienne capitale de Taïwan sous les dynastes et les colonisateurs successifs. Rythme plus lent que Taipei. Réputation culinaire unanime : c\'est ici que la cuisine taïwanaise est la plus raffinée, la plus variée, et la moins chère. Se perdre dans les ruelles en scooter ou à vélo est le programme.',
     lieux: [
       {
@@ -3128,7 +3134,7 @@ const DEST_DETAILS = {
     ]
   },
   6: {
-    title: 'Kaohsiung', flag: '🇹🇼', nights: '1 nuit',
+    title: 'Kaohsiung', flag: '🇹🇼', nights: '',
     intro: 'Deuxième ville de Taïwan — plus industrielle, portuaire, détendue. Une nuit est le bon rythme : assez pour voir les incontournables sans s\'étirer. Métro propre et couverture complète.',
     lieux: [
       {
@@ -3166,7 +3172,7 @@ const DEST_DETAILS = {
     ]
   },
   7: {
-    title: 'Hengchun — Kenting', flag: '🇹🇼', nights: '2 nuits',
+    title: 'Hengchun — Kenting', flag: '🇹🇼', nights: '',
     intro: 'Hengchun est une ville fortifiée du 19e siècle avec son enceinte quasi-intacte — rare à Taïwan. Elle donne accès au Parc National de Kenting, à l\'extrémité sud de l\'île : plages, snorkeling, falaises, savane tropicale. En janvier, basse saison totale — plages vides, peu de touristes.',
     lieux: [
       {
@@ -3213,7 +3219,7 @@ const DEST_DETAILS = {
     ]
   },
   8: {
-    title: 'Hualien City', flag: '🇹🇼', nights: '3 nuits',
+    title: 'Hualien City', flag: '🇹🇼', nights: '',
     intro: 'Ville côtière à l\'est de Taïwan, point d\'entrée des Gorges de Taroko — le parc national le plus spectaculaire du pays. Canyon de marbre blanc, rivières turquoise, falaises de 1 000 m. Les 3 nuits permettent de couvrir le parc à fond et de décompresser entre deux journées intenses.',
     lieux: [
       {
@@ -3253,7 +3259,7 @@ const DEST_DETAILS = {
     ]
   },
   9: {
-    title: 'Dulan', flag: '🇹🇼', nights: '3 nuits',
+    title: 'Dulan', flag: '🇹🇼', nights: '',
     intro: 'Minuscule village (~500 habitants) de la côte est, entre Hualien et Taitung. Peuplé de surfeurs, d\'artistes et d\'autochtones Amis. Une seule rue principale, une plage, une ancienne sucrerie qui fait bar et scène de concert. Trois nuits ici, c\'est apprendre à décompresser sérieusement.',
     lieux: [
       {
@@ -3388,7 +3394,7 @@ const DEST_DETAILS = {
   // ── INDONÉSIE ──
   26: {
     country: '🇻🇳 Vietnam',
-    title: 'Hô Chi Minh-Ville (Saïgon)', flag: '🇻🇳', nights: '3 nuits',
+    title: 'Hô Chi Minh-Ville (Saïgon)', flag: '🇻🇳', nights: '',
     intro: 'Mégapole frénétique, scooters par millions, contraste marqué entre quartiers coloniaux français et tours modernes. Bonne mise en jambes après la frontière cambodgienne, mais arrivée parfois rude — prévoir une journée de transition avant de partir explorer.',
     lieux: [
       { name: 'Marché Bến Thành + quartier 1', type: 'Marché / street food', status: 'in',
@@ -3426,7 +3432,7 @@ const DEST_DETAILS = {
   },
   27: {
     country: '🇻🇳 Vietnam',
-    title: 'Đà Lạt', flag: '🇻🇳', nights: '2 nuits',
+    title: 'Đà Lạt', flag: '🇻🇳', nights: '',
     intro: 'Ville d\'altitude (1500m) surnommée "le petit Paris" — héritage colonial français marqué, climat frais après la chaleur du Sud, lacs et cascades. Un peu kitsch par endroits mais bon contraste après Saïgon.',
     lieux: [
       { name: 'Lac Xuân Hương + marché nocturne', type: 'Balade urbaine', status: 'in',
@@ -3463,7 +3469,7 @@ const DEST_DETAILS = {
   },
   28: {
     country: '🇻🇳 Vietnam',
-    title: 'Hội An', flag: '🇻🇳', nights: '3 nuits',
+    title: 'Hội An', flag: '🇻🇳', nights: '',
     intro: 'Vieille ville UNESCO, lanternes colorées, architecture marchande des XVe–XIXe siècles. Très touristique — un des spots les plus visités du Vietnam — mais le charme reste réel surtout en soirée et tôt le matin. Plage à proximité pour souffler.',
     lieux: [
       { name: 'Vieille ville + Pont japonais couvert', type: 'Patrimoine UNESCO', status: 'in',
@@ -3505,7 +3511,7 @@ const DEST_DETAILS = {
   },
   29: {
     country: '🇻🇳 Vietnam',
-    title: 'Huế (journée)', flag: '🇻🇳', nights: '1 nuit',
+    title: 'Huế (journée)', flag: '🇻🇳', nights: '',
     intro: 'Ancienne capitale impériale du Vietnam, ambiance plus posée et historique que Hội An. Format très court (1 nuit, journée seulement) donc sélectif sur l\'essentiel.',
     lieux: [
       { name: 'Cité impériale (Hoàng Thành)', type: 'Patrimoine UNESCO', status: 'in',
@@ -3536,7 +3542,7 @@ const DEST_DETAILS = {
   },
   30: {
     country: '🇻🇳 Vietnam',
-    title: 'Phong Nha', flag: '🇻🇳', nights: '3 nuits',
+    title: 'Phong Nha', flag: '🇻🇳', nights: '',
     intro: 'Région karstique spectaculaire, abrite certaines des plus grandes grottes du monde (parc national Phong Nha-Kẻ Bàng, UNESCO). Ambiance nature/aventure, beaucoup moins touristique que Hội An.',
     lieux: [
       { name: 'Grotte Phong Nha (en bateau)', type: 'Grotte / nature', status: 'in',
@@ -3567,7 +3573,7 @@ const DEST_DETAILS = {
   },
   31: {
     country: '🇻🇳 Vietnam',
-    title: 'Ninh Bình / Tam Cốc', flag: '🇻🇳', nights: '2 nuits',
+    title: 'Ninh Bình / Tam Cốc', flag: '🇻🇳', nights: '',
     intro: 'Surnommée "la baie d\'Halong terrestre" — paysages karstiques spectaculaires mais sur rivière et rizières plutôt qu\'en mer. Plus accessible et moins cher que Hạ Long elle-même. Ambiance nature/calme.',
     lieux: [
       { name: 'Tam Cốc — balade en barque', type: 'Nature / rivière', status: 'in',
@@ -3603,7 +3609,7 @@ const DEST_DETAILS = {
   },
   32: {
     country: '🇻🇳 Vietnam',
-    title: 'Pù Luông', flag: '🇻🇳', nights: '3 nuits',
+    title: 'Pù Luông', flag: '🇻🇳', nights: '',
     intro: 'Réserve naturelle de montagne, rizières en terrasses, villages ethniques Thái et Mường. Beaucoup moins touristique que Sa Pa (l\'alternative la plus connue), ambiance très calme et authentique.',
     lieux: [
       { name: 'Rizières en terrasses + roues à eau (village de Hiếu)', type: 'Panorama / rando', status: 'in',
@@ -3640,7 +3646,7 @@ const DEST_DETAILS = {
   },
   34: {
     country: '🇻🇳 Vietnam',
-    title: 'Cao Bằng', flag: '🇻🇳', nights: '3 nuits',
+    title: 'Cao Bằng', flag: '🇻🇳', nights: '',
     intro: 'Région frontalière chinoise peu visitée par les touristes occidentaux, célèbre pour sa cascade emblématique et ses paysages karstiques. Beaucoup plus tranquille que Hà Giang.',
     lieux: [
       { name: 'Cascade de Bản Giốc', type: 'Nature / cascade', status: 'in',
@@ -3676,7 +3682,7 @@ const DEST_DETAILS = {
   },
   35: {
     country: '🇻🇳 Vietnam',
-    title: 'Hồ Ba Bể', flag: '🇻🇳', nights: '2 nuits',
+    title: 'Hồ Ba Bể', flag: '🇻🇳', nights: '',
     intro: 'Lac d\'origine naturelle (rare en Asie), entouré de forêt primaire et de villages Tày. Très calme, peu de touristes occidentaux, étape de transition entre Cao Bằng et la suite du Vietnam.',
     lieux: [
       { name: 'Balade en barque sur le lac', type: 'Nature / lac', status: 'in',
@@ -3713,7 +3719,7 @@ const DEST_DETAILS = {
   },
   36: {
     country: '🇻🇳 Vietnam',
-    title: 'Baie d\'Ha Long / Cat Bà', flag: '🇻🇳', nights: '3 nuits',
+    title: 'Baie d\'Ha Long / Cat Bà', flag: '🇻🇳', nights: '',
     intro: 'Le spot le plus touristique du Vietnam, mais pour de bonnes raisons — paysage karstique unique. Cat Bà (la grande île) offre une alternative plus calme et nature que la baie principale bondée de croisières de masse depuis Hanoï.',
     lieux: [
       { name: 'Baie de Lan Hạ (croisière 1 jour ou nuit)', type: 'Croisière / paysage', status: 'in',
@@ -3750,7 +3756,7 @@ const DEST_DETAILS = {
   },
   37: {
     country: '🇻🇳 Vietnam',
-    title: 'Cô Tô', flag: '🇻🇳', nights: '3 nuits',
+    title: 'Cô Tô', flag: '🇻🇳', nights: '',
     intro: 'Île reculée, beaucoup moins visitée que Cat Bà ou Phú Quốc, eau claire et plages encore préservées. Format détente pure après un itinéraire Vietnam Nord assez dense.',
     lieux: [
       { name: 'Plage Hồng Vàn', type: 'Plage', status: 'in',
@@ -3787,7 +3793,7 @@ const DEST_DETAILS = {
   },
   38: {
     country: '🇻🇳 Vietnam',
-    title: 'Hanoï', flag: '🇻🇳', nights: '3 nuits',
+    title: 'Hanoï', flag: '🇻🇳', nights: '',
     intro: 'Capitale millénaire, vieux quartier (Old Quarter) dense et animé, mélange architecture coloniale française et tradition vietnamienne. Plus posée que Saïgon mais tout aussi vivante côté street food.',
     lieux: [
       { name: 'Vieux Quartier + lac Hoàn Kiếm', type: 'Balade urbaine', status: 'in',
@@ -3828,7 +3834,7 @@ const DEST_DETAILS = {
   },
   39: {
     country: '🇵🇭 Philippines',
-    title: 'Manille (transit, arrivée)', flag: '🇵🇭', nights: '1 nuit',
+    title: 'Manille (transit, arrivée)', flag: '🇵🇭', nights: '',
     intro: 'Arrivée par vol direct depuis Hanoï. Simple escale avant le bus de nuit vers Banaue — pas de programme dédié, juste une nuit pour récupérer du vol et préparer le trek.',
     lieux: [
       { name: 'Aéroport NAIA → hébergement', type: 'Transport', status: 'in',
@@ -3845,7 +3851,7 @@ const DEST_DETAILS = {
   },
   41: {
     country: '🇵🇭 Philippines',
-    title: 'Manille (retour de Banaue)', flag: '🇵🇭', nights: '1 nuit',
+    title: 'Manille (retour de Banaue)', flag: '🇵🇭', nights: '',
     intro: 'Escale de transition après le trek Banaue/Batad, avant le vol vers Puerto Princesa. Nuit de récupération après le bus de nuit.',
     lieux: [
       { name: 'Bus nuit Banaue → Manille', type: 'Transport', status: 'in',
@@ -3861,7 +3867,7 @@ const DEST_DETAILS = {
   },
   42: {
     country: '🇵🇭 Philippines',
-    title: 'Puerto Princesa', flag: '🇵🇭', nights: '2 nuits',
+    title: 'Puerto Princesa', flag: '🇵🇭', nights: '',
     intro: 'Ville-porte de Palawan, étape de transition vers El Nido mais avec un site majeur à proximité : la rivière souterraine de Puerto Princesa, classée UNESCO et l\'une des "New 7 Wonders of Nature".',
     lieux: [
       { name: 'Rivière souterraine de Puerto Princesa', type: 'Nature / grotte', status: 'in',
@@ -3882,7 +3888,7 @@ const DEST_DETAILS = {
   },
   47: {
     country: '🇵🇭 Philippines',
-    title: 'Cebu City', flag: '🇵🇭', nights: '1 nuit',
+    title: 'Cebu City', flag: '🇵🇭', nights: '',
     intro: 'Arrivée par vol direct depuis Coron — fini le détour par Manille. Cebu City a quelques intérêts (vieille ville, Magellan\'s Cross) mais le format 1 nuit limite à l\'essentiel pratique avant de rejoindre Malapascua.',
     lieux: [
       { name: 'Vol direct Coron → Cebu', type: 'Transport', status: 'in',
@@ -3929,7 +3935,13 @@ const DEST_DETAILS = {
 function openDestModal(stepNum) {
   const rawDetails = DEST_DETAILS[stepNum];
   if (!rawDetails) return;
-  const d = JSON.parse(JSON.stringify(rawDetails), (k, v) => typeof v === 'string' ? resolveVisaTokens(v) : v);
+  const d = JSON.parse(JSON.stringify(rawDetails), (k, v) => typeof v === 'string' ? resolveDataTokens(v) : v);
+  // Nuits : source unique = ITINERARY (libellé vide dans DEST_DETAILS = calcul auto ; les libellés
+  // spécifiques — boucles moto, croisière, transits — restent tels quels).
+  if (!d.nights) {
+    const stp = ITINERARY.flatMap(g => g.steps).find(x => String(x.num) === String(stepNum));
+    if (stp && stp.nights > 0) d.nights = `${stp.nights} nuit${stp.nights > 1 ? 's' : ''}`;
+  }
 
   // Remove existing modal if any
   const existing = document.getElementById('dest-modal-overlay');
@@ -4216,15 +4228,23 @@ function getVisaByKey(key) {
   return VISAS.find(v => v.key === key) || null;
 }
 
-// Les textes de modales (DEST_DETAILS) ne doivent jamais recopier un visa en dur :
-// utiliser {{visa:<key>:<champ>}} (ex. {{visa:laos:cost}}, {{visa:laos:site}}).
-// Remplacé à l'ouverture de la modale par la valeur de VISAS (source unique).
-function resolveVisaTokens(str) {
+// Les textes de modales (DEST_DETAILS) et la checklist ne doivent jamais recopier une donnée
+// vue à plusieurs endroits : utiliser des tokens résolus ici (source unique) :
+//   {{visa:<key>:<champ>}}  → fiche VISAS (ex. {{visa:laos:cost}}, {{visa:laos:site}})
+//   {{stat:<clé>}}          → GLOBAL_STATS (fourchette {low,high} → « low–high€ », nombre → « n€ »)
+function resolveDataTokens(str) {
   if (typeof str !== 'string') return str;
-  return str.replace(/\{\{visa:([a-z0-9_-]+):([A-Za-z]+)\}\}/g, (m, key, field) => {
-    const v = getVisaByKey(key);
-    return (v && v[field] != null) ? v[field] : m;
-  });
+  return str
+    .replace(/\{\{visa:([a-z0-9_-]+):([A-Za-z]+)\}\}/g, (m, key, field) => {
+      const v = getVisaByKey(key);
+      return (v && v[field] != null) ? v[field] : m;
+    })
+    .replace(/\{\{stat:([A-Za-z0-9_]+)\}\}/g, (m, key) => {
+      const v = GLOBAL_STATS[key];
+      if (v == null) return m;
+      if (typeof v === 'object' && v.low != null && v.high != null) return `${v.low}–${v.high}€`;
+      return typeof v === 'number' ? `${v}€` : String(v);
+    });
 }
 
 // Aligne le libellé visa affiché sur chaque étape de nuit (nights > 0)
@@ -4595,7 +4615,7 @@ function renderChecklist() {
       return `
         <div class="checklist-item ${done ? 'checked' : ''}" id="item-${id}">
           <input type="checkbox" id="${id}" ${done ? 'checked' : ''} onchange="toggleCheck('${id}')">
-          <label for="${id}">${resolveVisaTokens(item)}</label>
+          <label for="${id}">${resolveDataTokens(item)}</label>
         </div>`;
     }).join('');
     const total = cat.items.length;
@@ -4916,6 +4936,7 @@ const MAP_STEPS = [
   { num:7,  city:'Hengchun',            lat:22.002,  lng:120.744, country:'taiwan' },
   { num:8,  city:'Hualien City',        lat:23.991,  lng:121.601, country:'taiwan' },
   { num:9,  city:'Dulan',               lat:23.108,  lng:121.381, country:'taiwan' },
+  { num:'9b', city:'Taipei (dernière nuit)', lat:25.033, lng:121.565, country:'taiwan', minor:true },
   // Transit
   { num:10, city:'Bangkok (transit)',    lat:13.757,  lng:100.502, country:'transit' },
   // Laos
@@ -5029,7 +5050,7 @@ function initMap() {
   // Add markers
   MAP_STEPS.forEach((step, idx) => {
     const color = MAP_COLORS[step.country] || '#9ca3af';
-    const isTransit = step.country === 'transit';
+    const isTransit = step.country === 'transit' || step.minor === true;
     const radius = isTransit ? 5 : 9;
 
     const circleMarker = L.circleMarker([step.lat, step.lng], {
