@@ -1696,7 +1696,7 @@
 </main>
 
 <footer>
-  <span>v3.5</span>
+  <span>v3.6</span>
   <span id="last-updated">Dernière mise à jour : 28 septembre 2026</span>
 </footer>
 
@@ -1720,6 +1720,14 @@ const GLOBAL_STATS = {
   localTransport: { low: 3, high: 10 },
   activities: { low: 5, high: 20 },
   departureDate: '2026-12-28',   // départ Paris → Taipei (aussi utilisé par le compte à rebours)
+  // Train de nuit Bangkok → Nong Khai (sources : ThailandTrains, Thai Train Guide, Wikipedia, 2024-2026) —
+  // utilisé via {{stat:nightTrain.departure}} etc. dans les modales et les cartes Transports.
+  // (numéros et minutes en TEXTE : un nombre nu serait formaté en « n€ » par le token stat)
+  nightTrain: { number: '25', departure: '20h25', arrival: '06h25', boardingMinutes: '20',
+                backupNumber: '133', backupDeparture: '21h25', backupArrival: '07h55' },
+  // Règle horaire du vol Taipei → Bangkok pour attraper le train de nuit (Bangkok a 1 h de retard sur
+  // Taipei ; ~4 h de vol). Heures locales. latestLanding = heure de Bangkok.
+  taipeiFlight: { comfortableDeparture: '13h00', latestDeparture: '14h00', absoluteLimit: '15h00', latestLanding: '17h00' },
   transitionTaiwanLaosRange: { low: 160, high: 200 },
   transitionTaiwanLaos: 0,   // milieu de la fourchette ci-dessus, recalculé juste après — ne pas modifier ici
   esimCost: 70,
@@ -1741,17 +1749,17 @@ const GLOBAL_STATS = {
       where:'Comparateurs (Google Flights, Skyscanner) · direct EVA Air ou vol avec escale',
       note:'Billet déjà réservé. Prix ci-dessus = estimation du 28/09/2026 (direct dès ~870 € en aller simple, avec escale dès ~350 €) : remplacer par le prix réel payé pour un budget exact.',
       confidence:'faible', source:'Google Flights / Trip.com, sept. 2026' },
-    { id:'flight-tpe-bkk', mode:'flight', route:'Vol Taipei (TPE) → Bangkok (DMK)', stepNum:10, beforeDeparture:true,
-      window:{ from:90, to:30, kind:'conseil' }, price:{ low:80, high:130 },
-      where:'AirAsia (DMK) ou Thai Vietjet Air — éviter BKK/Suvarnabhumi pour ce transit',
-      note:'Bagage 15 kg inclus, départ le matin (la veille = nuit à Taipei). Sert aussi de billet de sortie exigé à l\'entrée à Taïwan (voir onglet Visas) : à avoir avant le départ de Paris.',
-      confidence:'faible', source:'Fiche transit du dashboard + conseil général' },
-    { id:'train-bkk-nk', mode:'train', route:'Train de nuit Bangkok → Nong Khai (n°25, couchette basse)', stepNum:10,
-      window:{ from:90, to:30, kind:'officielle' }, price:{ low:25, high:25, note:'950 THB' },
+    { id:'flight-tpe-bkk', mode:'flight', route:'Vol Taipei (TPE) → Bangkok (BKK ou DMK)', stepNum:10, beforeDeparture:true,
+      window:{ from:90, to:30, kind:'conseil' }, price:{ low:100, high:150, note:'relevés du 28/09' },
+      where:'Comparateurs · Thai Airways, Thai VietJet, AirAsia — atterrissage à BKK (Suvarnabhumi) ou DMK (Don Mueang)',
+      note:'Départ de Taipei idéalement avant {{stat:taipeiFlight.comfortableDeparture}}, {{stat:taipeiFlight.latestDeparture}} au plus tard (limite absolue {{stat:taipeiFlight.absoluteLimit}}) pour attraper le train {{stat:nightTrain.number}} de {{stat:nightTrain.departure}} : Bangkok a 1 h de retard sur Taipei, donc atterrir avant {{stat:taipeiFlight.latestLanding}} (heure de Bangkok). Relevés du 28/09/2026 : 102 € (Thai VietJet, bagage à vérifier) et 150 € (Thai Airways). Sert aussi de billet de sortie exigé à l\'entrée à Taïwan (voir onglet Visas) : à avoir avant le départ de Paris.',
+      confidence:'moyenne', source:'captures de comparateur du 28/09/2026, fiche transit du dashboard' },
+    { id:'train-bkk-nk', mode:'train', route:'Train de nuit Bangkok → Nong Khai (couchette basse)', stepNum:10,
+      window:{ from:90, to:30, kind:'officielle' }, price:{ low:25, high:27, note:'≈ 950–1 000 THB' },
       where:'D-Ticket (site / appli officiel SRT) — les agences type 12Go coûtent 20–30 % de plus',
       links:[{ label:'Horaires et prix Bangkok → Nong Khai (ThailandTrains, revendeur : +50 à 100 THB vs gare)', url:'https://www.thailandtrains.com/buy-train-tickets-from-bangkok-to-nongkhai-border-crossing-to-laos/' }],
-      note:'2ᵉ classe climatisée, départ ~20h00 de Krung Thep Aphiwat. Les couchettes basses partent vite en haute saison ; la fenêtre exacte varie selon le type de train (30 ou 90 jours) : vérifier à l\'ouverture des ventes.',
-      confidence:'moyenne', source:'Fiche transit du dashboard, Baolau, thaitrav (2026)' },
+      note:'2ᵉ classe climatisée, Special Express n°{{stat:nightTrain.number}} : départ {{stat:nightTrain.departure}} de Krung Thep Aphiwat, arrivée {{stat:nightTrain.arrival}}. Plan B : train {{stat:nightTrain.backupNumber}} à {{stat:nightTrain.backupDeparture}} (arrivée {{stat:nightTrain.backupArrival}}), une seule voiture-couchette de 2ᵉ classe qui se remplit vite. Les couchettes basses partent vite en haute saison ; la fenêtre exacte varie selon le type de train (30 ou 90 jours) : vérifier à l\'ouverture des ventes.',
+      confidence:'moyenne', source:'ThailandTrains, Thai Train Guide, fiche transit du dashboard, Baolau (2024-2026)' },
     { id:'lcr-vte-lp', mode:'train', route:'Train Laos-China Railway Vientiane → Luang Prabang', stepNum:12,
       window:{ from:14, to:null, kind:'officielle' }, price:{ low:17, high:20, note:'≈ 20 $' },
       where:'Appli LCR (numéro laotien requis) · revendeurs en ligne (Baolau, LaosTrain) · ton hébergement',
@@ -1863,7 +1871,7 @@ const ITINERARY = [
   ]},
   { country: '🔀 Transit', steps: [
     // overnight:1 = nuit passée dans le train couchette (pas d'hébergement, non comptée dans nights) — voir AGENT_RULES §3
-    { num:10, city:'Bangkok (transit)', flag:'🇹🇭', nights:0, transport:'Train nuit → Nong Khai', visa:'exempt 30j', budget:'—', health:['dengue'],
+    { num:10, city:'Bangkok (transit)', flag:'🇹🇭', nights:0, transport:'Train nuit → Nong Khai', visaKey:'thailande', visa:'', budget:'—', health:['dengue'],
       meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[], overnight:1, dateIn:'20 jan 2027', dateOut:'21 jan 2027'},
   ]},
   { country: '🇱🇦 Laos', steps: [
@@ -2141,18 +2149,25 @@ const DEST_DETAILS = {
     intro: 'Le transit le plus économique et immersif pour rejoindre le Laos depuis Taïwan. Vol bas coût vers Bangkok, puis train de nuit jusqu\'à la frontière laotienne. Compter 24 à 30h porte-à-porte, pour environ {{stat:transitionTaiwanLaosRange}} tout compris.',
     lieux: [
       {
-        name: 'Vol Taipei TPE → Bangkok DMK', status: 'in', type: 'Transport',
-        prix: '{{booking:flight-tpe-bkk:price}} bagage 15kg inclus',
-        dispo: 'Départ matinal ou midi recommandé — arriver Bangkok début d\'après-midi',
-        transport: 'AirAsia (DMK) ou Thai Vietjet Air — éviter BKK/Suvarnabhumi pour ce transit',
-        note: 'Prendre DMK (Don Mueang) et non BKK (Suvarnabhumi) — DMK est le terminal AirAsia, plus proche de la gare Krung Thep Aphiwat. Taxi DMK → gare : ~30 min, ~8€. Prévoir minimum 3h entre l\'atterrissage et le départ du train.'
+        name: 'Vol Taipei TPE → Bangkok (BKK ou DMK)', status: 'in', type: 'Transport',
+        prix: '{{booking:flight-tpe-bkk:price}} — vérifier le bagage en soute (souvent exclu sur les tarifs bas)',
+        dispo: 'Départ de Taipei idéalement avant {{stat:taipeiFlight.comfortableDeparture}}, {{stat:taipeiFlight.latestDeparture}} au plus tard (limite absolue {{stat:taipeiFlight.absoluteLimit}}) — Bangkok a 1 h de retard sur Taipei : atterrir avant {{stat:taipeiFlight.latestLanding}} (heure de Bangkok)',
+        transport: 'Thai Airways, Thai VietJet ou AirAsia — aéroports DMK (Don Mueang) ou BKK (Suvarnabhumi), voir le transfert ci-dessous',
+        note: 'Le train {{stat:nightTrain.number}} part à {{stat:nightTrain.departure}} : compter l\'atterrissage + ~1 h d\'immigration et de bagages (estimation) + le transfert + une arrivée à la gare 15 à 30 min avant. Plan B : train {{stat:nightTrain.backupNumber}} à {{stat:nightTrain.backupDeparture}}. Formalité obligatoire à Bangkok : TDAC à remplir dans les 3 jours avant l\'arrivée (voir onglet Visas).'
+      },
+      {
+        name: 'Transfert aéroport → gare Krung Thep Aphiwat', status: 'in', type: 'Transfert',
+        prix: 'DMK : ligne rouge ~33–42 THB (~1 €) ou taxi 220–270 THB · BKK : taxi ~400–600 THB (estimation) ou Airport Rail Link 35 THB + MRT',
+        dispo: 'Ligne rouge SRT : environ toutes les 30 min, ~05h30–23h00',
+        transport: 'DMK : passerelle couverte jusqu\'à la station Don Mueang (fin du Terminal 2), prendre le train de banlieue « Red Line » vers Bang Sue / Krung Thep Aphiwat — pas le train longue distance',
+        note: 'DMK : ligne rouge 17–21 min de trajet (~40–60 min porte à porte, estimation), taxi 20–40 min. BKK : taxi ~45–70 min (estimation) ; Airport Rail Link jusqu\'à Makkasan, puis MRT Blue Line jusqu\'à Bang Sue, ~1h15–1h30 (estimation). Krung Thep Aphiwat : entrée n°4 pour les trains longue distance, départs au niveau 2, quais accessibles environ {{stat:nightTrain.boardingMinutes}} min avant le départ.'
       },
       {
         name: 'Train de nuit Bangkok → Nong Khai', status: 'in', type: 'Transport',
         prix: '{{booking:train-bkk-nk:price}} — couchette basse 2ème classe climatisée',
-        dispo: 'Départ ~20h00 · Arrivée ~06h30 — Express Isan Wathana n°25',
-        transport: 'Gare Krung Thep Aphiwat (nouvelle gare centrale Bangkok, ligne MRT Kamphaeng Phet)',
-        note: 'Réserver la couchette basse (Lower Berth) impérativement — plus confortable et plus sûre pour les affaires. Réservation en ligne via D-Ticket (site SRT) {{booking:train-bkk-nk:window}} avant. Le train est climatisé, propre, avec service de restauration à bord. Draps et oreiller fournis. Trajet de 10h30 — prévoir lecture et bouchons d\'oreilles.'
+        dispo: 'Départ {{stat:nightTrain.departure}} · Arrivée {{stat:nightTrain.arrival}} — Special Express n°{{stat:nightTrain.number}} (plan B : n°{{stat:nightTrain.backupNumber}} à {{stat:nightTrain.backupDeparture}}, arrivée {{stat:nightTrain.backupArrival}})',
+        transport: 'Gare Krung Thep Aphiwat (Bang Sue Grand) — MRT Blue Line : station Bang Sue',
+        note: 'Réserver la couchette basse (Lower Berth) impérativement — plus confortable et plus sûre pour les affaires. Réservation en ligne via D-Ticket (site SRT) {{booking:train-bkk-nk:window}} avant. Le train est climatisé, propre, avec service de restauration à bord. Draps et oreiller fournis. Trajet d\'environ 10 h — prévoir lecture et bouchons d\'oreilles.'
       },
       {
         name: 'Frontière Nong Khai → Vientiane', status: 'in', type: 'Frontière',
@@ -2165,9 +2180,10 @@ const DEST_DETAILS = {
     pratique: [
       { label: 'Budget total', val: '{{stat:transitionTaiwanLaosRange}} tout compris (vol + train + visa + taxis)' },
       { label: 'Veille du départ', val: 'Nuit à Taipei la veille du vol (étape dédiée du dashboard) pour attraper le vol du matin. La nuit suivante se passe dans le train couchette : aucun hébergement à prévoir, elle est comprise dans le prix du billet.' },
+      { label: 'TDAC (Thaïlande)', val: 'Carte d\'arrivée numérique obligatoire même sous exemption de visa : gratuite, à remplir sur {{visa:thailande:site}} dans les 3 jours avant l\'arrivée à Bangkok (QR code reçu par e-mail à présenter). Préparer aussi une preuve de voyage suivant (billet de train, e-visa Laos).' },
       { label: 'Durée porte-à-porte', val: '24 à 30h depuis Taipei jusqu\'au centre de Vientiane' },
       { label: 'Visa Laos', val: '{{visa:laos:typeLabel}} {{visa:laos:cost}} à demander en ligne sur {{visa:laos:site}} plusieurs jours avant (délai 3 à 5 jours ouvrés) — plus besoin de cash USD ni de photos d\'identité.' },
-      { label: 'Réservation train', val: 'À faire {{booking:train-bkk-nk:window}} avant sur D-Ticket (site officiel SRT) — couchette basse, 2ème classe, Express n°25. Horaires et prix : {{booking:train-bkk-nk:links}}' },
+      { label: 'Réservation train', val: 'À faire {{booking:train-bkk-nk:window}} avant sur D-Ticket (site officiel SRT) — couchette basse, 2ème classe, Special Express n°{{stat:nightTrain.number}}. Horaires et prix : {{booking:train-bkk-nk:links}}' },
       { label: 'DAB à Nong Khai', val: 'Retirer des bahts thaïlandais si besoin avant de passer la frontière — les DAB laotiens côté Vientiane sont peu fiables au premier abord' },
     ],
   },
@@ -4327,6 +4343,11 @@ const VISAS = [
     warning: 'Durée de 90 jours confirmée (France Diplomatie, source officielle, MàJ 09/06/2026). Sans TWAC complété, embarquement/entrée peuvent être refusés.'
   },
   {
+    country: '🇹🇭 Thaïlande (transit)', key: 'thailande', site: 'tdac.immigration.go.th', type: 'exempt', typeLabel: 'Exemption visa + TDAC', cost: '0€', duration: '60 jours (transit d\'une journée)', shortLabel: 'Exemption + TDAC', status: 'todo',
+    steps: ['TDAC (Thailand Digital Arrival Card) : formulaire en ligne gratuit sur tdac.immigration.go.th, à remplir dans les 3 jours avant l\'arrivée (72 h, jour d\'arrivée compris) — obligatoire même sous exemption de visa', 'Sauvegarder le QR code reçu par e-mail : il est présenté à l\'immigration', 'Passeport valide 6 mois au-delà de l\'entrée', 'Une preuve de voyage suivant (billet de train, e-visa Laos) peut être demandée par la compagnie aérienne ou l\'immigration', 'Ne payer aucun site tiers : le TDAC officiel est gratuit'],
+    warning: 'Exemption de 60 jours aujourd\'hui ; une baisse à 30 jours est annoncée mais pas encore en vigueur (état août 2026) — sans impact pour un transit d\'une journée. Sources : ambassades de Thaïlande (TDAC) et guides spécialisés 2026, source officielle française non consultée — confiance ~85 %.'
+  },
+  {
     country: '🇱🇦 Laos', key: 'laos', site: 'laoevisa.gov.la', type: 'evisa', typeLabel: 'e-Visa', cost: '50$ US', duration: '30 jours', shortLabel: 'e-Visa 50$', status: 'todo',
     steps: ['Demande en ligne sur laoevisa.gov.la — passeport, photo numérique, paiement CB (50$ US)', 'Délai de traitement 3 à 5 jours ouvrés — à faire bien avant le départ', 'Lettre d\'approbation à imprimer ou garder sur le téléphone', 'LDIF (carte d\'arrivée numérique) à remplir en ligne 3 jours avant — obligatoire au Pont de l\'Amitié I depuis sept. 2025', 'Vérifier que l\'agent d\'immigration appose bien la date d\'entrée sur le passeport avant de quitter le poste'],
     warning: 'Choisi plutôt que le VOA cash (40$) : évite d\'avoir à trouver des billets USD "impeccables" et des photos d\'identité physiques. Sans tampon de date d\'entrée : amende ≥200$ US pour séjour illégal (France Diplomatie).'
@@ -4413,7 +4434,7 @@ function getVisaByKey(key) {
 // Les textes de modales (DEST_DETAILS) et la checklist ne doivent jamais recopier une donnée
 // vue à plusieurs endroits : utiliser des tokens résolus ici (source unique) :
 //   {{visa:<key>:<champ>}}  → fiche VISAS (ex. {{visa:laos:cost}}, {{visa:laos:site}})
-//   {{stat:<clé>}}          → GLOBAL_STATS (fourchette {low,high} → « low–high€ », nombre → « n€ »)
+//   {{stat:<clé>}}          → GLOBAL_STATS, chemin pointé possible (ex. {{stat:nightTrain.departure}}) : fourchette {low,high} → « low–high€ », nombre → « n€ », texte tel quel
 //   {{booking:<id>:price|window|latest|state|date|links}} → GLOBAL_STATS.transportBookings (prix, délai, statut réservé, date de voyage, liens utiles)
 function resolveDataTokens(str) {
   if (typeof str !== 'string') return str;
@@ -4433,8 +4454,8 @@ function resolveDataTokens(str) {
       if (field === 'date') { const t = bookingTravelDate(b); return t ? t.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : m; }
       return b[field] != null ? String(b[field]) : m;
     })
-    .replace(/\{\{stat:([A-Za-z0-9_]+)\}\}/g, (m, key) => {
-      const v = GLOBAL_STATS[key];
+    .replace(/\{\{stat:([A-Za-z0-9_.]+)\}\}/g, (m, key) => {
+      const v = key.split('.').reduce((o, k) => (o == null ? undefined : o[k]), GLOBAL_STATS);
       if (v == null) return m;
       if (typeof v === 'object' && v.low != null && v.high != null) return `${v.low}–${v.high}€`;
       return typeof v === 'number' ? `${v}€` : String(v);
@@ -4851,9 +4872,9 @@ function renderTransportBookings() {
           <div><span class="tb-lbl">Avance ${b.window.kind === 'officielle' ? '(ventes)' : '(conseil)'}</span>${b.window.from == null ? 'dès que possible' : formatBookingWindow(b.window) + ' avant'}</div>
           <div><span class="tb-lbl">Fenêtre</span>${win}</div>
         </div>
-        <div class="tb-where"><span class="tb-lbl">Où réserver</span>${b.where}</div>
+        <div class="tb-where"><span class="tb-lbl">Où réserver</span>${resolveDataTokens(b.where)}</div>
         ${(b.links && b.links.length) ? `<div class="tb-links">🔗 ${b.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener noreferrer">${l.label}</a>`).join(' · ')}</div>` : ''}
-        <div class="tb-note">${b.note}</div>
+        <div class="tb-note">${resolveDataTokens(b.note)}</div>
         <div class="tb-foot-row">Fiabilité <span title="Fiabilité de l'estimation : ${b.confidence}">${TB_CONF_LABELS[b.confidence] || ''}</span> · ${b.source}</div>
       </div>`;
   }).join('');
@@ -4948,6 +4969,7 @@ const CHECKLIST_DATA = [
       'e-Visa Laos ({{visa:laos:cost}}, {{visa:laos:site}}) — délai 3 à 5 jours ouvrés, à faire bien avant le départ',
       'LDIF Laos (carte d’arrivée numérique) — en ligne 3 jours avant l’entrée',
       'TWAC Taïwan (gratuit) — en ligne dans les 7 jours avant l’arrivée à Taipei',
+      'TDAC Thaïlande (gratuit) — en ligne dans les 3 jours avant l’arrivée à Bangkok ({{visa:thailande:site}})',
     ]
   },
 ];
