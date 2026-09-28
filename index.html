@@ -1625,7 +1625,7 @@
 </main>
 
 <footer>
-  <span>v2.9</span>
+  <span>v3.0</span>
   <span id="last-updated">Dernière mise à jour : 28 septembre 2026</span>
 </footer>
 
@@ -1685,7 +1685,7 @@ const ITINERARY = [
       meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[1], dateIn:'21 jan 2027', dateOut:'26 jan 2027'},
     { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Bus / avion', visa:'', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','O','O','G','G'], active:[1], dateIn:'26 jan 2027', dateOut:'31 jan 2027'},
-    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Bus · 3h', visa:'', budget:'25–40€', health:['dengue','malaria'],
+    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Train · ~1h15 (ou minivan 4–6h) depuis Luang Prabang', visa:'', budget:'25–40€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','R','R','R','R','R','O','G','G'], active:[1], dateIn:'31 jan 2027', dateOut:'02 fév 2027'},
     { num:14, city:'Thakhek Loop', flag:'🇱🇦', nights:5, transport:'Bus nuit · 5h depuis Vientiane', transportRisk:'low', visa:'', budget:'25–35€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1], dateIn:'02 fév 2027', dateOut:'07 fév 2027'},
@@ -1697,14 +1697,14 @@ const ITINERARY = [
   ]},
   { country: '🔀 Transit Laos → Cambodge', steps: [
     { num:'T2', city:'Si Phan Don → Phnom Penh', flag:'🔀', nights:0,
-      transport:'🚌 Bus direct · frontière Vang Tao / Dom Kralor · ~9h · ~12€',
+      transport:'🚌 Bus direct · frontière Nong Nok Khiene / Trapeang Kriel · ~9h · ~12€',
       visa:'eVisa cambodgien requis', budget:'~12€', health:['dengue'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[], dateIn:'15 fév 2027', dateOut:'15 fév 2027'},
   ]},
   { country: '🇰🇭 Cambodge', steps: [
     { num:17, city:'Phnom Penh', flag:'🇰🇭', nights:4,
-      transport:'Bus depuis Si Phan Don · frontière Vang Tao · ~9h · ~12€',
-      visa:'eVisa 36$', budget:'30–45€', health:['dengue','malaria'],
+      transport:'Bus depuis Si Phan Don · frontière Nong Nok Khiene / Trapeang Kriel · ~9h · ~12€',
+      visa:'', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'15 fév 2027', dateOut:'19 fév 2027'},
     { num:18, city:'Kampot', flag:'🇰🇭', nights:4,
       transport:'Bus · 3h · Virak Buntham',
@@ -1809,21 +1809,21 @@ const ITINERARY = [
   { country: '🔀 Transit Philippines → Indonésie', steps: [
     { num:'T5', city:'Siargao / Cebu → Bali', flag:'🔀', nights:0,
       transport:'✈️ Vol · Cebu (CEB) → Bali (DPS) · ~3h · 60–110€ · Cebu Pacific / AirAsia',
-      visa:'VoA gratuit Indonésie', budget:'60–110€', health:['dengue'],
+      visaKey:'indonesie', visa:'', budget:'60–110€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[], dateIn:'05 jun 2027', dateOut:'05 jun 2027'},
   ]},
   { country: '🇮🇩 Indonésie', steps: [
-    { num:54, city:'Bali', flag:'🇮🇩', nights:5, transport:'✈️ Vol Cebu→Bali · ~3h · 60–110€', visa:'VoA gratuit 30j', budget:'35–55€', health:['dengue'],
+    { num:54, city:'Bali', flag:'🇮🇩', nights:5, transport:'✈️ Vol Cebu→Bali · ~3h · 60–110€', visa:'', budget:'35–55€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'05 jun 2027', dateOut:'10 jun 2027'},
-    { num:55, city:'Lombok 🏍️', flag:'🇮🇩', nights:4, transport:'✈️ Vol Bali→Lombok · 30 min', transportRisk:'low', visa:'VoA', budget:'30–45€', health:['dengue'],
+    { num:55, city:'Lombok 🏍️', flag:'🇮🇩', nights:4, transport:'✈️ Vol Bali→Lombok · 30 min', transportRisk:'low', visa:'', budget:'30–45€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'10 jun 2027', dateOut:'14 jun 2027'},
     { num:56, city:'Sumbawa ⚠️', flag:'🇮🇩', nights:2, transport:'🚢 Ferry Lombok→Sumbawa · 2h · départ matinal', transportRisk:'high',
-      visa:'VoA', budget:'25–40€', health:['dengue'],
+      visa:'', budget:'25–40€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'14 jun 2027', dateOut:'16 jun 2027'},
     { num:57, city:'Komodo — Varans & Manta 🤿', flag:'🇮🇩', nights:3, transport:'🚢 Ferry Sumbawa→Komodo', transportRisk:'low',
-      visa:'VoA', budget:'40–60€', health:['dengue'],
+      visa:'', budget:'40–60€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'16 jun 2027', dateOut:'19 jun 2027'},
-    { num:58, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:4, transport:'🚢 Ferry · fin road trip', visa:'VoA', budget:'35–50€', health:['dengue'],
+    { num:58, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:4, transport:'🚢 Ferry · fin road trip', visa:'', budget:'35–50€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'19 jun 2027', dateOut:'23 jun 2027'},
   ]},
 ];
@@ -2067,9 +2067,9 @@ const DEST_DETAILS = {
       {
         name: 'Passage fronti\u00e8re Laos \u2192 Cambodge', status: 'in', type: 'Logistique',
         prix: 'Bus fronti\u00e8re ~10\u20ac jusqu\'\u00e0 Phnom Penh',
-        dispo: 'Fronti\u00e8re Vang Tao / Dom Kralor ouverte 7h\u201320h',
+        dispo: 'Fronti\u00e8re Nong Nok Khiene / Trapeang Kriel ouverte 7h\u201320h',
         transport: 'Ferry Don Det \u2192 continent + bus ou minivan direct Phnom Penh',
-        note: 'La fronti\u00e8re terrestre Vang Tao (Laos) / Dom Kralor (Cambodge) est la sortie naturelle depuis Si Phan Don. Des bus directs Don Det \u2192 Phnom Penh existent (~10\u201315\u20ac, 8\u201310h). Visa cambodgien : eVisa \u00e0 faire en ligne avant (36$, 3\u20137 jours de traitement). Fronti\u00e8re peu fr\u00e9quent\u00e9e, passage g\u00e9n\u00e9ralement rapide.'
+        note: 'La fronti\u00e8re terrestre Nong Nok Khiene (Laos) / Trapeang Kriel (Cambodge, aussi appel\u00e9e Dom Kralor) est la seule fronti\u00e8re terrestre Laos\u2013Cambodge et la sortie naturelle depuis Si Phan Don. Des bus directs Don Det \u2192 Phnom Penh existent (~10\u201315\u20ac, 8\u201310h). Visa cambodgien : eVisa \u00e0 faire en ligne avant ({{visa:cambodge:cost}}, 3\u20137 jours de traitement). Fronti\u00e8re peu fr\u00e9quent\u00e9e, passage g\u00e9n\u00e9ralement rapide.'
       },
     ],
     pratique: [
@@ -2157,7 +2157,7 @@ const DEST_DETAILS = {
     ],
     pratique: [
       { label: 'Ambiance', val: 'Le centre de Vang Vieng est envahi de bars diffusant Friends en boucle et de restaurants \u00e0 touristes. S\u00e9loigner du centre d\u00e8s que possible \u2014 les bords de rivi\u00e8re et les villages alentour sont incomparablement plus agr\u00e9ables.' },
-      { label: 'Transport depuis LP', val: 'Bus VIP direct Luang Prabang \u2192 Vang Vieng ~8\u20ac, 4\u20135h. Minivan plus rapide mais moins confortable. Nouvelle route asphalt\u00e9e \u2014 le trajet longe la Nam Ou avec des vues superbes.' },
+      { label: 'Transport depuis LP', val: 'Train Laos-China Railway : ~1h15 (\u00e0 partir d\u2019environ 8 $), gare \u00e0 ~4 km du centre de Vang Vieng (tuk-tuk ~2 $) \u2014 r\u00e9server \u00e0 l\u2019avance. Alternative : minivan ou bus en 4\u20136h selon l\u2019op\u00e9rateur, route sinueuse : partir avant midi.' },
       { label: 'Suite', val: 'Retour \u00e0 Vientiane puis bus de nuit (~5h) vers Thakhek \u2014 voir \u00e9tape 14.' },
       { label: 'H\u00e9bergement', val: 'Choisir un guesthouse au bord de la rivi\u00e8re plut\u00f4t qu\'en centre-ville \u2014 m\u00eame prix, beaucoup plus calme. Vue sur les karsts depuis la chambre possible d\u00e8s 10\u201315\u20ac/nuit.' },
     ],
@@ -2480,7 +2480,7 @@ const DEST_DETAILS = {
   'T2': {
     country: '\U0001f500 Transit',
     title: 'Laos \u2192 Cambodge', flag: '\U0001f500', nights: 'Transit ~9h',
-    intro: 'Sortie naturelle depuis Si Phan Don. La fronti\u00e8re Vang Tao (Laos) / Dom Kralor (Cambodge) est \u00e0 30 min de Don Det. Des bus directs jusqu\u2019\u00e0 Phnom Penh partent chaque matin.',
+    intro: 'Sortie naturelle depuis Si Phan Don. La fronti\u00e8re Nong Nok Khiene (Laos) / Trapeang Kriel (Cambodge, aussi appel\u00e9e Dom Kralor) est \u00e0 30 min de Don Det. Des bus directs jusqu\u2019\u00e0 Phnom Penh partent chaque matin.',
     lieux: [
       {
         name: 'Bus direct Don Det \u2192 Phnom Penh', status: 'in', type: 'Transport',
@@ -2490,11 +2490,11 @@ const DEST_DETAILS = {
         note: 'Trajet en deux temps : ferry Don Det \u2192 continent (0,50\u20ac), puis minivan jusqu\u2019\u00e0 Phnom Penh. La route c\u00f4t\u00e9 cambodgien est partiellement mauvaise jusqu\u2019\u00e0 Stung Treng. Pr\u00e9voir snacks et eau \u2014 peu d\u2019arr\u00eats.'
       },
       {
-        name: 'Fronti\u00e8re Vang Tao / Dom Kralor', status: 'in', type: 'Fronti\u00e8re',
+        name: 'Fronti\u00e8re Nong Nok Khiene / Trapeang Kriel', status: 'in', type: 'Fronti\u00e8re',
         prix: 'Gratuit (eVisa d\u00e9j\u00e0 pay\u00e9 en ligne)',
         dispo: 'Ouverte 7h\u201320h \u2014 passage inclus dans le bus',
         transport: 'Le minivan s\u2019arr\u00eate aux deux postes frontaliers',
-        note: 'Fronti\u00e8re peu fr\u00e9quent\u00e9e, passage rapide (20\u201330 min). C\u00f4t\u00e9 laotien : tampon de sortie gratuit. C\u00f4t\u00e9 cambodgien : pr\u00e9senter le QR code eVisa + passeport. Ne pas accepter le VoA propos\u00e9 sur place (plus cher que l\u2019eVisa).'
+        note: 'Fronti\u00e8re peu fr\u00e9quent\u00e9e, passage rapide (20\u201330 min). C\u00f4t\u00e9 laotien : tampon de sortie gratuit. C\u00f4t\u00e9 cambodgien : pr\u00e9senter le QR code eVisa + passeport. Ne payer aucun \u00ab frais suppl\u00e9mentaire \u00bb informel : l\u2019eVisa d\u00e9j\u00e0 pay\u00e9 \u00e9vite toute n\u00e9gociation (le VoA reste possible sur place en secours).'
       },
       {
         name: 'Option 2 : nuit \u00e0 Stung Treng', status: 'zone', type: 'Alternative',
@@ -2505,7 +2505,7 @@ const DEST_DETAILS = {
       },
     ],
     pratique: [
-      { label: 'eVisa cambodgien', val: 'Obligatoire \u2014 faire la demande sur evisa.gov.kh au moins 7 jours avant. Co\u00fbt 36$. La fronti\u00e8re Vang Tao / Dom Kralor accepte l\u2019eVisa mais PAS le VoA.' },
+      { label: 'eVisa cambodgien', val: 'eVisa retenu \u2014 demande sur evisa.gov.kh au moins 7 jours avant, en indiquant \u00ab Tropaeng Kreal \u00bb comme poste d\u2019entr\u00e9e. Co\u00fbt {{visa:cambodge:cost}}. Poste accept\u00e9 pour l\u2019eVisa d\u2019apr\u00e8s la liste officielle du minist\u00e8re cambodgien (ao\u00fbt 2026) ; le VoA reste possible sur place en secours.' },
       { label: 'Cash', val: 'Le dollar USD est utilis\u00e9 au Cambodge. Avoir des USD d\u00e8s la fronti\u00e8re. Les kips laotiens ne sont pas accept\u00e9s.' },
       { label: 'Timing', val: 'Demander l\u2019eVisa depuis Pakse avant de partir pour Si Phan Don \u2014 ne pas attendre le dernier moment.' },
     ],
@@ -2903,8 +2903,8 @@ const DEST_DETAILS = {
       },
     ],
     pratique: [
-      { label: 'Visa Indon\u00e9sie', val: 'VoA gratuit pour passeport fran\u00e7ais \u2014 valable 30 jours, extensible \u00e0 60 jours sur place (250 000 IDR). Aucune d\u00e9marche pr\u00e9alable n\u00e9cessaire.' },
-      { label: 'Entr\u00e9e Bali', val: 'A\u00e9roport Ngurah Rai (DPS) \u2014 VoA au comptoir \u00e0 l\u2019arriv\u00e9e (20\u201330 min). Taxi officiel vers le centre de Kuta / Seminyak : ~5\u20ac via application Grab.' },
+      { label: 'Visa Indon\u00e9sie', val: '{{visa:indonesie:typeLabel}} payant \u00e0 l\u2019arriv\u00e9e : {{visa:indonesie:cost}}, valable {{visa:indonesie:duration}}, extensible sur place (tarif et conditions : voir l\u2019onglet Visas).' },
+      { label: 'Entr\u00e9e Bali', val: 'A\u00e9roport Ngurah Rai (DPS) \u2014 {{visa:indonesie:shortLabel}} au comptoir \u00e0 l\u2019arriv\u00e9e (20\u201330 min). Taxi officiel vers le centre de Kuta / Seminyak : ~5\u20ac via application Grab.' },
       { label: 'Timing', val: 'R\u00e9server le vol 4\u20136 semaines avant. Les vols Philippines\u2192Bali sont populaires en avril \u2014 prix stables mais dispo \u00e0 surveiller.' },
     ],
   },
@@ -4138,7 +4138,7 @@ const VISAS = [
     warning: 'Choisi plutôt que le VOA cash (40$) : évite d\'avoir à trouver des billets USD "impeccables" et des photos d\'identité physiques. Sans tampon de date d\'entrée : amende ≥200$ US pour séjour illégal (France Diplomatie).'
   },
   {
-    country: '🇰🇭 Cambodge', type: 'evisa', typeLabel: 'e-Visa', cost: '36$', duration: '30 jours', shortLabel: 'e-Visa 36$', status: 'todo',
+    country: '🇰🇭 Cambodge', key: 'cambodge', type: 'evisa', typeLabel: 'e-Visa', cost: '36$', duration: '30 jours', shortLabel: 'e-Visa 36$', status: 'todo',
     steps: ['Faire la demande sur evisa.gov.kh 3–7j avant', 'Paiement carte bancaire en ligne', 'Imprimer ou avoir le QR code sur le téléphone', 'Valable pour entrée terrestre + aérien'],
     warning: null
   },
@@ -4160,7 +4160,7 @@ const VISAS = [
   },
   
   {
-    country: '🇮🇩 Indonésie', type: 'voa', typeLabel: 'Visa on Arrival', cost: '~28€ (500 000 IDR)', duration: '30 jours', shortLabel: 'VoA ~28€', status: 'todo',
+    country: '🇮🇩 Indonésie', key: 'indonesie', type: 'voa', typeLabel: 'Visa on Arrival', cost: '~28€ (500 000 IDR)', duration: '30 jours', shortLabel: 'VoA ~28€', status: 'todo',
     steps: ['VoA payant à l\'arrivée (500 000 IDR, ~28€)', 'Valable pour entrée à Bali (DPS), Jakarta (CGK), etc.', 'Extension 30j possible sur place (250 000 IDR)'],
     warning: 'Corrigé le 26/08/2026 (audit visas) : le VoA n\'est pas gratuit comme indiqué précédemment, il coûte ~28€. D\'autres points de l\'audit (taxe Love Bali, déclaration All Indonesia) restent en attente de validation avant intégration ici.'
   },
@@ -4237,6 +4237,10 @@ function syncVisaLabels() {
     group.steps.forEach(step => {
       if (step.nights > 0) {
         const v = getVisa(step.flag);
+        if (v && v.shortLabel) step.visa = v.shortLabel;
+      } else if (step.visaKey) {
+        // transit sans nuit rattaché à un visa de VISAS (ex. arrivée en Indonésie)
+        const v = getVisaByKey(step.visaKey);
         if (v && v.shortLabel) step.visa = v.shortLabel;
       }
     });
@@ -4516,7 +4520,7 @@ const CHECKLIST_DATA = [
       'Photocopies passeport × 5',
       'Scan passeport sur Google Drive',
       'Permis de conduire international',
-      'Photos d\'identité × 10 (visas VoA)',
+      'Photo d\'identité numérique (e-visas Laos et Cambodge) + quelques photos papier de secours',
       'Assurance voyage souscrire ❓',
       'Carnet de vaccination à jour',
     ]
@@ -4540,7 +4544,7 @@ const CHECKLIST_DATA = [
     items: [
       'Carte bancaire sans frais (ex: Revolut, Wise)',
       'Carte de secours (2ème banque)',
-      'Cash USD 200$ pour visas VoA',
+      '{{visa:indonesie:typeLabel}} Indonésie : prévoir {{visa:indonesie:cost}} à l\'arrivée (paiement au comptoir)',
       'Notifier banque des pays visités',
       'Compte Wise ou Revolut ouvert',
     ]
@@ -4575,6 +4579,9 @@ const CHECKLIST_DATA = [
       'Hébergement Taipei nuit 1',
       'eVisa Cambodge (3–7j avant entrée)',
       'Carte d’arrivée numérique Vietnam (en ligne, ~72h avant) — pas d’e-visa, exemption 45j',
+      'e-Visa Laos ({{visa:laos:cost}}, {{visa:laos:site}}) — délai 3 à 5 jours ouvrés, à faire bien avant le départ',
+      'LDIF Laos (carte d’arrivée numérique) — en ligne 3 jours avant l’entrée',
+      'TWAC Taïwan (gratuit) — en ligne dans les 7 jours avant l’arrivée à Taipei',
     ]
   },
 ];
@@ -4588,7 +4595,7 @@ function renderChecklist() {
       return `
         <div class="checklist-item ${done ? 'checked' : ''}" id="item-${id}">
           <input type="checkbox" id="${id}" ${done ? 'checked' : ''} onchange="toggleCheck('${id}')">
-          <label for="${id}">${item}</label>
+          <label for="${id}">${resolveVisaTokens(item)}</label>
         </div>`;
     }).join('');
     const total = cat.items.length;
