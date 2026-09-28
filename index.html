@@ -1118,6 +1118,7 @@
       <button class="tab-btn active" onclick="switchTab('itineraire', this)">📋 Itinéraire</button>
       <button class="tab-btn" onclick="switchTab('carte', this)">🗺 Carte</button>
       <button class="tab-btn" onclick="switchTab('meteo', this)">🌤 Météo</button>
+      <button class="tab-btn" onclick="switchTab('transports', this)">🎫 Transports</button>
     </div>
     <div class="subgroup" data-group="budget-admin">
       <button class="tab-btn" onclick="switchTab('budget', this)">💰 Budget</button>
@@ -1126,7 +1127,6 @@
     </div>
     <div class="subgroup" data-group="prepa">
       <button class="tab-btn" onclick="switchTab('checklist', this)">✅ Checklist</button>
-      <button class="tab-btn" onclick="switchTab('transports', this)">🎫 Transports</button>
       <button class="tab-btn" onclick="switchTab('connectivite', this)">📶 eSIM</button>
       <button class="tab-btn" onclick="switchTab('photos', this)">📷 Photos</button>
     </div>
@@ -1283,7 +1283,7 @@
     <div class="budget-stat">
       <div class="budget-stat-label">Budget transports estimé</div>
       <div class="budget-stat-value" id="tb-summary-total">—</div>
-      <div class="budget-stat-sub">réservations à l'avance · hors hébergement, recoupe en partie le budget transport quotidien</div>
+      <div class="budget-stat-sub" id="tb-summary-total-sub">réservations à l'avance</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Prochaine à faire</div>
@@ -1299,7 +1299,7 @@
   <p class="tb-legend">
     Les fenêtres de réservation sont <b>calculées à partir des dates de l'itinéraire</b> : si une date bouge, tout suit.
     « Ventes » = ouverture officielle annoncée par l'opérateur ; « conseil » = délai recommandé.
-    Prix en € (conversions approximatives), à confirmer au moment de réserver. Le vol de sortie de la Phase 2 n'est pas listé (dates ouvertes).
+    Prix en € (conversions approximatives), à confirmer au moment de réserver ; le total exclut les billets déjà réservés. Hors hébergement, et il recoupe en partie le budget transport quotidien. Le vol de sortie de la Phase 2 n'est pas listé (dates ouvertes).
     Les hébergements, permis et visas ont leurs propres onglets.
   </p>
 </div>
@@ -1693,7 +1693,7 @@
 </main>
 
 <footer>
-  <span>v3.3</span>
+  <span>v3.4</span>
   <span id="last-updated">Dernière mise à jour : 28 septembre 2026</span>
 </footer>
 
@@ -1721,19 +1721,21 @@ const GLOBAL_STATS = {
   transitionTaiwanLaos: 0,   // milieu de la fourchette ci-dessus, recalculé juste après — ne pas modifier ici
   esimCost: 70,
   // ------------------------------------------------------------
-  // TRANSPORTS À RÉSERVER EN AVANCE (onglet Prépa › Transports)
+  // TRANSPORTS À RÉSERVER EN AVANCE (onglet Voyage › Transports)
   // Champs : id · mode (flight|train|bus|boat) · route · stepNum (étape d'ITINERARY dont la date sert de
   // jour de voyage) + dateField ('dateIn' par défaut) ou dateRef:'departure' · window {from,to,kind} =
   // réserver entre J-from et J-to (from:null = dès que possible ; kind 'officielle' = ouverture des ventes
   // annoncée, 'conseil' = délai recommandé) · price {low,high,note} en € · where · note · confidence · source.
+  // booked:true = déjà réservé (affiché « Réservé » sur tous les appareils, exclu du budget restant ; pour
+  // les autres cartes, la case « réservé » est mémorisée dans le navigateur uniquement).
   // Les dates de réservation sont CALCULÉES depuis ITINERARY (jamais recopiées ici).
   // Les modales peuvent citer {{booking:<id>:price|window|latest}} (voir resolveDataTokens).
   // ------------------------------------------------------------
   transportBookings: [
-    { id:'flight-paris-tpe', mode:'flight', route:'Vol Paris → Taipei (TPE)', dateRef:'departure',
+    { id:'flight-paris-tpe', mode:'flight', route:'Vol Paris → Taipei (TPE)', dateRef:'departure', booked:true,
       window:{ from:null, to:null, kind:'conseil' }, price:{ low:350, high:900, note:'aller simple' },
       where:'Comparateurs (Google Flights, Skyscanner) · direct EVA Air ou vol avec escale',
-      note:'Départ en pleine période de Noël : les tarifs montent à l\'approche. Relevés comparateurs (sept. 2026) : direct dès ~870 € en aller simple, avec escale dès ~350 €.',
+      note:'Billet déjà réservé. Prix ci-dessus = estimation du 28/09/2026 (direct dès ~870 € en aller simple, avec escale dès ~350 €) : remplacer par le prix réel payé pour un budget exact.',
       confidence:'faible', source:'Google Flights / Trip.com, sept. 2026' },
     { id:'flight-tpe-bkk', mode:'flight', route:'Vol Taipei (TPE) → Bangkok (DMK)', stepNum:10, beforeDeparture:true,
       window:{ from:90, to:30, kind:'conseil' }, price:{ low:80, high:130 },
@@ -4407,7 +4409,7 @@ function getVisaByKey(key) {
 // vue à plusieurs endroits : utiliser des tokens résolus ici (source unique) :
 //   {{visa:<key>:<champ>}}  → fiche VISAS (ex. {{visa:laos:cost}}, {{visa:laos:site}})
 //   {{stat:<clé>}}          → GLOBAL_STATS (fourchette {low,high} → « low–high€ », nombre → « n€ »)
-//   {{booking:<id>:price|window|latest}} → GLOBAL_STATS.transportBookings (prix, délai de réservation)
+//   {{booking:<id>:price|window|latest|state|date}} → GLOBAL_STATS.transportBookings (prix, délai, statut réservé, date de voyage)
 function resolveDataTokens(str) {
   if (typeof str !== 'string') return str;
   return str
@@ -4421,6 +4423,8 @@ function resolveDataTokens(str) {
       if (field === 'price') return formatBookingPrice(b.price);
       if (field === 'window') return formatBookingWindow(b.window);
       if (field === 'latest') return b.window.to != null ? formatLeadDays(b.window.to) : m;
+      if (field === 'state') return b.booked ? '✓ réservé' : '❓ à réserver';
+      if (field === 'date') { const t = bookingTravelDate(b); return t ? t.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : m; }
       return b[field] != null ? String(b[field]) : m;
     })
     .replace(/\{\{stat:([A-Za-z0-9_]+)\}\}/g, (m, key) => {
@@ -4802,19 +4806,21 @@ function renderTransportBookings() {
   const grid = document.getElementById('tb-grid');
   if (!grid) return;
   const today = new Date(); today.setHours(0, 0, 0, 0);
-  const isDone = id => { try { return localStorage.getItem('tb-done-' + id) === '1'; } catch (e) { return false; } };
+  const isDone = id => { const bk = getBooking(id); if (bk && bk.booked) return true; try { return localStorage.getItem('tb-done-' + id) === '1'; } catch (e) { return false; } };
 
   const rows = GLOBAL_STATS.transportBookings
     .map(b => ({ b, info: computeBookingInfo(b, today) }))
-    .sort((x, y) => x.info.sortKey - y.info.sortKey);
+    .sort((x, y) => (isDone(x.b.id) - isDone(y.b.id)) || (x.info.sortKey - y.info.sortKey));
 
   // Cartes de synthèse
-  const low = rows.reduce((a, r) => a + r.b.price.low, 0);
-  const high = rows.reduce((a, r) => a + r.b.price.high, 0);
-  const doneCount = rows.filter(r => isDone(r.b.id)).length;
+  const remaining = rows.filter(r => !isDone(r.b.id));
+  const low = remaining.reduce((a, r) => a + r.b.price.low, 0);
+  const high = remaining.reduce((a, r) => a + r.b.price.high, 0);
+  const doneCount = rows.length - remaining.length;
   const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
   set('tb-summary-count', `${doneCount} / ${rows.length}`);
   set('tb-summary-total', `${low.toLocaleString('fr-FR')}–${high.toLocaleString('fr-FR')}€`);
+  set('tb-summary-total-sub', doneCount ? `restant à réserver (${doneCount} déjà réservé${doneCount > 1 ? 's' : ''}, non compté${doneCount > 1 ? 's' : ''})` : 'réservations à l\'avance');
   const next = rows.find(r => !isDone(r.b.id) && r.info.travel && r.info.travel >= today);
   set('tb-summary-next', next ? next.b.route : '—');
   set('tb-summary-next-sub', next ? next.info.status : 'Tout est réservé');
@@ -4830,7 +4836,7 @@ function renderTransportBookings() {
         <div class="tb-head">
           <span class="tb-mode">${TB_MODE_ICONS[b.mode] || '🎫'}</span>
           <div class="tb-route">${b.route}</div>
-          <label class="tb-check" title="Marquer comme réservé"><input type="checkbox" ${done ? 'checked' : ''} onchange="toggleBookingDone('${b.id}')"> réservé</label>
+          <label class="tb-check" title="${b.booked ? 'Réservé (donnée du dashboard)' : 'Marquer comme réservé'}"><input type="checkbox" ${done ? 'checked' : ''} ${b.booked ? 'disabled' : ''} onchange="toggleBookingDone('${b.id}')"> réservé</label>
         </div>
         <div class="tb-status ${info.cls}">${done ? '✓ Réservé' : info.status}</div>
         <div class="tb-meta">
@@ -4926,7 +4932,7 @@ const CHECKLIST_DATA = [
   {
     title: '✈️ Réservations à anticiper',
     items: [
-      'Vol Paris → Taipei (28/12/26) ❓',
+      'Vol Paris → Taipei ({{booking:flight-paris-tpe:date}}) {{booking:flight-paris-tpe:state}}',
       'Vol Taipei → Bangkok (fin Taiwan)',
       'Train Bangkok → Nong Khai (nuit) — réserver 30–90j avant',
       'Hébergement Taipei nuit 1',
@@ -5245,7 +5251,7 @@ renderVisas();
 renderBudget();
 renderGlobalStats(); // header + onglets Budget/Assurance/eSIM — lit GLOBAL_STATS/INSURANCE_RATE
 renderChecklist();
-renderTransportBookings();  // onglet Prépa › Transports — lit GLOBAL_STATS.transportBookings + ITINERARY
+renderTransportBookings();  // onglet Voyage › Transports — lit GLOBAL_STATS.transportBookings + ITINERARY
 renderMeteo();
 renderApps();
 updateCountdown();
