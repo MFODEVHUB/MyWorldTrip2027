@@ -964,6 +964,9 @@
   .tb-where { font-size: 12px; color: var(--text); }
   .tb-note { font-size: 12px; color: var(--muted); line-height: 1.55; background: rgba(128,128,128,0.06); border-radius: 6px; padding: 7px 9px; }
   .tb-foot-row { font-size: 10px; color: var(--muted); }
+  .tb-links { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .tb-links a { color: var(--accent2); text-decoration: none; }
+  .tb-links a:hover { text-decoration: underline; }
   .tb-risk-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.8rem; }
   .tb-risk-row { display: grid; grid-template-columns: 1.2fr 0.9fr 2fr 1.6fr; gap: 0.7rem; align-items: center; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.8rem; font-size: 12px; }
   .tb-risk-city { font-weight: 600; color: var(--text); }
@@ -1693,7 +1696,7 @@
 </main>
 
 <footer>
-  <span>v3.4</span>
+  <span>v3.5</span>
   <span id="last-updated">Dernière mise à jour : 28 septembre 2026</span>
 </footer>
 
@@ -1726,6 +1729,7 @@ const GLOBAL_STATS = {
   // jour de voyage) + dateField ('dateIn' par défaut) ou dateRef:'departure' · window {from,to,kind} =
   // réserver entre J-from et J-to (from:null = dès que possible ; kind 'officielle' = ouverture des ventes
   // annoncée, 'conseil' = délai recommandé) · price {low,high,note} en € · where · note · confidence · source.
+  // links:[{label,url}] = pages utiles (horaires, prix, réservation), affichées sur la carte et via {{booking:<id>:links}}.
   // booked:true = déjà réservé (affiché « Réservé » sur tous les appareils, exclu du budget restant ; pour
   // les autres cartes, la case « réservé » est mémorisée dans le navigateur uniquement).
   // Les dates de réservation sont CALCULÉES depuis ITINERARY (jamais recopiées ici).
@@ -1745,6 +1749,7 @@ const GLOBAL_STATS = {
     { id:'train-bkk-nk', mode:'train', route:'Train de nuit Bangkok → Nong Khai (n°25, couchette basse)', stepNum:10,
       window:{ from:90, to:30, kind:'officielle' }, price:{ low:25, high:25, note:'950 THB' },
       where:'D-Ticket (site / appli officiel SRT) — les agences type 12Go coûtent 20–30 % de plus',
+      links:[{ label:'Horaires et prix Bangkok → Nong Khai (ThailandTrains, revendeur : +50 à 100 THB vs gare)', url:'https://www.thailandtrains.com/buy-train-tickets-from-bangkok-to-nongkhai-border-crossing-to-laos/' }],
       note:'2ᵉ classe climatisée, départ ~20h00 de Krung Thep Aphiwat. Les couchettes basses partent vite en haute saison ; la fenêtre exacte varie selon le type de train (30 ou 90 jours) : vérifier à l\'ouverture des ventes.',
       confidence:'moyenne', source:'Fiche transit du dashboard, Baolau, thaitrav (2026)' },
     { id:'lcr-vte-lp', mode:'train', route:'Train Laos-China Railway Vientiane → Luang Prabang', stepNum:12,
@@ -2162,7 +2167,7 @@ const DEST_DETAILS = {
       { label: 'Veille du départ', val: 'Nuit à Taipei la veille du vol (étape dédiée du dashboard) pour attraper le vol du matin. La nuit suivante se passe dans le train couchette : aucun hébergement à prévoir, elle est comprise dans le prix du billet.' },
       { label: 'Durée porte-à-porte', val: '24 à 30h depuis Taipei jusqu\'au centre de Vientiane' },
       { label: 'Visa Laos', val: '{{visa:laos:typeLabel}} {{visa:laos:cost}} à demander en ligne sur {{visa:laos:site}} plusieurs jours avant (délai 3 à 5 jours ouvrés) — plus besoin de cash USD ni de photos d\'identité.' },
-      { label: 'Réservation train', val: 'À faire {{booking:train-bkk-nk:window}} avant sur D-Ticket (site officiel SRT) — couchette basse, 2ème classe, Express n°25' },
+      { label: 'Réservation train', val: 'À faire {{booking:train-bkk-nk:window}} avant sur D-Ticket (site officiel SRT) — couchette basse, 2ème classe, Express n°25. Horaires et prix : {{booking:train-bkk-nk:links}}' },
       { label: 'DAB à Nong Khai', val: 'Retirer des bahts thaïlandais si besoin avant de passer la frontière — les DAB laotiens côté Vientiane sont peu fiables au premier abord' },
     ],
   },
@@ -4409,7 +4414,7 @@ function getVisaByKey(key) {
 // vue à plusieurs endroits : utiliser des tokens résolus ici (source unique) :
 //   {{visa:<key>:<champ>}}  → fiche VISAS (ex. {{visa:laos:cost}}, {{visa:laos:site}})
 //   {{stat:<clé>}}          → GLOBAL_STATS (fourchette {low,high} → « low–high€ », nombre → « n€ »)
-//   {{booking:<id>:price|window|latest|state|date}} → GLOBAL_STATS.transportBookings (prix, délai, statut réservé, date de voyage)
+//   {{booking:<id>:price|window|latest|state|date|links}} → GLOBAL_STATS.transportBookings (prix, délai, statut réservé, date de voyage, liens utiles)
 function resolveDataTokens(str) {
   if (typeof str !== 'string') return str;
   return str
@@ -4424,6 +4429,7 @@ function resolveDataTokens(str) {
       if (field === 'window') return formatBookingWindow(b.window);
       if (field === 'latest') return b.window.to != null ? formatLeadDays(b.window.to) : m;
       if (field === 'state') return b.booked ? '✓ réservé' : '❓ à réserver';
+      if (field === 'links') return (b.links || []).map(l => `<a href="${l.url}" target="_blank" rel="noopener noreferrer">${l.label}</a>`).join(' · ') || m;
       if (field === 'date') { const t = bookingTravelDate(b); return t ? t.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' }) : m; }
       return b[field] != null ? String(b[field]) : m;
     })
@@ -4846,6 +4852,7 @@ function renderTransportBookings() {
           <div><span class="tb-lbl">Fenêtre</span>${win}</div>
         </div>
         <div class="tb-where"><span class="tb-lbl">Où réserver</span>${b.where}</div>
+        ${(b.links && b.links.length) ? `<div class="tb-links">🔗 ${b.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener noreferrer">${l.label}</a>`).join(' · ')}</div>` : ''}
         <div class="tb-note">${b.note}</div>
         <div class="tb-foot-row">Fiabilité <span title="Fiabilité de l'estimation : ${b.confidence}">${TB_CONF_LABELS[b.confidence] || ''}</span> · ${b.source}</div>
       </div>`;
