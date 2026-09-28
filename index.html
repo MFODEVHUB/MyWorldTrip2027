@@ -944,6 +944,40 @@
     .legend-meteo { display: none; }
   }
 
+
+  /* ===== TRANSPORTS À RÉSERVER ===== */
+  .tb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0.9rem; margin-top: 1rem; }
+  .tb-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.55rem; }
+  .tb-card.tb-done { opacity: 0.55; }
+  .tb-head { display: flex; align-items: flex-start; gap: 0.6rem; }
+  .tb-mode { font-size: 18px; line-height: 1.2; }
+  .tb-route { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .tb-check { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 4px; white-space: nowrap; cursor: pointer; }
+  .tb-status { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 10px; align-self: flex-start; }
+  .tb-st-orange { background: var(--orange-bg); color: #fb923c; }
+  .tb-st-red { background: var(--red-bg); color: #f87171; }
+  .tb-st-green { background: var(--green-bg); color: #4ade80; }
+  .tb-st-blue { background: rgba(34,211,238,0.14); color: #22d3ee; }
+  .tb-st-muted { background: var(--gray-bg); color: var(--muted); }
+  .tb-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 0.9rem; font-size: 12px; color: var(--text); }
+  .tb-lbl { display: block; font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1px; }
+  .tb-where { font-size: 12px; color: var(--text); }
+  .tb-note { font-size: 12px; color: var(--muted); line-height: 1.55; background: rgba(128,128,128,0.06); border-radius: 6px; padding: 7px 9px; }
+  .tb-foot-row { font-size: 10px; color: var(--muted); }
+  .tb-risk-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.8rem; }
+  .tb-risk-row { display: grid; grid-template-columns: 1.2fr 0.9fr 2fr 1.6fr; gap: 0.7rem; align-items: center; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.8rem; font-size: 12px; }
+  .tb-risk-city { font-weight: 600; color: var(--text); }
+  .tb-risk-date, .tb-risk-tr { color: var(--muted); }
+  .tb-risk-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; justify-self: start; }
+  .tb-risk-low { background: rgba(34,211,238,0.14); color: #22d3ee; }
+  .tb-risk-medium { background: var(--orange-bg); color: #fb923c; }
+  .tb-risk-high { background: var(--red-bg); color: #f87171; }
+  .tb-legend { margin-top: 1.2rem; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  @media (max-width: 760px) {
+    .tb-grid { grid-template-columns: 1fr; }
+    .tb-risk-row { grid-template-columns: 1fr; gap: 0.25rem; }
+  }
+
   /* ===== MOBILE CARDS (tables -> cartes en dessous de 760px) ===== */
   .mobile-cards { display: none; flex-direction: column; gap: 0.6rem; }
 
@@ -1092,6 +1126,7 @@
     </div>
     <div class="subgroup" data-group="prepa">
       <button class="tab-btn" onclick="switchTab('checklist', this)">✅ Checklist</button>
+      <button class="tab-btn" onclick="switchTab('transports', this)">🎫 Transports</button>
       <button class="tab-btn" onclick="switchTab('connectivite', this)">📶 eSIM</button>
       <button class="tab-btn" onclick="switchTab('photos', this)">📷 Photos</button>
     </div>
@@ -1234,6 +1269,39 @@
 
   <div class="section-title">Avant le départ (ancienne version — à archiver)</div>
   <div class="checklist-grid" id="checklist-grid"></div>
+</div>
+
+<!-- ===== TAB: TRANSPORTS À RÉSERVER ===== -->
+<div id="tab-transports" class="tab-content">
+  <div class="section-title">Transports à réserver en avance</div>
+  <div class="budget-overview">
+    <div class="budget-stat">
+      <div class="budget-stat-label">Réservations faites</div>
+      <div class="budget-stat-value" id="tb-summary-count">—</div>
+      <div class="budget-stat-sub">cocher « réservé » sur chaque carte</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Budget transports estimé</div>
+      <div class="budget-stat-value" id="tb-summary-total">—</div>
+      <div class="budget-stat-sub">réservations à l'avance · hors hébergement, recoupe en partie le budget transport quotidien</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Prochaine à faire</div>
+      <div class="budget-stat-value" id="tb-summary-next" style="font-size:0.95rem; line-height:1.3;">—</div>
+      <div class="budget-stat-sub" id="tb-summary-next-sub"></div>
+    </div>
+  </div>
+  <div class="tb-grid" id="tb-grid"></div>
+
+  <div class="section-title" style="margin-top:2rem;">À réserver la veille (départs peu fréquents)</div>
+  <div class="tb-risk-list" id="tb-risk-list"></div>
+
+  <p class="tb-legend">
+    Les fenêtres de réservation sont <b>calculées à partir des dates de l'itinéraire</b> : si une date bouge, tout suit.
+    « Ventes » = ouverture officielle annoncée par l'opérateur ; « conseil » = délai recommandé.
+    Prix en € (conversions approximatives), à confirmer au moment de réserver. Le vol de sortie de la Phase 2 n'est pas listé (dates ouvertes).
+    Les hébergements, permis et visas ont leurs propres onglets.
+  </p>
 </div>
 
 <!-- ===== TAB: METEO ===== -->
@@ -1625,7 +1693,7 @@
 </main>
 
 <footer>
-  <span>v3.2</span>
+  <span>v3.3</span>
   <span id="last-updated">Dernière mise à jour : 28 septembre 2026</span>
 </footer>
 
@@ -1648,9 +1716,116 @@ const GLOBAL_STATS = {
   food: { low: 5, high: 15 },
   localTransport: { low: 3, high: 10 },
   activities: { low: 5, high: 20 },
+  departureDate: '2026-12-28',   // départ Paris → Taipei (aussi utilisé par le compte à rebours)
   transitionTaiwanLaosRange: { low: 160, high: 200 },
   transitionTaiwanLaos: 0,   // milieu de la fourchette ci-dessus, recalculé juste après — ne pas modifier ici
   esimCost: 70,
+  // ------------------------------------------------------------
+  // TRANSPORTS À RÉSERVER EN AVANCE (onglet Prépa › Transports)
+  // Champs : id · mode (flight|train|bus|boat) · route · stepNum (étape d'ITINERARY dont la date sert de
+  // jour de voyage) + dateField ('dateIn' par défaut) ou dateRef:'departure' · window {from,to,kind} =
+  // réserver entre J-from et J-to (from:null = dès que possible ; kind 'officielle' = ouverture des ventes
+  // annoncée, 'conseil' = délai recommandé) · price {low,high,note} en € · where · note · confidence · source.
+  // Les dates de réservation sont CALCULÉES depuis ITINERARY (jamais recopiées ici).
+  // Les modales peuvent citer {{booking:<id>:price|window|latest}} (voir resolveDataTokens).
+  // ------------------------------------------------------------
+  transportBookings: [
+    { id:'flight-paris-tpe', mode:'flight', route:'Vol Paris → Taipei (TPE)', dateRef:'departure',
+      window:{ from:null, to:null, kind:'conseil' }, price:{ low:350, high:900, note:'aller simple' },
+      where:'Comparateurs (Google Flights, Skyscanner) · direct EVA Air ou vol avec escale',
+      note:'Départ en pleine période de Noël : les tarifs montent à l\'approche. Relevés comparateurs (sept. 2026) : direct dès ~870 € en aller simple, avec escale dès ~350 €.',
+      confidence:'faible', source:'Google Flights / Trip.com, sept. 2026' },
+    { id:'flight-tpe-bkk', mode:'flight', route:'Vol Taipei (TPE) → Bangkok (DMK)', stepNum:10, beforeDeparture:true,
+      window:{ from:90, to:30, kind:'conseil' }, price:{ low:80, high:130 },
+      where:'AirAsia (DMK) ou Thai Vietjet Air — éviter BKK/Suvarnabhumi pour ce transit',
+      note:'Bagage 15 kg inclus, départ le matin (la veille = nuit à Taipei). Sert aussi de billet de sortie exigé à l\'entrée à Taïwan (voir onglet Visas) : à avoir avant le départ de Paris.',
+      confidence:'faible', source:'Fiche transit du dashboard + conseil général' },
+    { id:'train-bkk-nk', mode:'train', route:'Train de nuit Bangkok → Nong Khai (n°25, couchette basse)', stepNum:10,
+      window:{ from:90, to:30, kind:'officielle' }, price:{ low:25, high:25, note:'950 THB' },
+      where:'D-Ticket (site / appli officiel SRT) — les agences type 12Go coûtent 20–30 % de plus',
+      note:'2ᵉ classe climatisée, départ ~20h00 de Krung Thep Aphiwat. Les couchettes basses partent vite en haute saison ; la fenêtre exacte varie selon le type de train (30 ou 90 jours) : vérifier à l\'ouverture des ventes.',
+      confidence:'moyenne', source:'Fiche transit du dashboard, Baolau, thaitrav (2026)' },
+    { id:'lcr-vte-lp', mode:'train', route:'Train Laos-China Railway Vientiane → Luang Prabang', stepNum:12,
+      window:{ from:14, to:null, kind:'officielle' }, price:{ low:17, high:20, note:'≈ 20 $' },
+      where:'Appli LCR (numéro laotien requis) · revendeurs en ligne (Baolau, LaosTrain) · ton hébergement',
+      note:'Haute saison (déc.–fév.) : les billets partent dès l\'ouverture des ventes (7 à 14 jours avant selon les sources, 3 jours hors saison). Ton eSIM est data-only : l\'appli LCR exige un numéro laotien, donc passer par un revendeur ou l\'hébergement. Gare de Vientiane à ~15 km du centre.',
+      confidence:'moyenne', source:'Manifa Travel, backpackmoments, laostrain (2025-2026)' },
+    { id:'lcr-lp-vv', mode:'train', route:'Train Laos-China Railway Luang Prabang → Vang Vieng', stepNum:13,
+      window:{ from:14, to:null, kind:'officielle' }, price:{ low:8, high:15 },
+      where:'Appli LCR (numéro laotien requis) · revendeurs en ligne (Baolau, LaosTrain) · ton hébergement',
+      note:'Même logique de vente que Vientiane → Luang Prabang. Gare de Vang Vieng à ~4 km du centre (tuk-tuk ~2 $). Alternative : minivan 4–6 h.',
+      confidence:'moyenne', source:'geckoroutes, laostrain (2026)' },
+    { id:'tra-hualien', mode:'train', route:'Train express TRA vers Hualien (~300 km depuis le sud)', stepNum:8,
+      window:{ from:28, to:null, kind:'officielle' }, price:{ low:20, high:28 },
+      where:'Site TRA (tip.railway.gov.tw) ou appli TRA',
+      note:'Puyuma / Taroko / Tze-Chiang 3000 : places réservées uniquement, EasyCard non valable, pas de places debout. Estimation : tarif Tze-Chiang NT$ 2,70/km × ~300 km ≈ NT$ 810 (~23 €), Puyuma plus cher.',
+      confidence:'moyenne', source:'TRA (site officiel), Wikipedia' },
+    { id:'tra-hualien-dulan', mode:'train', route:'Train express TRA Hualien → Dulan / Taitung', stepNum:9,
+      window:{ from:28, to:null, kind:'officielle' }, price:{ low:12, high:18 },
+      where:'Site TRA (tip.railway.gov.tw) ou appli TRA',
+      note:'Estimation : NT$ 2,70/km × ~177 km ≈ NT$ 480 (~14 €). Si la date tombe un week-end, la demande est forte : réserver dès l\'ouverture. Vérifier la gare d\'arrêt des express (Taitung = hub).',
+      confidence:'moyenne', source:'TRA (site officiel), distances du doc' },
+    { id:'tra-dulan-taipei', mode:'train', route:'Train express TRA Dulan / Taitung → Taipei', stepNum:'9b',
+      window:{ from:28, to:null, kind:'officielle' }, price:{ low:27, high:40 },
+      where:'Site TRA (tip.railway.gov.tw) ou appli TRA',
+      note:'Taipei ↔ Taitung : NT$ 936–1 344 selon le train (3h30 à 5h30). Le vol du lendemain matin ne pardonne pas un retard : prendre un express réservé, pas un train local.',
+      confidence:'moyenne', source:'hoponworld (TRA), Taipei Times' },
+    { id:'alishan-railway', mode:'train', route:'Train de montagne d\'Alishan (billet simple)', stepNum:4,
+      window:{ from:28, to:14, kind:'conseil' }, price:{ low:12, high:12 },
+      where:'Réservation en ligne (fiche Alishan : site TRA) — à confirmer',
+      note:'Fiche Alishan : réserver au moins 14 jours avant, surtout en haute saison. Alternative si complet : bus depuis Chiayi (1h30, ~5 €).',
+      confidence:'moyenne', source:'Fiche Alishan du dashboard' },
+    { id:'train-vn-dongHoi-ninhbinh', mode:'train', route:'Train Phong Nha (Đồng Hới) → Ninh Bình', stepNum:31,
+      window:{ from:60, to:30, kind:'officielle' }, price:{ low:13, high:21, note:'≈ 14–23 $' },
+      where:'Vietnam Railways (billetterie en ligne) ou revendeurs (Baolau, 12Go)',
+      note:'Trajet ~7h20–8h. Fenêtre d\'ouverture 30 à 60 jours selon la ligne (12Go) ; Baolau annonce 2–3 mois. Alternative : bus (~7h).',
+      confidence:'moyenne', source:'12Go FAQ, Baolau, Omio (2026)' },
+    { id:'flight-han-mnl', mode:'flight', route:'Vol Hanoï (HAN) → Manille (MNL)', stepNum:'T4',
+      window:{ from:56, to:28, kind:'conseil' }, price:{ low:60, high:120 },
+      where:'AirAsia, Cebu Pacific, Philippine Airlines',
+      note:'Vols populaires : les prix montent vite. Un billet de sortie des Philippines (onward ticket) est exigé à l\'entrée — les compagnies vérifient parfois.',
+      confidence:'moyenne', source:'Fiche transit Hanoï → Manille du dashboard' },
+    { id:'flight-mnl-puq', mode:'flight', route:'Vol Manille (MNL) → Puerto Princesa', stepNum:42,
+      window:{ from:56, to:21, kind:'conseil' }, price:{ low:60, high:60 },
+      where:'Compagnies domestiques (départs surtout du Terminal 3 de NAIA)',
+      note:'Fiche : « réserver à l\'avance » (~60 €, ~1h15). Vérifier le terminal exact selon la compagnie.',
+      confidence:'faible', source:'Fiche Philippines du dashboard' },
+    { id:'cruise-elnido-coron', mode:'boat', route:'Croisière El Nido → Coron (expédition / liveaboard)', stepNum:44,
+      window:{ from:28, to:14, kind:'conseil' }, price:{ low:250, high:400 },
+      where:'El Nido Paradise, Green Gecko, Buhay Isla, Sea Quest Palawan',
+      note:'Haute saison (jan.–mai) : réserver 2 à 4 semaines avant. Relevés : 3J/2N dès ~250–310 € tout compris ; les formats plus longs coûtent davantage. Acompte en ligne + solde sur place chez certains opérateurs.',
+      confidence:'faible', source:'Fiche croisière du dashboard, birdmi, Wotif (2026)' },
+    { id:'flight-coron-ceb', mode:'flight', route:'Vol Coron (USU) → Cebu (CEB)', stepNum:47,
+      window:{ from:42, to:14, kind:'conseil' }, price:{ low:60, high:120 },
+      where:'Cebgo, Philippine Airlines, Sunlight Air',
+      note:'Plusieurs vols par jour ; réserver en avance en haute saison (~1h15 direct). Remplace le ferry de nuit + transit Manille.',
+      confidence:'moyenne', source:'Fiche Coron du dashboard' },
+    { id:'flight-ceb-dps', mode:'flight', route:'Vol Cebu (CEB) → Bali (DPS)', stepNum:'T5',
+      window:{ from:42, to:28, kind:'conseil' }, price:{ low:60, high:110 },
+      where:'Cebu Pacific, AirAsia',
+      note:'Peu de vols directs depuis Siargao : anticiper la correspondance (Cebu ou Manille). Le VoA indonésien se paie à l\'arrivée (voir onglet Visas).',
+      confidence:'moyenne', source:'Fiche transit Philippines → Indonésie du dashboard' },
+    { id:'flight-dps-lombok', mode:'flight', route:'Vol Bali (DPS) → Lombok (LOP)', stepNum:55,
+      window:{ from:28, to:7, kind:'conseil' }, price:{ low:30, high:150 },
+      where:'Compagnies domestiques indonésiennes',
+      note:'Fourchette générale « vol interne » du doc (30–150 €) : à affiner à la réservation. ~30 min de vol.',
+      confidence:'faible', source:'Doc maître, section 2' },
+    { id:'flight-flores-dps', mode:'flight', route:'Vol Labuan Bajo (LBJ) → Bali (DPS)', stepNum:58, dateField:'dateOut',
+      window:{ from:56, to:14, kind:'conseil' }, price:{ low:30, high:150 },
+      where:'Compagnies domestiques indonésiennes',
+      note:'Vol retour de fin de road trip (doc section 12). Même fourchette générale que Bali → Lombok ; la suite (Phase 2) reste à planifier.',
+      confidence:'faible', source:'Doc maître, sections 2 et 12' },
+    { id:'bus-t2-sipd-pp', mode:'bus', route:'Bus Si Phan Don → Phnom Penh (frontière Nong Nok Khiene / Trapeang Kriel)', stepNum:'T2',
+      window:{ from:7, to:1, kind:'conseil' }, price:{ low:12, high:30 },
+      where:'Agences de Don Det / Don Khong · compagnies VET (Air Bus), AVT',
+      note:'Le dashboard compte ~12 € ; d\'autres sources annoncent ~35 $ vers Siem Reap et peu de départs directs vers Phnom Penh depuis Don Det : à confirmer sur place 1 à 2 jours avant.',
+      confidence:'faible', source:'Fiche transit du dashboard, dondet.net (2026)' },
+    { id:'bus-t3-sr-hcmc', mode:'bus', route:'Bus Siem Reap → Hô Chi Minh-Ville (frontière Bavet / Môc Bài)', stepNum:'T3',
+      window:{ from:7, to:1, kind:'conseil' }, price:{ low:17, high:21, note:'≈ 18–23 $' },
+      where:'Virak Buntham, Sorya, Mekong Express, STT Express',
+      note:'Horaires limités. Sortie du Cambodge impérative à la date prévue (e-visa 30 j) : privilégier un bus de jour, jamais un bus de nuit qui franchit la frontière après minuit.',
+      confidence:'moyenne', source:'Fiche transit Cambodge → Vietnam du dashboard' },
+  ],
 };
 GLOBAL_STATS.transitionTaiwanLaos = Math.round((GLOBAL_STATS.transitionTaiwanLaosRange.low + GLOBAL_STATS.transitionTaiwanLaosRange.high) / 2);
 
@@ -1960,17 +2135,17 @@ const DEST_DETAILS = {
     lieux: [
       {
         name: 'Vol Taipei TPE → Bangkok DMK', status: 'in', type: 'Transport',
-        prix: '80–130€ bagage 15kg inclus',
+        prix: '{{booking:flight-tpe-bkk:price}} bagage 15kg inclus',
         dispo: 'Départ matinal ou midi recommandé — arriver Bangkok début d\'après-midi',
         transport: 'AirAsia (DMK) ou Thai Vietjet Air — éviter BKK/Suvarnabhumi pour ce transit',
         note: 'Prendre DMK (Don Mueang) et non BKK (Suvarnabhumi) — DMK est le terminal AirAsia, plus proche de la gare Krung Thep Aphiwat. Taxi DMK → gare : ~30 min, ~8€. Prévoir minimum 3h entre l\'atterrissage et le départ du train.'
       },
       {
         name: 'Train de nuit Bangkok → Nong Khai', status: 'in', type: 'Transport',
-        prix: '~25€ (950 THB) — couchette basse 2ème classe climatisée',
+        prix: '{{booking:train-bkk-nk:price}} — couchette basse 2ème classe climatisée',
         dispo: 'Départ ~20h00 · Arrivée ~06h30 — Express Isan Wathana n°25',
         transport: 'Gare Krung Thep Aphiwat (nouvelle gare centrale Bangkok, ligne MRT Kamphaeng Phet)',
-        note: 'Réserver la couchette basse (Lower Berth) impérativement — plus confortable et plus sûre pour les affaires. Réservation en ligne via D-Ticket (site SRT) 30 à 90 jours avant. Le train est climatisé, propre, avec service de restauration à bord. Draps et oreiller fournis. Trajet de 10h30 — prévoir lecture et bouchons d\'oreilles.'
+        note: 'Réserver la couchette basse (Lower Berth) impérativement — plus confortable et plus sûre pour les affaires. Réservation en ligne via D-Ticket (site SRT) {{booking:train-bkk-nk:window}} avant. Le train est climatisé, propre, avec service de restauration à bord. Draps et oreiller fournis. Trajet de 10h30 — prévoir lecture et bouchons d\'oreilles.'
       },
       {
         name: 'Frontière Nong Khai → Vientiane', status: 'in', type: 'Frontière',
@@ -1985,7 +2160,7 @@ const DEST_DETAILS = {
       { label: 'Veille du départ', val: 'Nuit à Taipei la veille du vol (étape dédiée du dashboard) pour attraper le vol du matin. La nuit suivante se passe dans le train couchette : aucun hébergement à prévoir, elle est comprise dans le prix du billet.' },
       { label: 'Durée porte-à-porte', val: '24 à 30h depuis Taipei jusqu\'au centre de Vientiane' },
       { label: 'Visa Laos', val: '{{visa:laos:typeLabel}} {{visa:laos:cost}} à demander en ligne sur {{visa:laos:site}} plusieurs jours avant (délai 3 à 5 jours ouvrés) — plus besoin de cash USD ni de photos d\'identité.' },
-      { label: 'Réservation train', val: 'À faire 30–90 jours avant sur D-Ticket (site officiel SRT) — couchette basse, 2ème classe, Express n°25' },
+      { label: 'Réservation train', val: 'À faire {{booking:train-bkk-nk:window}} avant sur D-Ticket (site officiel SRT) — couchette basse, 2ème classe, Express n°25' },
       { label: 'DAB à Nong Khai', val: 'Retirer des bahts thaïlandais si besoin avant de passer la frontière — les DAB laotiens côté Vientiane sont peu fiables au premier abord' },
     ],
   },
@@ -2038,7 +2213,7 @@ const DEST_DETAILS = {
       },
     ],
     pratique: [
-      { label: 'Transport LP', val: 'Train Laos-China Railway depuis Vientiane : ~2h pour environ 20 $ (+ transfert gare \u2194 centre : la gare de Vientiane est \u00e0 ~15 km). En haute saison (d\u00e9c.\u2013f\u00e9v.), les billets partent d\u00e8s l\u2019ouverture des ventes (souvent 7 \u00e0 14 jours avant, 3 jours hors saison) : r\u00e9server via l\u2019appli LCR ou une agence, et pr\u00e9voir un plan B. Alternatives : avion ~45 min (~50 $) ou bus/minivan 8\u201310h.' },
+      { label: 'Transport LP', val: 'Train Laos-China Railway depuis Vientiane : ~2h pour environ {{booking:lcr-vte-lp:price}} (+ transfert gare \u2194 centre : la gare de Vientiane est \u00e0 ~15 km). En haute saison (d\u00e9c.\u2013f\u00e9v.), les billets partent d\u00e8s l\u2019ouverture des ventes (jusqu\u2019\u00e0 {{booking:lcr-vte-lp:window}} avant selon les sources, 3 jours hors saison) : r\u00e9server via l\u2019appli LCR ou une agence, et pr\u00e9voir un plan B. Alternatives : avion ~45 min (~50 $) ou bus/minivan 8\u201310h.' },
       { label: 'V\u00e9lo en ville', val: 'Location ~3\u20ac/j \u2014 id\u00e9al pour les villages de tisserands (Ban Xang Khong, Ban Phanom) \u00e0 5\u201310 min du centre.' },
       { label: 'Nuits recommand\u00e9es', val: '3 nuits LP + 2 nuits Nong Khiaw (+ 1 Muang Ngoi si disponible) \u2014 ajustable selon le rythme.' },
       { label: 'Option Nola (non valid\u00e9e)', val: '\ud83d\udc8e Nola Guest House \u2014 recommandation d\'un ami, nuits NON d\u00e9cid\u00e9es. Guesthouse familiale au bord de la Nam Lik (village de Phokham, district de Kasi), ~50 km au nord de Vang Vieng, sur la route Luang Prabang \u2194 Vang Vieng. Chambres en bois basiques, pas de wifi, ~80 000 kip/nuit en solo (haute saison, source : site de la guesthouse), d\u00eener en famille, trek jusqu\'\u00e0 une cascade, tubing, caf\u00e9iers. Acc\u00e8s depuis Vang Vieng : transport local jusqu\'\u00e0 Kasi (~1h, ~30 000 kip), la famille vient chercher au carrefour. 2\u20133 nuits envisag\u00e9es \u2014 \u00e0 absorber dans les 25 nuits Laos ou \u00e0 ajouter (d\u00e9cale toute la suite) : d\u00e9cision en attente. Confirmer la dispo avant de venir. Site officiel : <a href="https://nolaguesthouse.wordpress.com/" target="_blank" rel="noopener noreferrer">nolaguesthouse.wordpress.com</a>' },
@@ -2869,7 +3044,7 @@ const DEST_DETAILS = {
     lieux: [
       {
         name: 'Vol Hano\u00ef (HAN) \u2192 Manille (MNL)', status: 'in', type: 'Vol',
-        prix: '60\u2013120\u20ac selon date \u2014 r\u00e9server 4\u20138 semaines avant',
+        prix: '{{booking:flight-han-mnl:price}} selon date \u2014 r\u00e9server {{booking:flight-han-mnl:window}} avant',
         dispo: 'Plusieurs vols par jour \u2014 AirAsia, Cebu Pacific, Philippine Airlines',
         transport: 'A\u00e9roport Noi Bai (HAN) \u2014 45 min depuis le centre de Hano\u00ef',
         note: 'Trajet ~3h. AirAsia et Cebu Pacific sont les moins chers \u2014 v\u00e9rifier le prix des bagages en soute (souvent pas inclus). Vol du matin recommand\u00e9 pour arriver \u00e0 Manille en fin de journ\u00e9e et ne pas perdre une nuit.'
@@ -2895,7 +3070,7 @@ const DEST_DETAILS = {
     lieux: [
       {
         name: 'Vol Cebu (CEB) \u2192 Bali (DPS)', status: 'in', type: 'Vol',
-        prix: '60\u2013110\u20ac selon date',
+        prix: '{{booking:flight-ceb-dps:price}} selon date',
         dispo: 'Cebu Pacific, AirAsia \u2014 plusieurs vols par semaine',
         transport: 'A\u00e9roport Mactan-Cebu International (CEB)',
         note: 'Option id\u00e9ale si tu finis les Philippines sur Siargao : vol Siargao \u2192 Cebu (~1h, ~30\u201350\u20ac) puis Cebu \u2192 Bali le lendemain. Permet une nuit \u00e0 Cebu City si besoin.'
@@ -2911,7 +3086,7 @@ const DEST_DETAILS = {
     pratique: [
       { label: 'Visa Indon\u00e9sie', val: '{{visa:indonesie:typeLabel}} payant \u00e0 l\u2019arriv\u00e9e : {{visa:indonesie:cost}}, valable {{visa:indonesie:duration}}, extensible sur place (tarif et conditions : voir l\u2019onglet Visas).' },
       { label: 'Entr\u00e9e Bali', val: 'A\u00e9roport Ngurah Rai (DPS) \u2014 {{visa:indonesie:shortLabel}} au comptoir \u00e0 l\u2019arriv\u00e9e (20\u201330 min). Taxi officiel vers le centre de Kuta / Seminyak : ~5\u20ac via application Grab.' },
-      { label: 'Timing', val: 'R\u00e9server le vol 4\u20136 semaines avant. Les vols Philippines\u2192Bali sont populaires en avril \u2014 prix stables mais dispo \u00e0 surveiller.' },
+      { label: 'Timing', val: 'R\u00e9server le vol {{booking:flight-ceb-dps:window}} avant. Les vols Philippines\u2192Bali sont populaires en avril \u2014 prix stables mais dispo \u00e0 surveiller.' },
     ],
   },
 
@@ -3078,7 +3253,7 @@ const DEST_DETAILS = {
         prix: '12 € (tarif simple classe)',
         dispo: 'Toute l\'année — 2 à 3 départs/jour depuis Chiayi',
         transport: 'Gare ferroviaire de Chiayi (distincte de la gare HSR)',
-        note: 'L\'un des trains de montagne les plus célèbres d\'Asie. La ligne construite sous l\'occupation japonaise (1912) monte de 30 m à 2 216 m d\'altitude en 2h30, traversant cinq zones climatiques distinctes — bambous, forêt tempérée, cèdres. Le trajet lui-même est l\'activité. Réserver en ligne sur le site TRA au moins 14 jours avant, surtout en haute saison. Alternative : bus depuis Chiayi (1h30, ~5 €) si le train est complet.'
+        note: 'L\'un des trains de montagne les plus célèbres d\'Asie. La ligne construite sous l\'occupation japonaise (1912) monte de 30 m à 2 216 m d\'altitude en 2h30, traversant cinq zones climatiques distinctes — bambous, forêt tempérée, cèdres. Le trajet lui-même est l\'activité. Réserver en ligne sur le site TRA au moins {{booking:alishan-railway:latest}} avant, surtout en haute saison. Alternative : bus depuis Chiayi (1h30, ~5 €) si le train est complet.'
       },
     ],
     pratique: [
@@ -3383,7 +3558,7 @@ const DEST_DETAILS = {
         note: 'Twin Lagoon, Kayangan Lake (eau cristalline dans une falaise karstique), et épaves japonaises WWII pour les plongeurs. 1–2 jours à explorer avant ou après la croisière.' },
     ],
     pratique: [
-      { label: 'Opérateurs', val: 'El Nido Paradise, Green Gecko, Buhay Isla, Sea Quest Palawan. Réserver 2–4 semaines à l\'avance en haute saison (jan–mai).' },
+      { label: 'Opérateurs', val: 'El Nido Paradise, Green Gecko, Buhay Isla, Sea Quest Palawan. Réserver {{booking:cruise-elnido-coron:window}} à l\'avance en haute saison (jan–mai).' },
       { label: 'Format', val: '3D/2N (compact) à 5D/4N (version complète avec plus d\'îles). Recommandé : 4D/3N pour un bon équilibre.' },
       { label: 'Prix', val: 'Groupe : ~60–100€ tout inclus (nourriture, équipement snorkeling, camping ou bateau). Privé : 300–500€.' },
       { label: 'Sens', val: 'El Nido → Coron ou Coron → El Nido — même expérience dans les deux sens. Choisir selon logistique des vols domestiques.' },
@@ -3892,7 +4067,7 @@ const DEST_DETAILS = {
     intro: 'Arrivée par vol direct depuis Coron — fini le détour par Manille. Cebu City a quelques intérêts (vieille ville, Magellan\'s Cross) mais le format 1 nuit limite à l\'essentiel pratique avant de rejoindre Malapascua.',
     lieux: [
       { name: 'Vol direct Coron → Cebu', type: 'Transport', status: 'in',
-        prix: '60–120€ selon réservation',
+        prix: '{{booking:flight-coron-ceb:price}} selon réservation',
         dispo: '46 vols/semaine — Cebgo, Philippine Airlines, Sunlight Air',
         transport: 'Aéroport Busuanga (USU) → Mactan-Cebu (CEB), ~1h15 direct',
         note: 'Remplace avantageusement le ferry de nuit + transit Manille (gain ~10h, suppression d\'une nuit). Plusieurs vols par jour, réserver en avance en haute saison.' },
@@ -4232,12 +4407,21 @@ function getVisaByKey(key) {
 // vue à plusieurs endroits : utiliser des tokens résolus ici (source unique) :
 //   {{visa:<key>:<champ>}}  → fiche VISAS (ex. {{visa:laos:cost}}, {{visa:laos:site}})
 //   {{stat:<clé>}}          → GLOBAL_STATS (fourchette {low,high} → « low–high€ », nombre → « n€ »)
+//   {{booking:<id>:price|window|latest}} → GLOBAL_STATS.transportBookings (prix, délai de réservation)
 function resolveDataTokens(str) {
   if (typeof str !== 'string') return str;
   return str
     .replace(/\{\{visa:([a-z0-9_-]+):([A-Za-z]+)\}\}/g, (m, key, field) => {
       const v = getVisaByKey(key);
       return (v && v[field] != null) ? v[field] : m;
+    })
+    .replace(/\{\{booking:([a-z0-9_-]+):([A-Za-z]+)\}\}/g, (m, id, field) => {
+      const b = getBooking(id);
+      if (!b) return m;
+      if (field === 'price') return formatBookingPrice(b.price);
+      if (field === 'window') return formatBookingWindow(b.window);
+      if (field === 'latest') return b.window.to != null ? formatLeadDays(b.window.to) : m;
+      return b[field] != null ? String(b[field]) : m;
     })
     .replace(/\{\{stat:([A-Za-z0-9_]+)\}\}/g, (m, key) => {
       const v = GLOBAL_STATS[key];
@@ -4526,6 +4710,155 @@ function renderBudget() {
           <div class="mcard-row"><span class="mcard-label">Part budget</span><span class="mcard-val" style="color:var(--accent);font-weight:700;">${Math.round(grandLow/TOTAL_BUDGET*100)}%</span></div>
           <div class="mcard-notes">Hors vols internationaux et activités premium</div>
         </div>`;
+  }
+}
+
+// ============================================================
+// TRANSPORTS À RÉSERVER — helpers (données : GLOBAL_STATS.transportBookings)
+// ============================================================
+function getBooking(id) {
+  return GLOBAL_STATS.transportBookings.find(b => b.id === id) || null;
+}
+
+function formatBookingPrice(p) {
+  if (!p) return '';
+  const base = p.low === p.high ? `~${p.low}€` : `${p.low}–${p.high}€`;
+  return p.note ? `${base} (${p.note})` : base;
+}
+
+// 28 → « 4 semaines » ; 30 → « 30 jours »
+function formatLeadDays(n) {
+  return (n >= 14 && n % 7 === 0) ? `${n / 7} semaines` : `${n} jours`;
+}
+
+// {from:56,to:28} → « 4 à 8 semaines » · {from:14} → « 2 semaines » · {from:null} → « dès que possible »
+function formatBookingWindow(w) {
+  if (!w || w.from == null) return 'dès que possible';
+  if (w.to == null) return formatLeadDays(w.from);
+  const weeks = w.from % 7 === 0 && w.to % 7 === 0 && w.to >= 14;
+  return weeks ? `${w.to / 7} à ${w.from / 7} semaines` : `${w.to} à ${w.from} jours`;
+}
+
+function bookingTravelDate(b) {
+  if (b.dateRef === 'departure') {
+    const [y, m, d] = GLOBAL_STATS.departureDate.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+  const st = ITINERARY.flatMap(g => g.steps).find(s => String(s.num) === String(b.stepNum));
+  return st ? parseDate(st[b.dateField || 'dateIn']) : null;
+}
+
+function bookingAddDays(date, n) {
+  const d = new Date(date.getTime());
+  d.setDate(d.getDate() + n);
+  return d;
+}
+
+const TB_MODE_ICONS = { flight: '✈️', train: '🚂', bus: '🚌', boat: '🚢' };
+const TB_CONF_LABELS = { 'élevée': '●●●', 'moyenne': '●●○', 'faible': '●○○' };
+const TRANSPORT_RISK_LABELS = {
+  low: '1 départ/jour — réserver la veille',
+  medium: 'Transport délicat — correspondance ou peu fréquent',
+  high: 'Transport risqué — peu de marge si raté',
+};
+
+function fmtBookingDate(d, withYear) {
+  return d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', ...(withYear ? { year: 'numeric' } : {}) });
+}
+
+// Dates et statut calculés depuis ITINERARY (source unique) et la date du jour
+function computeBookingInfo(b, today) {
+  const travel = bookingTravelDate(b);
+  const dayMs = 86400000;
+  let from = null, by = null;
+  if (travel) {
+    if (b.window.from != null) from = bookingAddDays(travel, -b.window.from);
+    if (b.window.to != null) by = bookingAddDays(travel, -b.window.to);
+    if (b.beforeDeparture) {
+      const dep = bookingTravelDate({ dateRef: 'departure' });
+      if (!by || dep < by) by = dep;
+    }
+  }
+  let status, cls;
+  if (!travel) { status = 'Date à définir'; cls = 'tb-st-muted'; }
+  else if (travel < today) { status = 'Passé'; cls = 'tb-st-muted'; }
+  else if (by && today > by) { status = 'Fenêtre conseillée dépassée — réserver au plus vite'; cls = 'tb-st-red'; }
+  else if (from == null) { status = 'À faire dès maintenant'; cls = 'tb-st-orange'; }
+  else if (today < from) {
+    const n = Math.ceil((from - today) / dayMs);
+    status = `${b.window.kind === 'officielle' ? 'Ouverture des ventes' : 'À réserver à partir du'} ${fmtBookingDate(from, true)} (dans ${n} j)`; cls = 'tb-st-blue';
+  } else { status = 'Fenêtre ouverte — réserver'; cls = 'tb-st-green'; }
+  const sortKey = !travel ? Infinity : (from ? from.getTime() : today.getTime() - dayMs);
+  return { travel, from, by, status, cls, sortKey };
+}
+
+function toggleBookingDone(id) {
+  const key = 'tb-done-' + id;
+  try { localStorage.setItem(key, localStorage.getItem(key) === '1' ? '0' : '1'); } catch (e) {}
+  renderTransportBookings();
+}
+
+function renderTransportBookings() {
+  const grid = document.getElementById('tb-grid');
+  if (!grid) return;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const isDone = id => { try { return localStorage.getItem('tb-done-' + id) === '1'; } catch (e) { return false; } };
+
+  const rows = GLOBAL_STATS.transportBookings
+    .map(b => ({ b, info: computeBookingInfo(b, today) }))
+    .sort((x, y) => x.info.sortKey - y.info.sortKey);
+
+  // Cartes de synthèse
+  const low = rows.reduce((a, r) => a + r.b.price.low, 0);
+  const high = rows.reduce((a, r) => a + r.b.price.high, 0);
+  const doneCount = rows.filter(r => isDone(r.b.id)).length;
+  const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+  set('tb-summary-count', `${doneCount} / ${rows.length}`);
+  set('tb-summary-total', `${low.toLocaleString('fr-FR')}–${high.toLocaleString('fr-FR')}€`);
+  const next = rows.find(r => !isDone(r.b.id) && r.info.travel && r.info.travel >= today);
+  set('tb-summary-next', next ? next.b.route : '—');
+  set('tb-summary-next-sub', next ? next.info.status : 'Tout est réservé');
+
+  grid.innerHTML = rows.map(({ b, info }) => {
+    const done = isDone(b.id);
+    const travelTxt = info.travel ? fmtBookingDate(info.travel, true) : 'date à définir';
+    const win = b.window.from == null
+      ? 'dès que possible'
+      : (info.by ? `${fmtBookingDate(info.from, false)} → ${fmtBookingDate(info.by, false)}` : `à partir du ${fmtBookingDate(info.from, false)}`);
+    return `
+      <div class="tb-card${done ? ' tb-done' : ''}">
+        <div class="tb-head">
+          <span class="tb-mode">${TB_MODE_ICONS[b.mode] || '🎫'}</span>
+          <div class="tb-route">${b.route}</div>
+          <label class="tb-check" title="Marquer comme réservé"><input type="checkbox" ${done ? 'checked' : ''} onchange="toggleBookingDone('${b.id}')"> réservé</label>
+        </div>
+        <div class="tb-status ${info.cls}">${done ? '✓ Réservé' : info.status}</div>
+        <div class="tb-meta">
+          <div><span class="tb-lbl">Voyage</span>${travelTxt}</div>
+          <div><span class="tb-lbl">Prix estimé</span><b>${formatBookingPrice(b.price)}</b></div>
+          <div><span class="tb-lbl">Avance ${b.window.kind === 'officielle' ? '(ventes)' : '(conseil)'}</span>${b.window.from == null ? 'dès que possible' : formatBookingWindow(b.window) + ' avant'}</div>
+          <div><span class="tb-lbl">Fenêtre</span>${win}</div>
+        </div>
+        <div class="tb-where"><span class="tb-lbl">Où réserver</span>${b.where}</div>
+        <div class="tb-note">${b.note}</div>
+        <div class="tb-foot-row">Fiabilité <span title="Fiabilité de l'estimation : ${b.confidence}">${TB_CONF_LABELS[b.confidence] || ''}</span> · ${b.source}</div>
+      </div>`;
+  }).join('');
+
+  // Départs uniques : dérivés d'ITINERARY (transportRisk), aucune donnée recopiée
+  const risk = ITINERARY.flatMap(g => g.steps).filter(s => s.transportRisk);
+  const riskEl = document.getElementById('tb-risk-list');
+  if (riskEl) {
+    riskEl.innerHTML = risk.map(s => {
+      const d = parseDate(s.dateIn);
+      return `
+        <div class="tb-risk-row">
+          <div class="tb-risk-city">${s.flag} ${s.city}</div>
+          <div class="tb-risk-date">${d ? fmtBookingDate(d, true) : ''}</div>
+          <div class="tb-risk-tr">${s.transport}</div>
+          <div class="tb-risk-badge tb-risk-${s.transportRisk}">${TRANSPORT_RISK_LABELS[s.transportRisk] || ''}</div>
+        </div>`;
+    }).join('');
   }
 }
 
@@ -4877,7 +5210,8 @@ function switchGroup(name, btn) {
 // COUNTDOWN
 // ============================================================
 function updateCountdown() {
-  const depart = new Date('2026-12-28');
+  const [dy, dm, dd] = GLOBAL_STATS.departureDate.split('-').map(Number);
+  const depart = new Date(dy, dm - 1, dd);
   const now = new Date();
   const diff = Math.ceil((depart - now) / (1000 * 60 * 60 * 24));
   document.getElementById('days-counter').textContent = diff > 0 ? diff + 'j' : 'Parti !';
@@ -4911,6 +5245,7 @@ renderVisas();
 renderBudget();
 renderGlobalStats(); // header + onglets Budget/Assurance/eSIM — lit GLOBAL_STATS/INSURANCE_RATE
 renderChecklist();
+renderTransportBookings();  // onglet Prépa › Transports — lit GLOBAL_STATS.transportBookings + ITINERARY
 renderMeteo();
 renderApps();
 updateCountdown();
