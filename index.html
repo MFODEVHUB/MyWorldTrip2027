@@ -1625,7 +1625,7 @@
 </main>
 
 <footer>
-  <span>v2.8</span>
+  <span>v2.9</span>
   <span id="last-updated">Dernière mise à jour : 28 septembre 2026</span>
 </footer>
 
@@ -1680,18 +1680,19 @@ const ITINERARY = [
       meteo:['G','G','G','O','R','R','R','R','R','R','O','G'], active:[], dateIn:'19 jan 2027', dateOut:'21 jan 2027'},
   ]},
   { country: '🇱🇦 Laos', steps: [
-    { num:11, city:'Vientiane', flag:'🇱🇦', nights:5, transport:'Bus · Pont Amitié', visa:'VoA 40$', budget:'30–45€', health:['dengue','malaria'],
+    // Visa Laos : ne PAS écrire en dur — rempli par syncVisaLabels() depuis VISAS (source unique, AGENT_RULES §7)
+    { num:11, city:'Vientiane', flag:'🇱🇦', nights:5, transport:'Bus · Pont Amitié', visa:'', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[1], dateIn:'21 jan 2027', dateOut:'26 jan 2027'},
-    { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Bus / avion', visa:'VoA', budget:'30–45€', health:['dengue','malaria'],
+    { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Bus / avion', visa:'', budget:'30–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','O','O','G','G'], active:[1], dateIn:'26 jan 2027', dateOut:'31 jan 2027'},
-    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Bus · 3h', visa:'VoA', budget:'25–40€', health:['dengue','malaria'],
+    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Bus · 3h', visa:'', budget:'25–40€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','R','R','R','R','R','O','G','G'], active:[1], dateIn:'31 jan 2027', dateOut:'02 fév 2027'},
-    { num:14, city:'Thakhek Loop', flag:'🇱🇦', nights:5, transport:'Bus nuit · 5h depuis Vientiane', transportRisk:'low', visa:'VoA', budget:'25–35€', health:['dengue','malaria'],
+    { num:14, city:'Thakhek Loop', flag:'🇱🇦', nights:5, transport:'Bus nuit · 5h depuis Vientiane', transportRisk:'low', visa:'', budget:'25–35€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1], dateIn:'02 fév 2027', dateOut:'07 fév 2027'},
-    { num:15, city:'Pakse + Plateau des Bolavens', flag:'🇱🇦', nights:5, transport:'Bus · 3h depuis Thakhek', visa:'VoA', budget:'25–35€', health:['dengue','malaria'],
+    { num:15, city:'Pakse + Plateau des Bolavens', flag:'🇱🇦', nights:5, transport:'Bus · 3h depuis Thakhek', visa:'', budget:'25–35€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1], dateIn:'07 fév 2027', dateOut:'12 fév 2027'},
     { num:16, city:'Si Phan Don — 4 000 îles', flag:'🇱🇦', nights:3, transport:'Bus + ferry · 2h depuis Pakse', transportRisk:'low',
-      visa:'VoA', budget:'20–30€', health:['dengue','malaria'],
+      visa:'', budget:'20–30€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','O','G','G','G'], active:[1], dateIn:'12 fév 2027', dateOut:'15 fév 2027'},
   ]},
   { country: '🔀 Transit Laos → Cambodge', steps: [
@@ -1968,16 +1969,16 @@ const DEST_DETAILS = {
       },
       {
         name: 'Frontière Nong Khai → Vientiane', status: 'in', type: 'Frontière',
-        prix: 'Tuk-tuk ~2€ + navette pont ~0,80€ + Visa VoA 40$ USD + taxi ~4€',
+        prix: 'Tuk-tuk ~2€ + navette pont ~0,80€ + taxi ~4€ (visa : {{visa:laos:shortLabel}}, déjà réglé en ligne)',
         dispo: 'Frontière ouverte 6h–22h — arriver avant 20h impérativement',
         transport: 'Tuk-tuk depuis la gare de Nong Khai → poste frontière (10 min)',
-        note: 'Avoir 40$ USD en billets propres et non pliés pour le visa laotien — les billets froissés ou anciens sont refusés. Apporter 2 photos d\'identité (format passeport). Formulaire d\'arrivée à remplir sur place. La navette traverse le Pont de l\'Amitié (~0,80€). Côté laotien : tampon visa en 20–45 min selon affluence, puis taxi partagé ou bus local vers le centre de Vientiane (~30 min, 3–5€).'
+        note: 'Visa laotien : {{visa:laos:typeLabel}} ({{visa:laos:cost}}, {{visa:laos:duration}}) obtenu en ligne sur {{visa:laos:site}} avant le départ — présenter la lettre d\'approbation (imprimée ou sur téléphone) au guichet e-Visa. Plus de cash USD ni de photos d\'identité à gérer au poste. Carte d\'arrivée numérique (LDIF) à remplir en ligne 3 jours avant. Vérifier que la date d\'entrée est bien tamponnée sur le passeport. La navette traverse le Pont de l\'Amitié (~0,80€). Côté laotien : contrôle en 20–45 min selon affluence, puis taxi partagé ou bus local vers le centre de Vientiane (~30 min, 3–5€).'
       },
     ],
     pratique: [
       { label: 'Budget total', val: '160–200€ tout compris (vol + train + visa + taxis)' },
       { label: 'Durée porte-à-porte', val: '24 à 30h depuis Taipei jusqu\'au centre de Vientiane' },
-      { label: 'Cash USD indispensable', val: '40$ USD en billets impeccables pour le visa VoA laotien — prévoir des billets neufs avant de quitter Taipei' },
+      { label: 'Visa Laos', val: '{{visa:laos:typeLabel}} {{visa:laos:cost}} à demander en ligne sur {{visa:laos:site}} plusieurs jours avant (délai 3 à 5 jours ouvrés) — plus besoin de cash USD ni de photos d\'identité.' },
       { label: 'Réservation train', val: 'À faire 30–90 jours avant sur D-Ticket (site officiel SRT) — couchette basse, 2ème classe, Express n°25' },
       { label: 'DAB à Nong Khai', val: 'Retirer des bahts thaïlandais si besoin avant de passer la frontière — les DAB laotiens côté Vientiane sont peu fiables au premier abord' },
     ],
@@ -2121,7 +2122,7 @@ const DEST_DETAILS = {
       },
     ],
     pratique: [
-      { label: 'Visa fait \u00e0 la fronti\u00e8re', val: 'VoA pay\u00e9 au Pont de l\'Amiti\u00e9 \u2014 pas besoin de d\u00e9marche suppl\u00e9mentaire \u00e0 Vientiane. Conserver le re\u00e7u.' },
+      { label: 'Visa', val: '{{visa:laos:typeLabel}} ({{visa:laos:cost}}, {{visa:laos:duration}}) obtenu avant le départ — aucune démarche à Vientiane. Conserver la lettre d\'approbation et vérifier le tampon d\'entrée.' },
       { label: 'SIM locale', val: 'Unitel ou Lao Telecom \u2014 disponibles d\u00e8s l\'arriv\u00e9e. Forfait data ~3\u20ac pour 7 jours. La 4G est correcte en ville, tr\u00e8s al\u00e9atoire en zone rurale.' },
       { label: 'Monnaie', val: 'Kip laotien (LAK). 1\u20ac \u2248 23 000 LAK. Les USD sont aussi accept\u00e9s partout. DAB disponibles en ville \u2014 pr\u00e9voir cash pour la suite (Laos rural = peu de DAB).' },
       { label: 'H\u00e9ritage fran\u00e7ais', val: 'Baguettes, caf\u00e9 au lait, \u00e9clairs \u2014 le Laos est la seule ex-colonie fran\u00e7aise d\'Asie o\u00f9 la baguette fait partie du petit-d\u00e9jeuner quotidien. \u00c0 ne pas rater.' },
@@ -2130,7 +2131,7 @@ const DEST_DETAILS = {
   13: {
     country: '\U0001f1f1\U0001f1e6 Laos',
     title: 'Vang Vieng', flag: '\U0001f1f1\U0001f1e6', nights: '2 nuits',
-    intro: '\u00c9tape de transit entre Vientiane et Luang Prabang. Cadre naturel exceptionnel \u2014 karsts karstiques, rivi\u00e8re Nam Song turquoise, grottes \u2014 mais r\u00e9putation de ville festive backpacker qui a transform\u00e9 le centre en rue de bars et restaurants. 2 nuits suffisent largement \u2014 profiter des paysages et passer.',
+    intro: '\u00c9tape de transit entre Luang Prabang et Vientiane (retour vers le sud avant Thakhek). Cadre naturel exceptionnel \u2014 karsts karstiques, rivi\u00e8re Nam Song turquoise, grottes \u2014 mais r\u00e9putation de ville festive backpacker qui a transform\u00e9 le centre en rue de bars et restaurants. 2 nuits suffisent largement \u2014 profiter des paysages et passer.',
     lieux: [
       {
         name: 'Kayak sur la Nam Song', status: 'in', type: 'Nature & sport',
@@ -2156,7 +2157,8 @@ const DEST_DETAILS = {
     ],
     pratique: [
       { label: 'Ambiance', val: 'Le centre de Vang Vieng est envahi de bars diffusant Friends en boucle et de restaurants \u00e0 touristes. S\u00e9loigner du centre d\u00e8s que possible \u2014 les bords de rivi\u00e8re et les villages alentour sont incomparablement plus agr\u00e9ables.' },
-      { label: 'Transport vers LP', val: 'Bus VIP direct ~8\u20ac, 4\u20135h. Minivan plus rapide mais moins confortable. Nouvelle route asphalt\u00e9e \u2014 le trajet longe la Nam Ou avec des vues superbes.' },
+      { label: 'Transport depuis LP', val: 'Bus VIP direct Luang Prabang \u2192 Vang Vieng ~8\u20ac, 4\u20135h. Minivan plus rapide mais moins confortable. Nouvelle route asphalt\u00e9e \u2014 le trajet longe la Nam Ou avec des vues superbes.' },
+      { label: 'Suite', val: 'Retour \u00e0 Vientiane puis bus de nuit (~5h) vers Thakhek \u2014 voir \u00e9tape 14.' },
       { label: 'H\u00e9bergement', val: 'Choisir un guesthouse au bord de la rivi\u00e8re plut\u00f4t qu\'en centre-ville \u2014 m\u00eame prix, beaucoup plus calme. Vue sur les karsts depuis la chambre possible d\u00e8s 10\u201315\u20ac/nuit.' },
     ],
   },
@@ -3925,8 +3927,9 @@ const DEST_DETAILS = {
 };
 
 function openDestModal(stepNum) {
-  const d = DEST_DETAILS[stepNum];
-  if (!d) return;
+  const rawDetails = DEST_DETAILS[stepNum];
+  if (!rawDetails) return;
+  const d = JSON.parse(JSON.stringify(rawDetails), (k, v) => typeof v === 'string' ? resolveVisaTokens(v) : v);
 
   // Remove existing modal if any
   const existing = document.getElementById('dest-modal-overlay');
@@ -4130,7 +4133,7 @@ const VISAS = [
     warning: 'Durée de 90 jours confirmée (France Diplomatie, source officielle, MàJ 09/06/2026). Sans TWAC complété, embarquement/entrée peuvent être refusés.'
   },
   {
-    country: '🇱🇦 Laos', type: 'evisa', typeLabel: 'e-Visa', cost: '50$ US', duration: '30 jours', shortLabel: 'e-Visa 50$', status: 'todo',
+    country: '🇱🇦 Laos', key: 'laos', site: 'laoevisa.gov.la', type: 'evisa', typeLabel: 'e-Visa', cost: '50$ US', duration: '30 jours', shortLabel: 'e-Visa 50$', status: 'todo',
     steps: ['Demande en ligne sur laoevisa.gov.la — passeport, photo numérique, paiement CB (50$ US)', 'Délai de traitement 3 à 5 jours ouvrés — à faire bien avant le départ', 'Lettre d\'approbation à imprimer ou garder sur le téléphone', 'LDIF (carte d\'arrivée numérique) à remplir en ligne 3 jours avant — obligatoire au Pont de l\'Amitié I depuis sept. 2025', 'Vérifier que l\'agent d\'immigration appose bien la date d\'entrée sur le passeport avant de quitter le poste'],
     warning: 'Choisi plutôt que le VOA cash (40$) : évite d\'avoir à trouver des billets USD "impeccables" et des photos d\'identité physiques. Sans tampon de date d\'entrée : amende ≥200$ US pour séjour illégal (France Diplomatie).'
   },
@@ -4206,6 +4209,22 @@ function renderVisas() {
 // ============================================================
 function getVisa(flag) {
   return VISAS.find(v => v.country.includes(flag)) || null;
+}
+
+// Accès à une fiche VISAS par clé (champ `key`, ex. 'laos').
+function getVisaByKey(key) {
+  return VISAS.find(v => v.key === key) || null;
+}
+
+// Les textes de modales (DEST_DETAILS) ne doivent jamais recopier un visa en dur :
+// utiliser {{visa:<key>:<champ>}} (ex. {{visa:laos:cost}}, {{visa:laos:site}}).
+// Remplacé à l'ouverture de la modale par la valeur de VISAS (source unique).
+function resolveVisaTokens(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/\{\{visa:([a-z0-9_-]+):([A-Za-z]+)\}\}/g, (m, key, field) => {
+    const v = getVisaByKey(key);
+    return (v && v[field] != null) ? v[field] : m;
+  });
 }
 
 // Aligne le libellé visa affiché sur chaque étape de nuit (nights > 0)
