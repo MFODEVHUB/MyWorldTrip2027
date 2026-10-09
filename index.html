@@ -1237,7 +1237,7 @@
     <div class="budget-stat">
       <div class="budget-stat-label">Assurance voyage</div>
       <div class="budget-stat-value" id="budget-insurance">—</div>
-      <div class="budget-stat-sub">/mois · AVA AVAnture (-5%)</div>
+      <div class="budget-stat-sub">✅ payée à l'avance · hors enveloppes</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Connectivité eSIM</div>
@@ -1344,9 +1344,9 @@
       <div class="budget-stat-sub">voyage longue durée / tour du monde</div>
     </div>
     <div class="budget-stat">
-      <div class="budget-stat-label">Prix estimé (-5%)</div>
+      <div class="budget-stat-label">Prix payé</div>
       <div class="budget-stat-value" id="assurance-price">—</div>
-      <div class="budget-stat-sub">/ mois avec code NOVO</div>
+      <div class="budget-stat-sub">✅ réglé en intégralité à l'avance (code NOVO -5%)</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Plafond frais médicaux</div>
@@ -1709,7 +1709,7 @@
 </main>
 
 <footer>
-  <span>v3.9</span>
+  <span>v3.10</span>
   <span id="last-updated">Dernière mise à jour : 9 octobre 2026</span>
 </footer>
 
@@ -1727,6 +1727,7 @@ const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','N
 // ============================================================
 const GLOBAL_STATS = {
   budgetTotal: 10000,          // 1re enveloppe (cible principale)
+  insurancePaid: 522.5,        // assurance AVA payée en intégralité à l'avance — HORS enveloppes (affichée dans Budget)
   budgetSecond: 10000,         // 2e enveloppe (réserve : Phase 2 / dépassements) — budget max = budgetTotal + budgetSecond (calculé après la déclaration)
   dailyBudget: { low: 40, high: 70 },
   accommodation: { low: 8, high: 25 },
@@ -4513,7 +4514,7 @@ function getPhase1CountryCount() {
 // Injecte GLOBAL_STATS + valeurs dérivées (nuits, pays) dans le header
 // et les onglets Budget/Assurance/eSIM — seul endroit qui écrit ces
 // chiffres dans le DOM, à partir d'une unique source (GLOBAL_STATS,
-// ITINERARY, INSURANCE_RATE).
+// ITINERARY, insurancePaid).
 function renderGlobalStats() {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
   set('stat-countries', getPhase1CountryCount());
@@ -4528,10 +4529,10 @@ function renderGlobalStats() {
   set('budget-accommodation', `${GLOBAL_STATS.accommodation.low}–${GLOBAL_STATS.accommodation.high}€`);
   set('budget-food', `${GLOBAL_STATS.food.low}–${GLOBAL_STATS.food.high}€`);
   set('budget-transition', `~${GLOBAL_STATS.transitionTaiwanLaos}€`);
-  set('budget-insurance', `~${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€`);
+  set('budget-insurance', fmtEur(GLOBAL_STATS.insurancePaid) + ' ✅');
   set('budget-esim', `~${GLOBAL_STATS.esimCost}€`);
 
-  set('assurance-price', `~${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€`);
+  set('assurance-price', fmtEur(GLOBAL_STATS.insurancePaid) + ' ✅');
   set('esim-budget', `~${GLOBAL_STATS.esimCost}€`);
 }
 
@@ -4650,7 +4651,8 @@ function openSavingsModal(countryKey) {
 }
 
 // Assurance voyage — AVA Plan Santé AVAnture (avec code promo NOVO -5%)
-const INSURANCE_RATE = { low: 44, high: 59 }; // €/mois, code NOVO -5% appliqué
+// Assurance : payée à l'avance (GLOBAL_STATS.insurancePaid) — plus de tarif mensuel estimé, ligne hors totaux.
+const fmtEur = n => n.toLocaleString('fr-FR', { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 }) + '€';
 
 function renderBudget() {
   const TOTAL_BUDGET = GLOBAL_STATS.budgetTotal;
@@ -4689,22 +4691,7 @@ function renderBudget() {
 
   // Totals
   const grandNightsCountries = countries.reduce((a, c) => a + c.nights, 0);
-  const months = grandNightsCountries / 30; // durée Phase 1 dérivée dynamiquement des nuits totales
-  const insuranceLow = Math.round(INSURANCE_RATE.low * months);
-  const insuranceHigh = Math.round(INSURANCE_RATE.high * months);
-  countries.push({
-    country: '🛡 Assurance voyage',
-    nights: grandNightsCountries,
-    daily: `${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€/mois`,
-    total: `${insuranceLow.toLocaleString('fr-FR')}–${insuranceHigh.toLocaleString('fr-FR')}€`,
-    totalLow: insuranceLow,
-    totalHigh: insuranceHigh,
-    visa: '—',
-    visaNote: '',
-    notes: 'AVA Plan Santé AVAnture · code NOVO (-5%) · couvre toute la Phase 1',
-    matchKey: 'assurance',
-    isFixedCost: true,
-  });
+  const months = grandNightsCountries / 30; // durée Phase 1 dérivée des nuits totales
 
   // Vols en avion — estimation lue dans GLOBAL_STATS.transportBookings (source unique).
   // Ligne dédiée : recoupe en partie le transport du quotidien (voir note).
@@ -4734,6 +4721,42 @@ function renderBudget() {
   const fmt = n => n.toLocaleString('fr-FR');
   const envNote = `Phase 1 : ${fmt(grandLow)}–${fmt(grandHigh)}€ = ${Math.round(grandLow/TOTAL_BUDGET*100)}–${Math.round(grandHigh/TOTAL_BUDGET*100)}% de l'enveloppe 1 (${fmt(TOTAL_BUDGET)}€). Reste sur le budget max : ${fmt(BUDGET_MAX-grandHigh)}–${fmt(BUDGET_MAX-grandLow)}€ pour la Phase 2, les vols Phase 2, les transits terrestres, l'eSIM et les visas.`;
   const grandNights = grandNightsCountries;
+
+  // Postes payés à l'avance — affichés mais HORS enveloppes (ni dans les totaux, ni dans le % du budget)
+  const paidTpe = getBooking('flight-paris-tpe');
+  const prepaid = [
+    { label: '✈️ Vol Paris → Taipei', amount: paidTpe ? paidTpe.price.low : 549, note: 'Billet acheté plusieurs mois à l\'avance (départ 28/12/2026).' },
+    { label: '🛡 Assurance voyage AVA', amount: GLOBAL_STATS.insurancePaid, note: 'AVA Plan Santé AVAnture · code NOVO (-5%) · réglée en intégralité · couvre toute la Phase 1.' },
+  ];
+  const prepaidTotal = prepaid.reduce((a, x) => a + x.amount, 0);
+  const paidBadge = '<span style="display:inline-block;background:rgba(74,222,128,0.15);color:#4ade80;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap;">✅ PAYÉ À L\'AVANCE</span>';
+  const prepaidRows = prepaid.map(x => `
+      <tr style="background:rgba(74,222,128,0.05);">
+        <td style="font-weight:500;white-space:nowrap">${x.label}</td>
+        <td>${paidBadge}</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="font-family:var(--mono);font-weight:600;color:#4ade80;white-space:nowrap">${fmtEur(x.amount)}</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted);font-size:12px">${x.note} <strong>Hors enveloppes.</strong></td>
+        <td style="color:var(--muted);font-size:11px">hors env.</td>
+      </tr>`).join('') + `
+      <tr style="background:rgba(74,222,128,0.08);border-top:1px solid var(--border2);">
+        <td style="font-weight:600;color:var(--text)">Total payé à l'avance</td>
+        <td>${paidBadge}</td><td style="color:var(--muted)">—</td>
+        <td style="font-family:var(--mono);font-weight:700;color:#4ade80;white-space:nowrap">${fmtEur(prepaidTotal)}</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted);font-size:12px">Déjà dépensé, non décompté des 10 000 + 10 000 €. Coût réel total du voyage ≈ budget + ${fmtEur(prepaidTotal)}.</td>
+        <td></td>
+      </tr>`;
+  const prepaidCards = prepaid.map(x => `<div class="mcard" style="border-color:rgba(74,222,128,0.4);">
+          <div class="mcard-top"><div class="mcard-title">${x.label}</div>${paidBadge}</div>
+          <div class="mcard-row"><span class="mcard-label">Montant payé</span><span class="mcard-val" style="font-family:var(--mono);font-weight:600;color:#4ade80;">${fmtEur(x.amount)}</span></div>
+          <div class="mcard-notes">${x.note} <strong>Hors enveloppes.</strong></div>
+        </div>`).join('') + `<div class="mcard" style="border-color:rgba(74,222,128,0.4);">
+          <div class="mcard-top"><div class="mcard-title" style="font-weight:600;">Total payé à l'avance</div>${paidBadge}</div>
+          <div class="mcard-row"><span class="mcard-label">Total</span><span class="mcard-val" style="font-family:var(--mono);font-weight:700;color:#4ade80;">${fmtEur(prepaidTotal)}</span></div>
+          <div class="mcard-notes">Non décompté des 10 000 + 10 000 €.</div>
+        </div>`;
 
   body.innerHTML = countries.map(d => {
     const pct = d.totalLow > 0 ? Math.round((d.totalLow / TOTAL_BUDGET) * 100) : 0;
@@ -4776,7 +4799,7 @@ function renderBudget() {
         <td>
           <div style="font-size:11px;color:var(--accent2);font-family:var(--mono);font-weight:700">${Math.round(grandLow/BUDGET_MAX*100)}% du max</div>
         </td>
-      </tr>`;
+      </tr>` + prepaidRows;
 
   const cardsEl = document.getElementById('budget-cards');
   if (cardsEl) {
@@ -4806,7 +4829,7 @@ function renderBudget() {
           <div class="mcard-top"><div class="mcard-title" style="font-weight:600;">Budget max (2 enveloppes)</div></div>
           <div class="mcard-row"><span class="mcard-label">Total</span><span class="mcard-val" style="font-family:var(--mono);font-weight:700;color:var(--accent2);">${fmt(TOTAL_BUDGET)} + ${fmt(GLOBAL_STATS.budgetSecond)} = ${fmt(BUDGET_MAX)}€</span></div>
           <div class="mcard-notes">${envNote}</div>
-        </div>`;
+        </div>` + prepaidCards;
   }
 }
 
@@ -4974,7 +4997,7 @@ const CHECKLIST_DATA = [
       'Scan passeport sur Google Drive',
       'Permis de conduire international',
       'Photo d\'identité numérique (e-visas Laos et Cambodge) + quelques photos papier de secours',
-      'Assurance voyage souscrire ❓',
+      'Assurance voyage AVA — payée ✅ (522,50 €)',
       'Carnet de vaccination à jour',
     ]
   },
@@ -5344,7 +5367,7 @@ syncVisaLabels();   // doit tourner avant renderItinerary() : aligne les libell�
 renderItinerary();
 renderVisas();
 renderBudget();
-renderGlobalStats(); // header + onglets Budget/Assurance/eSIM — lit GLOBAL_STATS/INSURANCE_RATE
+renderGlobalStats(); // header + onglets Budget/Assurance/eSIM — lit GLOBAL_STATS
 renderChecklist();
 renderTransportBookings();  // onglet Voyage › Transports — lit GLOBAL_STATS.transportBookings + ITINERARY
 renderMeteo();
