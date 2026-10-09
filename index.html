@@ -1093,7 +1093,7 @@
     </div>
     <div class="stat">
       <div class="stat-value" id="stat-budget">—</div>
-      <div class="stat-label">Budget cible</div>
+      <div class="stat-label" id="stat-budget-label">Budget cible</div>
     </div>
     <div class="stat">
       <div class="stat-value" id="days-counter">—</div>
@@ -1200,9 +1200,19 @@
   <div class="section-title">Vue globale</div>
   <div class="budget-overview">
     <div class="budget-stat">
-      <div class="budget-stat-label">Enveloppe totale</div>
+      <div class="budget-stat-label">Enveloppe 1</div>
       <div class="budget-stat-value" id="budget-total">—</div>
-      <div class="budget-stat-sub">+ réserve si besoin</div>
+      <div class="budget-stat-sub">cible principale</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Enveloppe 2</div>
+      <div class="budget-stat-value" id="budget-second">—</div>
+      <div class="budget-stat-sub">réserve · Phase 2 / dépassements</div>
+    </div>
+    <div class="budget-stat">
+      <div class="budget-stat-label">Budget max</div>
+      <div class="budget-stat-value" id="budget-max">—</div>
+      <div class="budget-stat-sub">enveloppes 1 + 2</div>
     </div>
     <div class="budget-stat">
       <div class="budget-stat-label">Budget / jour cible</div>
@@ -1254,7 +1264,7 @@
     </table>
   </div>
   <div class="mobile-cards" id="budget-cards"></div>
-  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort. Hors vols internationaux.</p>
+  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort (fourchettes révisées le 09/10/2026). Hors vols internationaux.</p>
 </div>
 
 <!-- ===== TAB: CHECKLIST ===== -->
@@ -1699,8 +1709,8 @@
 </main>
 
 <footer>
-  <span>v3.6</span>
-  <span id="last-updated">Dernière mise à jour : 7 octobre 2026</span>
+  <span>v3.7</span>
+  <span id="last-updated">Dernière mise à jour : 9 octobre 2026</span>
 </footer>
 
 <script>
@@ -1716,7 +1726,8 @@ const MONTHS = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','N
 // toujours référencer GLOBAL_STATS.xxx (voir AGENT_RULES.md §7).
 // ============================================================
 const GLOBAL_STATS = {
-  budgetTotal: 10000,
+  budgetTotal: 10000,          // 1re enveloppe (cible principale)
+  budgetSecond: 10000,         // 2e enveloppe (réserve : Phase 2 / dépassements) — budget max = budgetTotal + budgetSecond (calculé après la déclaration)
   dailyBudget: { low: 40, high: 70 },
   accommodation: { low: 8, high: 25 },
   food: { low: 5, high: 15 },
@@ -1845,6 +1856,7 @@ const GLOBAL_STATS = {
       confidence:'moyenne', source:'Fiche transit Cambodge → Vietnam du dashboard' },
   ],
 };
+GLOBAL_STATS.budgetMax = GLOBAL_STATS.budgetTotal + GLOBAL_STATS.budgetSecond;   // budget max (2 enveloppes) — ne pas modifier ici
 GLOBAL_STATS.transitionTaiwanLaos = Math.round((GLOBAL_STATS.transitionTaiwanLaosRange.low + GLOBAL_STATS.transitionTaiwanLaosRange.high) / 2);
 
 // G=green, Y=yellow, O=orange, R=red, X=not concerned
@@ -4506,8 +4518,11 @@ function renderGlobalStats() {
   set('stat-countries', getPhase1CountryCount());
   set('stat-nights', '~' + getTotalNights());
   set('stat-budget', GLOBAL_STATS.budgetTotal.toLocaleString('fr-FR') + ' €');
+  set('stat-budget-label', 'Budget cible · max ' + GLOBAL_STATS.budgetMax.toLocaleString('fr-FR') + ' €');
 
   set('budget-total', GLOBAL_STATS.budgetTotal.toLocaleString('fr-FR') + '€');
+  set('budget-second', GLOBAL_STATS.budgetSecond.toLocaleString('fr-FR') + '€');
+  set('budget-max', GLOBAL_STATS.budgetMax.toLocaleString('fr-FR') + '€');
   set('budget-daily', `${GLOBAL_STATS.dailyBudget.low}–${GLOBAL_STATS.dailyBudget.high}€`);
   set('budget-accommodation', `${GLOBAL_STATS.accommodation.low}–${GLOBAL_STATS.accommodation.high}€`);
   set('budget-food', `${GLOBAL_STATS.food.low}–${GLOBAL_STATS.food.high}€`);
@@ -4527,22 +4542,22 @@ function renderGlobalStats() {
 // Coût de vie quotidien uniquement — le coût du visa est lu depuis
 // VISAS (source unique), voir getVisa() dans renderBudget().
 const BUDGET_RATES = {
-  'taïwan':      { low:45, high:55 },
+  'taïwan':      { low:50, high:65 },
   'laos':        { low:30, high:40 },
   'cambodge':    { low:35, high:45 },
-  'vietnam':     { low:35, high:50 },
-  'philippines': { low:45, high:65 },
-  'indonésie':   { low:35, high:55 },
+  'vietnam':     { low:38, high:50 },
+  'philippines': { low:50, high:70 },
+  'indonésie':   { low:45, high:65 },
   'transit':     { low:0,  high:0  },
 };
 
 const BUDGET_NOTES = {
-  'taïwan':      'Transport train excellent inclus. Hébergement légèrement plus cher qu\'ASE. Taipei confirmé : 155€/4 nuits (~39€/nuit, dortoir Backpackers Hostel Ximen).',
+  'taïwan':      'Transport train excellent inclus. Hébergement légèrement plus cher qu\'ASE. Taipei confirmé : 155€/4 nuits (~39€/nuit, dortoir Backpackers Hostel Ximen). Fourchette relevée (09/10/26) : à ~39€/nuit à Taipei, repas et transport portent le jour à 55€+.',
   'laos':        'Très bon marché. Peu d\'ATM en zone rurale — prévoir cash USD/EUR.',
   'cambodge':    'Pass Angkor 37$/j. Mondolkiri/Ratanakiri très peu cher (~25€/j).',
-  'vietnam':     'Sens HCMC→Nord. Ha Giang Loop + train Reunification Express inclus.',
-  'philippines': 'Croisière El Nido↔Coron (~80€). Vols domestiques à prévoir. 2 vols internes.',
-  'indonésie':   'Road trip Lombok→Flores (~30€ ferries). Bali légèrement plus cher.',
+  'vietnam':     'Sens HCMC→Nord. Ha Giang Loop + train Reunification Express inclus. Fourchette relevée (09/10/26) : médiane solo 40€ (tourdumondiste).',
+  'philippines': 'Croisière El Nido↔Coron 250–400€ (voir Transports, en plus du quotidien). Vols internes 60–120€ chacun (voir Transports). Fourchette relevée (09/10/26) : médiane solo 45€, îles plus chères.',
+  'indonésie':   'Road trip Lombok→Flores (~30€ ferries). Bali légèrement plus cher. Fourchette relevée (09/10/26) : médiane solo 50€ (tourdumondiste) ; Komodo ~13€/j.',
 };
 
 // Leviers d'économie identifiés par pays — affichés via badge cliquable dans le tableau Budget
@@ -4663,6 +4678,7 @@ function renderBudget() {
       daily: `${rate.low}–${rate.high}€`,
       total: totalLow > 0 ? `${totalLow.toLocaleString('fr-FR')}–${totalHigh.toLocaleString('fr-FR')}€` : '—',
       totalLow,
+      totalHigh,
       visa: visaInfo ? visaInfo.cost : '—',
       visaNote: visaInfo ? visaInfo.shortLabel : '',
       notes: BUDGET_NOTES[match] || '',
@@ -4681,6 +4697,7 @@ function renderBudget() {
     daily: `${INSURANCE_RATE.low}–${INSURANCE_RATE.high}€/mois`,
     total: `${insuranceLow.toLocaleString('fr-FR')}–${insuranceHigh.toLocaleString('fr-FR')}€`,
     totalLow: insuranceLow,
+    totalHigh: insuranceHigh,
     visa: '—',
     visaNote: '',
     notes: 'AVA Plan Santé AVAnture · code NOVO (-5%) · couvre toute la Phase 1',
@@ -4689,6 +4706,10 @@ function renderBudget() {
   });
 
   const grandLow  = countries.reduce((a, c) => a + c.totalLow, 0);
+  const grandHigh = countries.reduce((a, c) => a + (c.totalHigh || 0), 0);
+  const BUDGET_MAX = GLOBAL_STATS.budgetMax;
+  const fmt = n => n.toLocaleString('fr-FR');
+  const envNote = `Phase 1 : ${fmt(grandLow)}–${fmt(grandHigh)}€ = ${Math.round(grandLow/TOTAL_BUDGET*100)}–${Math.round(grandHigh/TOTAL_BUDGET*100)}% de l'enveloppe 1 (${fmt(TOTAL_BUDGET)}€). Reste sur le budget max : ${fmt(BUDGET_MAX-grandHigh)}–${fmt(BUDGET_MAX-grandLow)}€ pour la Phase 2, les vols internationaux, transits, eSIM et visas.`;
   const grandNights = grandNightsCountries;
 
   body.innerHTML = countries.map(d => {
@@ -4719,7 +4740,18 @@ function renderBudget() {
         <td style="color:var(--muted)">—</td>
         <td style="color:var(--muted);font-size:12px">Hors vols internationaux et activités premium</td>
         <td>
-          <div style="font-size:11px;color:var(--accent);font-family:var(--mono);font-weight:700">${Math.round(grandLow/TOTAL_BUDGET*100)}% budget</div>
+          <div style="font-size:11px;color:var(--accent);font-family:var(--mono);font-weight:700">${Math.round(grandLow/TOTAL_BUDGET*100)}% env. 1</div>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:var(--text)">Budget max (2 enveloppes)</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="font-family:var(--mono);font-weight:700;color:var(--accent2);white-space:nowrap">${fmt(TOTAL_BUDGET)} + ${fmt(GLOBAL_STATS.budgetSecond)} = ${fmt(BUDGET_MAX)}€</td>
+        <td style="color:var(--muted)">—</td>
+        <td style="color:var(--muted);font-size:12px">${envNote}</td>
+        <td>
+          <div style="font-size:11px;color:var(--accent2);font-family:var(--mono);font-weight:700">${Math.round(grandLow/BUDGET_MAX*100)}% du max</div>
         </td>
       </tr>`;
 
@@ -4745,8 +4777,12 @@ function renderBudget() {
     }).join('') + `<div class="mcard" style="border-color:var(--border2);">
           <div class="mcard-top"><div class="mcard-title" style="font-weight:600;">TOTAL Phase 1</div><span class="nights-badge">${grandNights} n.</span></div>
           <div class="mcard-row"><span class="mcard-label">Total min.</span><span class="mcard-val" style="font-family:var(--mono);font-weight:700;color:var(--accent);">${grandLow.toLocaleString('fr-FR')}€</span></div>
-          <div class="mcard-row"><span class="mcard-label">Part budget</span><span class="mcard-val" style="color:var(--accent);font-weight:700;">${Math.round(grandLow/TOTAL_BUDGET*100)}%</span></div>
+          <div class="mcard-row"><span class="mcard-label">Part enveloppe 1</span><span class="mcard-val" style="color:var(--accent);font-weight:700;">${Math.round(grandLow/TOTAL_BUDGET*100)}%</span></div>
           <div class="mcard-notes">Hors vols internationaux et activités premium</div>
+        </div><div class="mcard" style="border-color:var(--border2);">
+          <div class="mcard-top"><div class="mcard-title" style="font-weight:600;">Budget max (2 enveloppes)</div></div>
+          <div class="mcard-row"><span class="mcard-label">Total</span><span class="mcard-val" style="font-family:var(--mono);font-weight:700;color:var(--accent2);">${fmt(TOTAL_BUDGET)} + ${fmt(GLOBAL_STATS.budgetSecond)} = ${fmt(BUDGET_MAX)}€</span></div>
+          <div class="mcard-notes">${envNote}</div>
         </div>`;
   }
 }
