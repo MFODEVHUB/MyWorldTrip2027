@@ -1709,7 +1709,7 @@
 </main>
 
 <footer>
-  <span>v4.0</span>
+  <span>v4.1</span>
   <span id="last-updated">Dernière mise à jour : 9 octobre 2026</span>
 </footer>
 
@@ -3108,7 +3108,7 @@ const DEST_DETAILS = {
       },
     ],
     pratique: [
-      { label: 'Visa Philippines', val: 'Exempt pour passeport fran\u00e7ais \u2014 30 jours \u00e0 l\u2019arriv\u00e9e, extensible sur place. Avoir un billet de sortie du territoire (onward ticket) \u2014 les compagnies v\u00e9rifient parfois.' },
+      { label: 'Visa Philippines', val: 'Exempt pour passeport fran\u00e7ais \u2014 {{visa:philippines:duration}} \u00e0 partir de l\u2019arriv\u00e9e. Extension sur place de {{visa:philippines:extensionDays}} max ({{visa:philippines:maxDuration}} au total) pour {{visa:philippines:extensionCost}}, \u00e0 demander avant la fin des 30 jours (sinon amende de {{visa:philippines:lateFee}}). Billet de retour ou de continuation vers un pays tiers exig\u00e9 \u2014 les compagnies v\u00e9rifient parfois.' },
       { label: 'Onward ticket', val: 'Si pas encore r\u00e9serv\u00e9 le vol Philippines \u2192 Indon\u00e9sie, utiliser Kiwi.com ou OnwardTicket.com pour un billet temporaire (\u00e0 annuler ensuite).' },
       { label: 'Timing', val: 'R\u00e9server le vol d\u00e8s les dates Vietnam confirm\u00e9es \u2014 les vols Vietnam\u2192Philippines sont populaires et les prix montent vite.' },
     ],
@@ -4477,9 +4477,15 @@ const VISAS = [
     warning: 'L\'exemption ne permet qu\'une entrée unique — vérifier avant de la choisir si le tracé final implique de ressortir puis rerentrer au Vietnam.'
   },
   {
-    country: '🇵🇭 Philippines', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '30 jours', shortLabel: 'Exemption 30j', status: 'todo',
-    steps: ['Entrée libre sans visa pour français', 'Extension possible sur place (Bureau d\'Immigration)', 'Billet de sortie du territoire requis'],
-    warning: 'Durée séjour et extension à confirmer. ❓ Décision ouverte dans le doc.'
+    country: '🇵🇭 Philippines', key: 'philippines', type: 'exempt', typeLabel: 'Exemption visa', cost: '0€', duration: '30 jours', extensionDays: '29 jours', maxDuration: '59 jours', extensionCost: '3 030 pesos', lateFee: '1 000 pesos', shortLabel: 'Exemption 30j', status: 'todo',
+    steps: [
+      'Entrée sans visa pour un séjour touristique : le tampon d\'entrée autorise 30 jours maximum à partir de la date d\'arrivée',
+      'Billet d\'avion de retour ou de continuation vers un pays tiers à présenter à l\'arrivée',
+      'Prolongation possible sur place : 29 jours supplémentaires maximum (59 jours au total), taxe de 3 030 pesos',
+      'Démarche auprès du bureau de l\'Immigration (Magallanes Drive, Intramuros, Manille) ou d\'une antenne régionale',
+      'Demander l\'extension avant la fin des 30 jours : sinon, amende supplémentaire de 1 000 pesos'
+    ],
+    warning: 'Source : France Diplomatie (conseils aux voyageurs) — confiance ~95 %. L\'itinéraire actuel dépasse 30 jours aux Philippines : l\'extension est donc nécessaire, à demander avant l\'expiration de l\'exemption.'
   },
   
   {
