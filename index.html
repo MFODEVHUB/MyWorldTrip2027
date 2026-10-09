@@ -1709,7 +1709,7 @@
 </main>
 
 <footer>
-  <span>v3.8</span>
+  <span>v3.9</span>
   <span id="last-updated">Dernière mise à jour : 9 octobre 2026</span>
 </footer>
 
@@ -1753,16 +1753,17 @@ const GLOBAL_STATS = {
   // annoncée, 'conseil' = délai recommandé) · price {low,high,note} en € · where · note · confidence · source.
   // links:[{label,url}] = pages utiles (horaires, prix, réservation), affichées sur la carte et via {{booking:<id>:links}}.
   // booked:true = déjà réservé (affiché « Réservé » sur tous les appareils, exclu du budget restant ; pour
-  // les autres cartes, la case « réservé » est mémorisée dans le navigateur uniquement).
+  // les autres cartes, la case « réservé » est mémorisée dans le navigateur uniquement). budgetExcluded:true = payé hors
+  // enveloppe (exclu de la ligne « Vols en avion » et du total de l'onglet Budget) ; price.exact:true = prix réel (sans « ~»).
   // Les dates de réservation sont CALCULÉES depuis ITINERARY (jamais recopiées ici).
   // Les modales peuvent citer {{booking:<id>:price|window|latest}} (voir resolveDataTokens).
   // ------------------------------------------------------------
   transportBookings: [
-    { id:'flight-paris-tpe', mode:'flight', route:'Vol Paris → Taipei (TPE)', dateRef:'departure', booked:true,
-      window:{ from:null, to:null, kind:'conseil' }, price:{ low:350, high:900, note:'aller simple' },
-      where:'Comparateurs (Google Flights, Skyscanner) · direct EVA Air ou vol avec escale',
-      note:'Billet déjà réservé. Prix ci-dessus = estimation du 28/09/2026 (direct dès ~870 € en aller simple, avec escale dès ~350 €) : remplacer par le prix réel payé pour un budget exact.',
-      confidence:'faible', source:'Google Flights / Trip.com, sept. 2026' },
+    { id:'flight-paris-tpe', mode:'flight', route:'Vol Paris → Taipei (TPE)', dateRef:'departure', booked:true, budgetExcluded:true,
+      window:{ from:null, to:null, kind:'conseil' }, price:{ low:549, high:549, exact:true, note:'payé, hors enveloppe' },
+      where:'Billet acheté plusieurs mois avant le départ',
+      note:'Billet payé 549 € (acheté plusieurs mois à l\'avance) : exclu de l\'enveloppe budget et du total Phase 1.',
+      confidence:'élevée', source:'Prix réel payé (saisi le 09/10/2026)' },
     { id:'flight-tpe-bkk', mode:'flight', route:'Vol Taipei (TPE) → Bangkok (BKK ou DMK)', stepNum:10, beforeDeparture:true,
       window:{ from:90, to:30, kind:'conseil' }, price:{ low:100, high:150, note:'relevés du 28/09' },
       where:'Comparateurs · Thai Airways, Thai VietJet, AirAsia — atterrissage à BKK (Suvarnabhumi) ou DMK (Don Mueang)',
@@ -1863,25 +1864,25 @@ GLOBAL_STATS.transitionTaiwanLaos = Math.round((GLOBAL_STATS.transitionTaiwanLao
 // Météo qualitative par étape × 12 mois (Jan→Déc)
 const ITINERARY = [
   { country: '🇹🇼 Taïwan', steps: [
-    { num:1, city:'Taipei', flag:'🇹🇼', nights:4, transport:'—', visa:'exempt', budget:'40–55€', health:['ok'],
+    { num:1, city:'Taipei', flag:'🇹🇼', nights:4, transport:'—', visa:'exempt', budget:'55–70€', health:['ok'],
       meteo:['G','G','G','G','Y','O','R','R','O','Y','G','G'], active:[0], dateIn:'29 déc 2026', dateOut:'02 jan 2027'},
-    { num:2, city:'Ruifang', flag:'🇹🇼', nights:2, transport:'Train · 54 min', visa:'exempt', budget:'35–50€', health:['ok'],
+    { num:2, city:'Ruifang', flag:'🇹🇼', nights:2, transport:'Train · 54 min', visa:'exempt', budget:'50–65€', health:['ok'],
       meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'02 jan 2027', dateOut:'04 jan 2027'},
-    { num:3, city:'Yuchi (Sun Moon Lake)', flag:'🇹🇼', nights:2, transport:'Train · 2h45', visa:'exempt', budget:'40–55€', health:['ok'],
+    { num:3, city:'Yuchi (Sun Moon Lake)', flag:'🇹🇼', nights:2, transport:'Train · 2h45', visa:'exempt', budget:'55–70€', health:['ok'],
       meteo:['G','G','G','G','Y','Y','O','O','Y','G','G','G'], active:[0], dateIn:'04 jan 2027', dateOut:'06 jan 2027'},
-    { num:4, city:'Alishan', flag:'🇹🇼', nights:2, transport:'Train · 3h32', visa:'exempt', budget:'35–50€', health:['ok'],
+    { num:4, city:'Alishan', flag:'🇹🇼', nights:2, transport:'Train · 3h32', visa:'exempt', budget:'50–65€', health:['ok'],
       meteo:['G','G','G','Y','O','O','R','R','O','G','G','G'], active:[0], dateIn:'06 jan 2027', dateOut:'08 jan 2027'},
-    { num:5, city:'Tainan', flag:'🇹🇼', nights:2, transport:'Train · 5h17', visa:'exempt', budget:'35–50€', health:['ok'],
+    { num:5, city:'Tainan', flag:'🇹🇼', nights:2, transport:'Train · 5h17', visa:'exempt', budget:'50–65€', health:['ok'],
       meteo:['G','G','G','G','Y','O','O','O','Y','G','G','G'], active:[0], dateIn:'08 jan 2027', dateOut:'10 jan 2027'},
-    { num:6, city:'Kaohsiung', flag:'🇹🇼', nights:1, transport:'Train · 1h42', visa:'exempt', budget:'40–55€', health:['ok'],
+    { num:6, city:'Kaohsiung', flag:'🇹🇼', nights:1, transport:'Train · 1h42', visa:'exempt', budget:'55–70€', health:['ok'],
       meteo:['G','G','G','G','Y','O','O','O','Y','G','G','G'], active:[0], dateIn:'10 jan 2027', dateOut:'11 jan 2027'},
-    { num:7, city:'Hengchun', flag:'🇹🇼', nights:2, transport:'Bus · 1h45', visa:'exempt', budget:'35–50€', health:['ok'],
+    { num:7, city:'Hengchun', flag:'🇹🇼', nights:2, transport:'Bus · 1h45', visa:'exempt', budget:'50–65€', health:['ok'],
       meteo:['G','G','G','G','G','Y','Y','Y','Y','G','G','G'], active:[0], dateIn:'11 jan 2027', dateOut:'13 jan 2027'},
-    { num:8, city:'Hualien City', flag:'🇹🇼', nights:3, transport:'Train · 4h55', visa:'exempt', budget:'40–55€', health:['ok'],
+    { num:8, city:'Hualien City', flag:'🇹🇼', nights:3, transport:'Train · 4h55', visa:'exempt', budget:'55–70€', health:['ok'],
       meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'13 jan 2027', dateOut:'16 jan 2027'},
-    { num:9, city:'Dulan', flag:'🇹🇼', nights:3, transport:'Train · 4h34', visa:'exempt', budget:'30–45€', health:['ok'],
+    { num:9, city:'Dulan', flag:'🇹🇼', nights:3, transport:'Train · 4h34', visa:'exempt', budget:'45–60€', health:['ok'],
       meteo:['G','G','G','G','Y','O','O','O','O','Y','G','G'], active:[0], dateIn:'16 jan 2027', dateOut:'19 jan 2027'},
-    { num:'9b', city:'Taipei (dernière nuit)', flag:'🇹🇼', nights:1, transport:'Train · ~4h–6h depuis Dulan (à confirmer sur le site TRA)', visa:'', budget:'40–55€', health:['ok'],
+    { num:'9b', city:'Taipei (dernière nuit)', flag:'🇹🇼', nights:1, transport:'Train · ~4h–6h depuis Dulan (à confirmer sur le site TRA)', visa:'', budget:'55–70€', health:['ok'],
       meteo:['G','G','G','G','Y','O','R','R','O','Y','G','G'], active:[0], dateIn:'19 jan 2027', dateOut:'20 jan 2027'},
   ]},
   { country: '🔀 Transit', steps: [
@@ -1891,11 +1892,11 @@ const ITINERARY = [
   ]},
   { country: '🇱🇦 Laos', steps: [
     // Visa Laos : ne PAS écrire en dur — rempli par syncVisaLabels() depuis VISAS (source unique, AGENT_RULES §7)
-    { num:11, city:'Vientiane', flag:'🇱🇦', nights:5, transport:'Bus · Pont Amitié', visa:'', budget:'30–45€', health:['dengue','malaria'],
+    { num:11, city:'Vientiane', flag:'🇱🇦', nights:5, transport:'Bus · Pont Amitié', visa:'', budget:'35–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','R','O','G','G'], active:[1], dateIn:'21 jan 2027', dateOut:'26 jan 2027'},
-    { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Train · ~2h (ou avion / bus)', visa:'', budget:'30–45€', health:['dengue','malaria'],
+    { num:12, city:'Luang Prabang', flag:'🇱🇦', nights:5, transport:'Train · ~2h (ou avion / bus)', visa:'', budget:'35–45€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','O','R','R','R','O','O','G','G'], active:[1], dateIn:'26 jan 2027', dateOut:'31 jan 2027'},
-    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Train · ~1h15 (ou minivan 4–6h) depuis Luang Prabang', visa:'', budget:'25–40€', health:['dengue','malaria'],
+    { num:13, city:'Vang Vieng', flag:'🇱🇦', nights:2, transport:'Train · ~1h15 (ou minivan 4–6h) depuis Luang Prabang', visa:'', budget:'30–40€', health:['dengue','malaria'],
       meteo:['G','G','G','Y','R','R','R','R','R','O','G','G'], active:[1], dateIn:'31 jan 2027', dateOut:'02 fév 2027'},
     { num:14, city:'Thakhek Loop', flag:'🇱🇦', nights:5, transport:'Bus nuit · 5h depuis Vientiane', transportRisk:'low', visa:'', budget:'25–35€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','O','O','G','G'], active:[1], dateIn:'02 fév 2027', dateOut:'07 fév 2027'},
@@ -1914,35 +1915,35 @@ const ITINERARY = [
   { country: '🇰🇭 Cambodge', steps: [
     { num:17, city:'Phnom Penh', flag:'🇰🇭', nights:4,
       transport:'Bus depuis Si Phan Don · frontière Nong Nok Khiene / Trapeang Kriel · ~9h · ~12€',
-      visa:'', budget:'30–45€', health:['dengue','malaria'],
+      visa:'', budget:'40–50€', health:['dengue','malaria'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'15 fév 2027', dateOut:'19 fév 2027'},
     { num:18, city:'Kampot', flag:'🇰🇭', nights:4,
       transport:'Bus · 3h · Virak Buntham',
-      visa:'eVisa', budget:'30–40€', health:['dengue'],
+      visa:'eVisa', budget:'35–45€', health:['dengue'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'19 fév 2027', dateOut:'23 fév 2027'},
     { num:19, city:'Kep + Koh Tonsay', flag:'🇰🇭', nights:3,
       transport:'Tuk-tuk · 30 min depuis Kampot',
-      visa:'eVisa', budget:'30–40€', health:['dengue'],
+      visa:'eVisa', budget:'35–45€', health:['dengue'],
       meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'23 fév 2027', dateOut:'26 fév 2027'},
     { num:20, city:'Koh Ta Kiev', flag:'🇰🇭', nights:3,
       transport:'Bus Kep→Sihanoukville · 2h · ferry île · 1h',
-      visa:'eVisa', budget:'25–35€', health:['dengue'],
+      visa:'eVisa', budget:'30–40€', health:['dengue'],
       meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'26 fév 2027', dateOut:'01 mar 2027'},
     { num:21, city:'Koh Rong Sanloem', flag:'🇰🇭', nights:3,
       transport:'Ferry depuis Sihanoukville · 45 min',
-      visa:'eVisa', budget:'25–40€', health:['dengue'],
+      visa:'eVisa', budget:'35–45€', health:['dengue'],
       meteo:['G','G','G','G','O','R','R','R','R','Y','G','G'], active:[2], dateIn:'01 mar 2027', dateOut:'04 mar 2027'},
     { num:22, city:'Mondolkiri', flag:'🇰🇭', nights:3,
       transport:'Ferry→Sihanoukville · bus→Phnom Penh 4h · bus→Sen Monorom 6h', transportRisk:'medium',
-      visa:'eVisa', budget:'25–35€', health:['dengue'],
+      visa:'eVisa', budget:'30–40€', health:['dengue'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'04 mar 2027', dateOut:'07 mar 2027'},
     { num:23, city:'Ratanakiri', flag:'🇰🇭', nights:3,
       transport:'Bus Virak Buntham direct · 2h30 · 1 départ/jour', transportRisk:'low',
-      visa:'eVisa', budget:'25–35€', health:['dengue'],
+      visa:'eVisa', budget:'30–40€', health:['dengue'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'07 mar 2027', dateOut:'10 mar 2027'},
     { num:25, city:'Siem Reap — Angkor', flag:'🇰🇭', nights:5,
       transport:'Minibus Banlung→Siem Reap · ~8h · ~13$ · à confirmer sur place', transportRisk:'medium',
-      visa:'eVisa', budget:'35–50€', health:['dengue'],
+      visa:'eVisa', budget:'45–55€', health:['dengue'],
       meteo:['G','G','G','G','Y','R','R','R','R','O','Y','G'], active:[2], dateIn:'10 mar 2027', dateOut:'15 mar 2027'},
   ]},
   { country: '🔀 Transit Cambodge → Vietnam', steps: [
@@ -1952,31 +1953,31 @@ const ITINERARY = [
       meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[], dateIn:'15 mar 2027', dateOut:'15 mar 2027'},
   ]},
   { country: '🇻🇳 Vietnam', steps: [
-    { num:26, city:'Hô Chi Minh-Ville', flag:'🇻🇳', nights:3, transport:'🚌 Bus direct Siem Reap→HCMC · 10–16h · ~18–23$', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:26, city:'Hô Chi Minh-Ville', flag:'🇻🇳', nights:3, transport:'🚌 Bus direct Siem Reap→HCMC · 10–16h · ~18–23$', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3], dateIn:'15 mar 2027', dateOut:'18 mar 2027'},
-    { num:27, city:'Đà Lạt', flag:'🇻🇳', nights:2, transport:'🚌 Bus · ~7h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:27, city:'Đà Lạt', flag:'🇻🇳', nights:2, transport:'🚌 Bus · ~7h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3], dateIn:'18 mar 2027', dateOut:'20 mar 2027'},
-    { num:28, city:'Hội An', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~11h ou ✈️ vol Đà Lạt→Đà Nẵng 1h10', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:28, city:'Hội An', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~11h ou ✈️ vol Đà Lạt→Đà Nẵng 1h10', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'20 mar 2027', dateOut:'23 mar 2027'},
-    { num:29, city:'Huế (journée)', flag:'🇻🇳', nights:1, transport:'🚌 Bus · ~3h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:29, city:'Huế (journée)', flag:'🇻🇳', nights:1, transport:'🚌 Bus · ~3h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'23 mar 2027', dateOut:'24 mar 2027'},
-    { num:30, city:'Phong Nha', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~6h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:30, city:'Phong Nha', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~6h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'24 mar 2027', dateOut:'27 mar 2027'},
-    { num:31, city:'Ninh Bình / Tam Cốc', flag:'🇻🇳', nights:2, transport:'🚂 Train · ~8h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:31, city:'Ninh Bình / Tam Cốc', flag:'🇻🇳', nights:2, transport:'🚂 Train · ~8h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'27 mar 2027', dateOut:'29 mar 2027'},
-    { num:32, city:'Pù Luông', flag:'🇻🇳', nights:3, transport:'🚌 Bus/minivan · ~3h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:32, city:'Pù Luông', flag:'🇻🇳', nights:3, transport:'🚌 Bus/minivan · ~3h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'29 mar 2027', dateOut:'01 avr 2027'},
-    { num:33, city:'Hà Giang 🏍️ Loop', flag:'🇻🇳', nights:4, transport:'🚌 Bus · ~7h depuis Pù Luông/Hanoï', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:33, city:'Hà Giang 🏍️ Loop', flag:'🇻🇳', nights:4, transport:'🚌 Bus · ~7h depuis Pù Luông/Hanoï', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','G','R','O','O','G','G','G','G'], active:[3], dateIn:'01 avr 2027', dateOut:'05 avr 2027'},
-    { num:34, city:'Cao Bằng', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~6h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:34, city:'Cao Bằng', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~6h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','G','R','O','O','G','G','G','G'], active:[3], dateIn:'05 avr 2027', dateOut:'08 avr 2027'},
-    { num:35, city:'Hồ Ba Bể', flag:'🇻🇳', nights:2, transport:'🚌 Bus · ~4h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:35, city:'Hồ Ba Bể', flag:'🇻🇳', nights:2, transport:'🚌 Bus · ~4h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','G','R','O','O','G','G','G','G'], active:[3], dateIn:'08 avr 2027', dateOut:'10 avr 2027'},
-    { num:36, city:'Baie d\'Halong / Cat Bà', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~5h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:36, city:'Baie d\'Halong / Cat Bà', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~5h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'10 avr 2027', dateOut:'13 avr 2027'},
-    { num:37, city:'Cô Tô 🏝️', flag:'🇻🇳', nights:3, transport:'🚢 Bateau direct depuis Cẩm Phả/Vân Đồn · ~2–3h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:37, city:'Cô Tô 🏝️', flag:'🇻🇳', nights:3, transport:'🚢 Bateau direct depuis Cẩm Phả/Vân Đồn · ~2–3h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'13 avr 2027', dateOut:'16 avr 2027'},
-    { num:38, city:'Hanoï', flag:'🇻🇳', nights:3, transport:'🚢 Bateau retour + 🚌 bus · ~4h', visa:'Exemption 45j', budget:'30–50€', health:['dengue'],
+    { num:38, city:'Hanoï', flag:'🇻🇳', nights:3, transport:'🚢 Bateau retour + 🚌 bus · ~4h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','Y','O','O','O','Y','O','O','G'], active:[3], dateIn:'16 avr 2027', dateOut:'19 avr 2027'},
   ]},
   { country: '🔀 Transit Vietnam → Philippines', steps: [
@@ -1986,33 +1987,33 @@ const ITINERARY = [
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[], dateIn:'19 avr 2027', dateOut:'19 avr 2027'},
   ]},
   { country: '🇵🇭 Philippines', steps: [
-    { num:39, city:'Manille (transit)', flag:'🇵🇭', nights:1, transport:'Arrivée vol Hanoï→Manille', visa:'exempt 30j', budget:'45–55€', health:['dengue'],
+    { num:39, city:'Manille (transit)', flag:'🇵🇭', nights:1, transport:'Arrivée vol Hanoï→Manille', visa:'exempt 30j', budget:'65–75€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'19 avr 2027', dateOut:'20 avr 2027'},
-    { num:40, city:'Banaue / Batad 💎', flag:'🇵🇭', nights:4, transport:'🚌 Bus nuit · 8–9h depuis Manille', transportRisk:'low', visa:'exempt', budget:'30–40€', health:['dengue'],
+    { num:40, city:'Banaue / Batad 💎', flag:'🇵🇭', nights:4, transport:'🚌 Bus nuit · 8–9h depuis Manille', transportRisk:'low', visa:'exempt', budget:'50–60€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'20 avr 2027', dateOut:'24 avr 2027'},
-    { num:41, city:'Manille (retour)', flag:'🇵🇭', nights:1, transport:'🚌 Bus nuit · 8–9h', transportRisk:'low', visa:'exempt', budget:'35–45€', health:['dengue'],
+    { num:41, city:'Manille (retour)', flag:'🇵🇭', nights:1, transport:'🚌 Bus nuit · 8–9h', transportRisk:'low', visa:'exempt', budget:'55–65€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'24 avr 2027', dateOut:'25 avr 2027'},
-    { num:42, city:'Puerto Princesa', flag:'🇵🇭', nights:2, transport:'✈️ Vol Manille→Puerto Princesa · ~1h15 · ~60€', visa:'exempt', budget:'30–40€', health:['dengue'],
+    { num:42, city:'Puerto Princesa', flag:'🇵🇭', nights:2, transport:'✈️ Vol Manille→Puerto Princesa · ~1h15 · ~60€', visa:'exempt', budget:'50–60€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'25 avr 2027', dateOut:'27 avr 2027'},
-    { num:43, city:'El Nido — Palawan', flag:'🇵🇭', nights:5, transport:'🚙 Van · 5–6h', visa:'exempt', budget:'40–55€', health:['dengue'],
+    { num:43, city:'El Nido — Palawan', flag:'🇵🇭', nights:5, transport:'🚙 Van · 5–6h', visa:'exempt', budget:'60–75€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'27 avr 2027', dateOut:'02 mai 2027'},
     { num:44, city:'Croisière El Nido ↔ Coron 🚢', flag:'🇵🇭', nights:4, transport:'🚢 Liveaboard · 3–5 jours · Linapacan', visa:'exempt', budget:'60–100€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'02 mai 2027', dateOut:'06 mai 2027'},
-    { num:45, city:'Coron — Palawan', flag:'🇵🇭', nights:3, transport:'🚢 Arrivée croisière', visa:'exempt', budget:'35–50€', health:['dengue'],
+    { num:45, city:'Coron — Palawan', flag:'🇵🇭', nights:3, transport:'🚢 Arrivée croisière', visa:'exempt', budget:'55–70€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'06 mai 2027', dateOut:'09 mai 2027'},
-    { num:47, city:'Cebu City', flag:'🇵🇭', nights:1, transport:'✈️ Vol direct Coron→Cebu · ~1h15 · 60–120€', visa:'exempt', budget:'35–45€', health:['dengue'],
+    { num:47, city:'Cebu City', flag:'🇵🇭', nights:1, transport:'✈️ Vol direct Coron→Cebu · ~1h15 · 60–120€', visa:'exempt', budget:'55–65€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'09 mai 2027', dateOut:'10 mai 2027'},
-    { num:48, city:'Malapascua', flag:'🇵🇭', nights:4, transport:'🚌 Bus 4h + ⛴️ ferry 30min', visa:'exempt', budget:'35–50€', health:['dengue'],
+    { num:48, city:'Malapascua', flag:'🇵🇭', nights:4, transport:'🚌 Bus 4h + ⛴️ ferry 30min', visa:'exempt', budget:'55–70€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'10 mai 2027', dateOut:'14 mai 2027'},
-    { num:49, city:'Moalboal', flag:'🇵🇭', nights:4, transport:'🚌 Bus · 6–7h', visa:'exempt', budget:'30–45€', health:['dengue'],
+    { num:49, city:'Moalboal', flag:'🇵🇭', nights:4, transport:'🚌 Bus · 6–7h', visa:'exempt', budget:'50–65€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'14 mai 2027', dateOut:'18 mai 2027'},
-    { num:50, city:'Siquijor 💎', flag:'🇵🇭', nights:5, transport:'⛴️ Ferry via Dumaguete', visa:'exempt', budget:'30–40€', health:['dengue'],
+    { num:50, city:'Siquijor 💎', flag:'🇵🇭', nights:5, transport:'⛴️ Ferry via Dumaguete', visa:'exempt', budget:'50–60€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'18 mai 2027', dateOut:'23 mai 2027'},
-    { num:51, city:'Bohol / Panglao', flag:'🇵🇭', nights:3, transport:'⛴️ Ferry direct · 2h', visa:'exempt', budget:'35–50€', health:['dengue'],
+    { num:51, city:'Bohol / Panglao', flag:'🇵🇭', nights:3, transport:'⛴️ Ferry direct · 2h', visa:'exempt', budget:'55–70€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'23 mai 2027', dateOut:'26 mai 2027'},
-    { num:52, city:'Camiguin', flag:'🇵🇭', nights:4, transport:'⛴️ Ferry · <4h', visa:'exempt', budget:'30–40€', health:['dengue'],
+    { num:52, city:'Camiguin', flag:'🇵🇭', nights:4, transport:'⛴️ Ferry · <4h', visa:'exempt', budget:'50–60€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','O','O','Y','Y','O','G'], active:[4], dateIn:'26 mai 2027', dateOut:'30 mai 2027'},
-    { num:53, city:'Siargao 🏄', flag:'🇵🇭', nights:6, transport:'⛴️ Bateau + 🚌 bus', visa:'exempt', budget:'45–65€', health:['dengue'], climateRisk:'typhon',
+    { num:53, city:'Siargao 🏄', flag:'🇵🇭', nights:6, transport:'⛴️ Bateau + 🚌 bus', visa:'exempt', budget:'65–85€', health:['dengue'], climateRisk:'typhon',
       meteo:['G','G','G','G','G','Y','O','O','O','Y','Y','G'], active:[4], dateIn:'30 mai 2027', dateOut:'05 jun 2027'},
   ]},
 
@@ -2023,17 +2024,17 @@ const ITINERARY = [
       meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[], dateIn:'05 jun 2027', dateOut:'05 jun 2027'},
   ]},
   { country: '🇮🇩 Indonésie', steps: [
-    { num:54, city:'Bali', flag:'🇮🇩', nights:5, transport:'✈️ Vol Cebu→Bali · ~3h · 60–110€', visa:'', budget:'35–55€', health:['dengue'],
+    { num:54, city:'Bali', flag:'🇮🇩', nights:5, transport:'✈️ Vol Cebu→Bali · ~3h · 60–110€', visa:'', budget:'50–70€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'05 jun 2027', dateOut:'10 jun 2027'},
-    { num:55, city:'Lombok 🏍️', flag:'🇮🇩', nights:4, transport:'✈️ Vol Bali→Lombok · 30 min', transportRisk:'low', visa:'', budget:'30–45€', health:['dengue'],
+    { num:55, city:'Lombok 🏍️', flag:'🇮🇩', nights:4, transport:'✈️ Vol Bali→Lombok · 30 min', transportRisk:'low', visa:'', budget:'45–60€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'10 jun 2027', dateOut:'14 jun 2027'},
     { num:56, city:'Sumbawa ⚠️', flag:'🇮🇩', nights:2, transport:'🚢 Ferry Lombok→Sumbawa · 2h · départ matinal', transportRisk:'high',
-      visa:'', budget:'25–40€', health:['dengue'],
+      visa:'', budget:'40–55€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'14 jun 2027', dateOut:'16 jun 2027'},
     { num:57, city:'Komodo — Varans & Manta 🤿', flag:'🇮🇩', nights:3, transport:'🚢 Ferry Sumbawa→Komodo', transportRisk:'low',
-      visa:'', budget:'40–60€', health:['dengue'],
+      visa:'', budget:'55–75€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'16 jun 2027', dateOut:'19 jun 2027'},
-    { num:58, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:4, transport:'🚢 Ferry · fin road trip', visa:'', budget:'35–50€', health:['dengue'],
+    { num:58, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:4, transport:'🚢 Ferry · fin road trip', visa:'', budget:'50–65€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'19 jun 2027', dateOut:'23 jun 2027'},
   ]},
 ];
@@ -4563,12 +4564,12 @@ const BUDGET_NOTES = {
 // Leviers d'économie identifiés par pays — affichés via badge cliquable dans le tableau Budget
 const BUDGET_SAVINGS = {
   'philippines': {
-    potentialSavings: '150–250€',
+    potentialSavings: '190–290€',
     tips: [
       {
         title: 'Réduire Siargao de 6 à 4 nuits',
-        save: '~90–130€',
-        detail: 'Siargao est l\'étape la plus chère du parcours (45–65€/j). La réduire de 2 nuits couvre déjà une bonne partie des leviers d\'économie sans sacrifier l\'essentiel (surf, island hopping).',
+        save: '~130–170€',
+        detail: 'Siargao est l\'étape la plus chère du parcours (65–85€/j). La réduire de 2 nuits couvre déjà une bonne partie des leviers d\'économie sans sacrifier l\'essentiel (surf, island hopping).',
       },
       {
         title: 'Sauter l\'initiation plongée à Malapascua',
@@ -4588,11 +4589,11 @@ const BUDGET_SAVINGS = {
     ],
   },
   'cambodge': {
-    potentialSavings: '40–60€',
+    potentialSavings: '50–70€',
     tips: [
       {
         title: 'Réduire Phnom Penh à 3 nuits',
-        save: '~30–45€',
+        save: '~40–50€',
         detail: 'La capitale demande moins de temps que les étapes nature — 3 nuits suffisent pour Tuol Sleng, le Palais Royal et le marché russe sans se presser.',
       },
       {
@@ -4707,7 +4708,8 @@ function renderBudget() {
 
   // Vols en avion — estimation lue dans GLOBAL_STATS.transportBookings (source unique).
   // Ligne dédiée : recoupe en partie le transport du quotidien (voir note).
-  const flightBookings = GLOBAL_STATS.transportBookings.filter(b => b.mode === 'flight');
+  const flightBookings = GLOBAL_STATS.transportBookings.filter(b => b.mode === 'flight' && !b.budgetExcluded);
+  const flightsExcluded = GLOBAL_STATS.transportBookings.filter(b => b.mode === 'flight' && b.budgetExcluded);
   const flightsLow  = flightBookings.reduce((a, b) => a + b.price.low, 0);
   const flightsHigh = flightBookings.reduce((a, b) => a + b.price.high, 0);
   const flightsBooked = flightBookings.filter(b => b.booked).length;
@@ -4721,7 +4723,7 @@ function renderBudget() {
     totalHigh: flightsHigh,
     visa: '—',
     visaNote: '',
-    notes: `Détail dans Voyage › Transports (${flightsBooked} déjà réservé). Le prix du vol Paris → Taipei reste une estimation tant que le prix réel n'est pas saisi. Recoupe en partie le transport du quotidien. Hors vols Phase 2 et sortie d'Indonésie (non planifiés).`,
+    notes: `Détail dans Voyage › Transports.${flightsExcluded.length ? ' Exclu de l\'enveloppe : ' + flightsExcluded.map(b => `${b.route} (${b.price.low}€, payé)`).join(', ') + '.' : ''} Recoupe en partie le transport du quotidien. Hors vols Phase 2 et sortie d'Indonésie (non planifiés).`,
     matchKey: 'vols',
     isFixedCost: true,
   });
@@ -4817,7 +4819,7 @@ function getBooking(id) {
 
 function formatBookingPrice(p) {
   if (!p) return '';
-  const base = p.low === p.high ? `~${p.low}€` : `${p.low}–${p.high}€`;
+  const base = p.low === p.high ? `${p.exact ? '' : '~'}${p.low}€` : `${p.low}–${p.high}€`;
   return p.note ? `${base} (${p.note})` : base;
 }
 
