@@ -1709,7 +1709,7 @@
 </main>
 
 <footer>
-  <span>v3.10</span>
+  <span>v4.0</span>
   <span id="last-updated">Dernière mise à jour : 9 octobre 2026</span>
 </footer>
 
@@ -1831,21 +1831,31 @@ const GLOBAL_STATS = {
       where:'Cebgo, Philippine Airlines, Sunlight Air',
       note:'Plusieurs vols par jour ; réserver en avance en haute saison (~1h15 direct). Remplace le ferry de nuit + transit Manille.',
       confidence:'moyenne', source:'Fiche Coron du dashboard' },
-    { id:'flight-ceb-dps', mode:'flight', route:'Vol Cebu (CEB) → Bali (DPS)', stepNum:'T5',
-      window:{ from:42, to:28, kind:'conseil' }, price:{ low:60, high:110 },
-      where:'Cebu Pacific, AirAsia',
-      note:'Peu de vols directs depuis Siargao : anticiper la correspondance (Cebu ou Manille). Le VoA indonésien se paie à l\'arrivée (voir onglet Visas).',
-      confidence:'moyenne', source:'Fiche transit Philippines → Indonésie du dashboard' },
-    { id:'flight-dps-lombok', mode:'flight', route:'Vol Bali (DPS) → Lombok (LOP)', stepNum:55,
-      window:{ from:28, to:7, kind:'conseil' }, price:{ low:30, high:150 },
-      where:'Compagnies domestiques indonésiennes',
-      note:'Fourchette générale « vol interne » du doc (30–150 €) : à affiner à la réservation. ~30 min de vol.',
-      confidence:'faible', source:'Doc maître, section 2' },
-    { id:'flight-flores-dps', mode:'flight', route:'Vol Labuan Bajo (LBJ) → Bali (DPS)', stepNum:58, dateField:'dateOut',
-      window:{ from:56, to:14, kind:'conseil' }, price:{ low:30, high:150 },
-      where:'Compagnies domestiques indonésiennes',
-      note:'Vol retour de fin de road trip (doc section 12). Même fourchette générale que Bali → Lombok ; la suite (Phase 2) reste à planifier.',
-      confidence:'faible', source:'Doc maître, sections 2 et 12' },
+    { id:'flight-iao-cgk', mode:'flight', route:'Siargao (IAO) → Manille (MNL) → Jakarta (CGK)', stepNum:'T5',
+      window:{ from:56, to:28, kind:'conseil' }, price:{ low:130, high:250 },
+      where:'Philippine Airlines, Cebu Pacific, AirAsia (via Manille ou Cebu)',
+      note:'❓ PROVISOIRE (plan A\', dépend du budget restant). Pas de vol direct : Siargao → Manille puis Manille → Jakarta (liaison à vérifier ; sinon via Kuala Lumpur). Prévoir une marge de correspondance. Le VoA indonésien se paie à l\'arrivée (voir onglet Visas).',
+      confidence:'faible', source:'Estimation (plan A\' du 09/10/2026)' },
+    { id:'flight-cgk-pkn', mode:'flight', route:'Vol Jakarta (CGK) → Pangkalan Bun (PKN)', stepNum:55,
+      window:{ from:56, to:21, kind:'conseil' }, price:{ low:50, high:160 },
+      where:'Citilink, Batik Air, Wings Air (selon dates)',
+      note:'❓ PROVISOIRE. 1h20 à 3h selon escale ; fourchette large relevée (48–178 $). Accès à Tanjung Puting (Kumai, 20 min en voiture).',
+      confidence:'faible', source:'rome2rio / goasia (2026)' },
+    { id:'flight-pkn-bej', mode:'flight', route:'Vol Pangkalan Bun (PKN) → Berau (BEJ)', stepNum:56,
+      window:{ from:56, to:21, kind:'conseil' }, price:{ low:190, high:280 },
+      where:'Batik Air (7 vols/semaine, ~4h15 avec escale)',
+      note:'❓ PROVISOIRE et cher : une seule source (dès ~223 $). Alternative à étudier : Balikpapan puis Berau. Atterrir avant 13h pour enchaîner le transfert vers Derawan.',
+      confidence:'faible', source:'rome2rio (2026)' },
+    { id:'flight-bej-lop', mode:'flight', route:'Vol Berau (BEJ) → Lombok (LOP) via hub', stepNum:58, dateField:'dateOut',
+      window:{ from:56, to:21, kind:'conseil' }, price:{ low:100, high:220 },
+      where:'Via Surabaya, Makassar ou Balikpapan — compagnies domestiques',
+      note:'❓ PROVISOIRE. Itinéraire non vérifié (1 escale). La nuit de transit du 16 au 17 juin est prévue pour absorber un retard.',
+      confidence:'faible', source:'Estimation (plan A\' du 09/10/2026)' },
+    { id:'flight-lop-kul', mode:'flight', route:'Vol Lombok (LOP) → Kuala Lumpur (KUL)', stepNum:59, dateField:'dateOut',
+      window:{ from:56, to:21, kind:'conseil' }, price:{ low:50, high:120 },
+      where:'AirAsia (direct à confirmer, sinon via Bali ou Jakarta)',
+      note:'❓ PROVISOIRE. Vol direct ~70 % de fiabilité ; sinon via Bali (+30–60 €). KL = porte d\'entrée de la Phase 2 (liaison vers l\'Asie centrale).',
+      confidence:'faible', source:'Estimation (plan A\' du 09/10/2026)' },
     { id:'bus-t2-sipd-pp', mode:'bus', route:'Bus Si Phan Don → Phnom Penh (frontière Nong Nok Khiene / Trapeang Kriel)', stepNum:'T2',
       window:{ from:7, to:1, kind:'conseil' }, price:{ low:12, high:30 },
       where:'Agences de Don Det / Don Khong · compagnies VET (Air Bus), AVT',
@@ -2019,24 +2029,24 @@ const ITINERARY = [
   ]},
 
   { country: '🔀 Transit Philippines → Indonésie', steps: [
-    { num:'T5', city:'Siargao / Cebu → Bali', flag:'🔀', nights:0,
-      transport:'✈️ Vol · Cebu (CEB) → Bali (DPS) · ~3h · 60–110€ · Cebu Pacific / AirAsia',
-      visaKey:'indonesie', visa:'', budget:'60–110€', health:['dengue'],
+    { num:'T5', city:'Siargao → Manille → Jakarta ❓', flag:'🔀', nights:0,
+      transport:'✈️ Siargao (IAO) → Manille (MNL) → Jakarta (CGK) · 2 vols, 1 escale · ~130–250€ · liaison MNL→CGK à vérifier',
+      transportRisk:'high', visaKey:'indonesie', visa:'', budget:'130–250€', health:['dengue'],
       meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[], dateIn:'05 jun 2027', dateOut:'05 jun 2027'},
   ]},
   { country: '🇮🇩 Indonésie', steps: [
-    { num:54, city:'Bali', flag:'🇮🇩', nights:5, transport:'✈️ Vol Cebu→Bali · ~3h · 60–110€', visa:'', budget:'50–70€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'05 jun 2027', dateOut:'10 jun 2027'},
-    { num:55, city:'Lombok 🏍️', flag:'🇮🇩', nights:4, transport:'✈️ Vol Bali→Lombok · 30 min', transportRisk:'low', visa:'', budget:'45–60€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'10 jun 2027', dateOut:'14 jun 2027'},
-    { num:56, city:'Sumbawa ⚠️', flag:'🇮🇩', nights:2, transport:'🚢 Ferry Lombok→Sumbawa · 2h · départ matinal', transportRisk:'high',
-      visa:'', budget:'40–55€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'14 jun 2027', dateOut:'16 jun 2027'},
-    { num:57, city:'Komodo — Varans & Manta 🤿', flag:'🇮🇩', nights:3, transport:'🚢 Ferry Sumbawa→Komodo', transportRisk:'low',
-      visa:'', budget:'55–75€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'16 jun 2027', dateOut:'19 jun 2027'},
-    { num:58, city:'Labuan Bajo / Flores', flag:'🇮🇩', nights:4, transport:'🚢 Ferry · fin road trip', visa:'', budget:'50–65€', health:['dengue'],
-      meteo:['Y','Y','G','G','G','G','G','G','G','G','G','Y'], active:[5], dateIn:'19 jun 2027', dateOut:'23 jun 2027'},
+    { num:54, city:'Jakarta (arrivée) ❓', flag:'🇮🇩', nights:1, transport:'✈️ Arrivée tardive · VoA au comptoir CGK', visa:'', budget:'40–55€', health:['dengue'],
+      meteo:['Y','Y','Y','G','G','G','G','G','G','G','Y','Y'], active:[5], dateIn:'05 jun 2027', dateOut:'06 jun 2027'},
+    { num:55, city:'Tanjung Puting — Orang-outans 🦧', flag:'🇮🇩', nights:4, transport:'✈️ Vol Jakarta→Pangkalan Bun · 1h20–3h · ~50–160€', transportRisk:'medium', visa:'', budget:'105–130€', health:['dengue','malaria'],
+      meteo:['O','O','Y','Y','G','G','Y','Y','O','Y','O','O'], active:[5], dateIn:'06 jun 2027', dateOut:'10 jun 2027'},
+    { num:56, city:'Berau (transit) ❓', flag:'🇮🇩', nights:1, transport:'✈️ Vol Pangkalan Bun→Berau (Batik) · ~4h15 · dès ~190–280€', transportRisk:'high', visa:'', budget:'40–55€', health:['dengue','malaria'],
+      meteo:['X','X','X','X','Y','Y','X','X','X','X','X','X'], active:[5], dateIn:'10 jun 2027', dateOut:'11 jun 2027'},
+    { num:57, city:'Derawan & Kakaban 🐢 ❓', flag:'🇮🇩', nights:5, transport:'🚗 Voiture Berau→Derawan · 3–3h30 · ~900 000 IDR/voiture · atterrir avant 13h', transportRisk:'medium', visa:'', budget:'65–90€', health:['dengue','malaria'],
+      meteo:['X','X','X','X','Y','Y','X','X','X','X','X','X'], active:[5], dateIn:'11 jun 2027', dateOut:'16 jun 2027'},
+    { num:58, city:'Transit Berau → Lombok ❓', flag:'🇮🇩', nights:1, transport:'🚗 Retour Berau (3–3h30) + ✈️ Berau→Lombok via hub (Surabaya/Makassar/Balikpapan) · ~100–220€', transportRisk:'high', visa:'', budget:'40–55€', health:['dengue'],
+      meteo:['X','X','X','X','Y','Y','X','X','X','X','X','X'], active:[5], dateIn:'16 jun 2027', dateOut:'17 jun 2027'},
+    { num:59, city:'Lombok 🏍️ (Rinjani · sud)', flag:'🇮🇩', nights:9, transport:'✈️ Arrivée Lombok (LOP) · scooter sur place', visa:'', budget:'50–65€', health:['dengue'],
+      meteo:['Y','Y','G','G','G','G','G','G','G','Y','Y','Y'], active:[5], dateIn:'17 jun 2027', dateOut:'26 jun 2027'},
   ]},
 ];
 
@@ -3073,7 +3083,7 @@ const DEST_DETAILS = {
     pratique: [
       { label: 'Transport', val: 'Trajet combiné bateau + bus depuis Camiguin — pas de liaison directe, prévoir une journée de transport.' },
       { label: 'Ambiance', val: 'General Luna est le centre névralgique — bars, restaurants, communauté de surfeurs internationale. Plus festif que les étapes précédentes.' },
-      { label: 'Sortie vers Bali', val: 'Vol Siargao → Bali via Cebu ou Manille (transit). Réserver dès les dates connues — peu de vols directs, correspondances à anticiper.' },
+      { label: 'Sortie vers Jakarta', val: 'Vol Siargao → Manille → Jakarta le 5 juin (❓ plan A\' provisoire). Pas de vol direct : anticiper la correspondance et réserver dès les dates connues.' },
     ],
   },
 
@@ -3104,29 +3114,25 @@ const DEST_DETAILS = {
     ],
   },
   'T5': {
-    country: '\U0001f500 Transit',
-    title: 'Philippines \u2192 Indon\u00e9sie', flag: '\U0001f500', nights: 'Transit ~3h vol',
-    intro: 'Liaison a\u00e9rienne depuis Cebu ou Manille vers Bali. Vol court, plusieurs options de compagnies low cost. Point d\u2019entr\u00e9e Indon\u00e9sie par Bali (DPS) recommand\u00e9.',
+    country: '🔀 Transit',
+    title: 'Siargao → Manille → Jakarta ❓', flag: '🔀', nights: 'Transit ~1 journée',
+    intro: '❓ PROVISOIRE — plan A\' (Kalimantan + Lombok), en doute : il dépend du budget restant début juin 2027. Pas de vol direct Siargao → Indonésie : on remonte par Manille puis on part vers Jakarta, porte d\'entrée de Kalimantan.',
     lieux: [
-      {
-        name: 'Vol Cebu (CEB) \u2192 Bali (DPS)', status: 'in', type: 'Vol',
-        prix: '{{booking:flight-ceb-dps:price}} selon date',
-        dispo: 'Cebu Pacific, AirAsia \u2014 plusieurs vols par semaine',
-        transport: 'A\u00e9roport Mactan-Cebu International (CEB)',
-        note: 'Option id\u00e9ale si tu finis les Philippines sur Siargao : vol Siargao \u2192 Cebu (~1h, ~30\u201350\u20ac) puis Cebu \u2192 Bali le lendemain. Permet une nuit \u00e0 Cebu City si besoin.'
-      },
-      {
-        name: 'Vol Manille (MNL) \u2192 Bali (DPS)', status: 'zone', type: 'Alternative',
-        prix: '60\u2013120\u20ac',
-        dispo: 'AirAsia, Cebu Pacific, Philippine Airlines',
-        transport: 'A\u00e9roport Ninoy Aquino (MNL)',
-        note: '\u26d1 Zone g\u00e9o \u2014 si tu passes par Manille en fin de s\u00e9jour Philippines, vol direct vers Bali disponible. Moins pratique si tu finis \u00e0 Siargao (n\u00e9cessite de remonter \u00e0 Manille).'
-      },
+      { name: 'Siargao (IAO) → Manille (MNL)', status: 'prévu', type: 'Vol',
+        prix: '{{booking:flight-iao-cgk:price}} (les 2 vols)',
+        dispo: 'Philippine Airlines, Cebu Pacific, AirAsia',
+        transport: 'Aéroport de Siargao (Sayak)',
+        note: 'Vol du matin recommandé pour garder de la marge sur la correspondance internationale.' },
+      { name: 'Manille (MNL) → Jakarta (CGK)', status: 'zone', type: 'Vol — à vérifier',
+        prix: 'inclus dans la fourchette ci-dessus',
+        dispo: 'Liaison directe non confirmée',
+        transport: 'Aéroport Ninoy Aquino (MNL) — terminal différent selon la compagnie',
+        note: '❓ Fiabilité ~70 %. Plan B : via Kuala Lumpur (AirAsia). Prévoir un billet de sortie d\'Indonésie (onward) : le vol Lombok → Kuala Lumpur du 26 juin le fournit.' },
     ],
     pratique: [
-      { label: 'Visa Indon\u00e9sie', val: '{{visa:indonesie:typeLabel}} payant \u00e0 l\u2019arriv\u00e9e : {{visa:indonesie:cost}}, valable {{visa:indonesie:duration}}, extensible sur place (tarif et conditions : voir l\u2019onglet Visas).' },
-      { label: 'Entr\u00e9e Bali', val: 'A\u00e9roport Ngurah Rai (DPS) \u2014 {{visa:indonesie:shortLabel}} au comptoir \u00e0 l\u2019arriv\u00e9e (20\u201330 min). Taxi officiel vers le centre de Kuta / Seminyak : ~5\u20ac via application Grab.' },
-      { label: 'Timing', val: 'R\u00e9server le vol {{booking:flight-ceb-dps:window}} avant. Les vols Philippines\u2192Bali sont populaires en avril \u2014 prix stables mais dispo \u00e0 surveiller.' },
+      { label: 'Visa Indonésie', val: '{{visa:indonesie:typeLabel}} payant à l\'arrivée : {{visa:indonesie:cost}}, valable {{visa:indonesie:duration}}, extensible sur place. Séjour prévu ~21 nuits : pas besoin de visa 60 jours.' },
+      { label: 'Formalités santé/douane', val: 'Vérifier avant le départ les démarches en ligne d\'entrée (déclaration douanière « All Indonesia », pass santé SATUSEHAT) — non confirmées sur source officielle à ce jour.' },
+      { label: 'Timing', val: 'Réserver {{booking:flight-iao-cgk:window}} avant. Arrivée tardive à Jakarta : nuit sur place (étape suivante).' },
     ],
   },
 
@@ -4126,29 +4132,110 @@ const DEST_DETAILS = {
       { label: 'Aéroport', val: 'Aéroport de Cebu-Mactan (CEB) — bien desservi, Grab disponible.' },
     ],
   },
-  55: {
+  54: {
     country: '🇮🇩 Indonésie',
-    title: 'Road trip Lombok → Flores 🏍️',
-    nights: '10–12 jours · ~2 000 km · 3 ferries',
-    intro: 'La traversée des îles de la Petite Sonde en scooter est l\'une des aventures les plus épiques d\'Indonésie. Lombok → Sumbawa → Komodo → Flores. Paysages volcaniques, plages désertes, varans géants et raies mantas.',
+    title: 'Jakarta (arrivée) ❓',
+    nights: '',
+    intro: "❓ PROVISOIRE — plan A' en doute, dépend du budget restant en juin 2027. Nuit de transit pour récupérer après la correspondance Manille → Jakarta et prendre le vol du matin vers Pangkalan Bun.",
     lieux: [
-      { name: 'Lombok — Gili Islands', type: 'Plages + snorkeling', prix: 'Ferry ~5€', dispo: 'Toute l\'année', transport: 'Départ du road trip', status: 'prévu',
-        note: 'Base de départ. Gili Trawangan/Air pour le snorkeling tortues et requins de récif. Senggigi pour louer un scooter solide. Rinjani pour les trekkeurs (3 726m).' },
-      { name: 'Sumbawa traversée', type: 'Route', prix: 'Ferry ~3€', dispo: 'Toute l\'année', transport: '⚠️ 400km — DÉPART MATINAL', status: 'prévu',
-        note: 'Étape logistique critique. Prendre le ferry de Lombok tôt le matin pour traverser Sumbawa dans la journée et attraper le ferry vers Komodo avant la tombée de la nuit. Surnommée la "journée de l\'enfer" — mais les paysages volcaniques valent le coup.' },
-      { name: 'Parc national de Komodo', type: 'Faune + plongée', prix: 'Entrée ~15€ + guide obligatoire', dispo: 'Toute l\'année (sec = avril–oct)', transport: 'Ferry depuis Sumbawa', status: 'prévu',
-        note: 'Varans de Komodo sur Rinca ou Komodo Island. Plongée/snorkeling parmi les meilleurs au monde — raies mantas, requins, tortues. Pink Beach pour les couleurs uniques. Réserver guide obligatoire pour approcher les varans.' },
-      { name: 'Labuan Bajo', type: 'Ville + hub', prix: 'Hébergement ~15–25€/n', dispo: 'Toute l\'année', transport: 'Fin du road trip', status: 'prévu',
-        note: 'Petite ville portuaire en plein développement. Base pour le parc Komodo. Nombreux opérateurs de plongée et day trips. Vols vers Bali quotidiens (~50€, ~1h30).' },
+      { name: 'Aéroport Soekarno-Hatta (CGK) + VoA', type: 'Arrivée', prix: '~28€ (500 000 IDR)', dispo: "Comptoir VoA à l'arrivée", transport: 'Paiement au comptoir, prévoir de la monnaie / carte', status: 'prévu',
+        note: "Prévoir 30–60 min de formalités. Taxi/Grab vers un hôtel près de l'aéroport pour limiter le trajet de nuit." },
+      { name: 'Kota Tua / vieux Batavia', type: 'Patrimoine', prix: 'Gratuit', dispo: "Toute l'année", transport: 'Grab / TransJakarta', status: 'optionnel',
+        note: 'Seulement si le vol du lendemain est tardif : quartier colonial, musées, cafés.' },
     ],
     pratique: [
-      { label: 'Location scooter', val: 'Lombok (Senggigi) — guesthouses ou agences locales. ~4–6€/j pour un scooter automatique correct (60–100 000 IDR/j, −30 à 40 % à la semaine) + essence ~1–3€/j selon les km. Vérifier freins, pneus, rétroviseurs avant de partir pour 10 jours.' },
-      { label: 'Ferries', val: '3 traversées : Lombok→Sumbawa (Kayangan→Poto Tano, 2h), Sumbawa→Lombok Sape→Labuan Bajo (8h, overnight possible). Scooter embarqué sur tous les ferries.' },
-      { label: 'Sumbawa timing', val: 'Prendre le premier ferry de Lombok (~7h00). Traverser Sumbawa de bout en bout (400km, ~6–7h de route) pour attraper le dernier ferry vers Flores. Pas de marge.' },
-      { label: 'Niveau moto', val: 'Débutant OK pour les routes principales (toutes asphaltées). Quelques chemins de terre pour accéder aux plages. Rien de technique.' },
-      { label: 'Retour Bali', val: 'Vol Labuan Bajo → Bali (~1h30, ~50–80€). Fin de la Phase 1 depuis Bali (~24 juin 2027).' },
-    ]
+      { label: 'Langue', val: "Bahasa Indonesia : « terima kasih » (merci), « berapa harga ? » (combien ?), « tidak pedas » (pas pimenté). L'anglais est limité hors zones touristiques — pense à télécharger l'indonésien hors-ligne." },
+      { label: 'Transports', val: "Grab et Gojek fonctionnent à Jakarta ; se méfier des taxis non officiels à l'aéroport." },
+    ],
   },
+
+  55: {
+    country: '🇮🇩 Indonésie',
+    title: 'Tanjung Puting — Orang-outans 🦧',
+    nights: '4 nuits (2 nuits en klotok)',
+    intro: "❓ PROVISOIRE — plan A' en doute, dépend du budget restant en juin 2027. Le n°1 du top tourdumondiste que tu voulais voir. Croisière en klotok (bateau en bois à étage) sur la rivière Sekonyer, nuits à bord, orang-outans en semi-liberté à Camp Leakey. Meilleur en juin : les fumées de brûlis arrivent en juillet–septembre.",
+    lieux: [
+      { name: 'Croisière klotok 3j/2n (Kumai → Camp Leakey)', type: 'Faune', prix: '≥ 350 $ (~300–330€) en groupe, repas inclus + entrée parc ~150 000 IDR', dispo: "Toute l'année, idéal juin–août (mais fumées dès juillet)", transport: "Vol vers Pangkalan Bun, puis voiture 20–30 min jusqu'à Kumai", status: 'prévu',
+        note: 'Orang-outans, nasiques, crocodiles, oiseaux ; cuisinier et guide inclus. Les heures de nourrissage sont fixes (Tanjung Harapan, Pondok Tanggui, Camp Leakey). Réserver via une agence locale de Kumai ou Pangkalan Bun, avec les prix en dollars/IDR par écrit.' },
+      { name: 'Pangkalan Bun / Kumai', type: 'Ville-étape', prix: 'Hébergement ~15–25€/n', dispo: "Toute l'année", transport: 'Base avant et après la croisière', status: 'prévu',
+        note: '2 nuits à terre (arrivée + retour) autour des 2 nuits en klotok. Marché, petits warungs ; peu de touristes.' },
+    ],
+    pratique: [
+      { label: 'Santé', val: "Dengue + paludisme : risque faible mais présent dans l'intérieur de Kalimantan — à voir avec ton médecin/centre de vaccination avant le départ ; répulsif DEET, manches longues le soir sur le bateau." },
+      { label: 'Vol', val: 'Jakarta → Pangkalan Bun 1h20–3h, ~50–160€ ({{booking:flight-cgk-pkn:price}}). Prendre le vol du matin.' },
+      { label: 'Niveau', val: 'Facile. Confort basique : matelas fin sur le pont, douche rudimentaire. À éviter pendant les feux de forêt (juillet–septembre).' },
+    ],
+  },
+
+  56: {
+    country: '🇮🇩 Indonésie',
+    title: 'Berau (transit) ❓',
+    nights: '1 nuit',
+    intro: "❓ PROVISOIRE — plan A' en doute, dépend du budget restant en juin 2027. Relais entre Tanjung Puting et Derawan : le vol Pangkalan Bun → Berau est long (~4h15) et cher (dès ~223 $, une seule source). C'est le maillon le plus fragile du plan.",
+    lieux: [
+      { name: 'Vol Pangkalan Bun → Berau (Batik Air)', type: 'Vol', prix: '{{booking:flight-pkn-bej:price}}', dispo: '7 vols/semaine', transport: 'Aéroport Kalimarau (BEJ)', status: 'prévu',
+        note: 'Atterrir avant 13h pour enchaîner le transfert vers Derawan le même jour ; sinon nuit à Tanjung Redeb. Alternative à vérifier : via Balikpapan.' },
+    ],
+    pratique: [
+      { label: 'Plan B', val: 'Si le prix ou les horaires ne passent pas : retirer Derawan et passer directement à Lombok (voir règle budget ci-dessous).' },
+    ],
+  },
+
+  57: {
+    country: '🇮🇩 Indonésie',
+    title: 'Derawan & Kakaban 🐢 ❓',
+    nights: '5 nuits',
+    intro: "❓ PROVISOIRE — plan A' en doute, dépend du budget restant en juin 2027. Archipel de Derawan (Kalimantan Est) : snorkeling avec tortues vertes, Kakaban (lac de méduses sans piqûre), raies mantas à Sangalaki, Maratua. Saison et accès à Kakaban à confirmer. Snorkeling seulement, pas de plongée.",
+    lieux: [
+      { name: 'Tortues vertes & jetée de Derawan', type: 'Snorkeling', prix: 'Gratuit / ~5–10€ en bateau', dispo: 'À vérifier (saison ❓)', transport: 'Depuis le village de Derawan à pied/bateau', status: 'prévu',
+        note: 'Tortues vertes visibles depuis la jetée et au large ; hébergement sur pilotis.' },
+      { name: 'Lac de Kakaban', type: 'Snorkeling', prix: 'Entrée ~10–15€ + bateau', dispo: 'À vérifier (accès variable ❓)', transport: 'Excursion en bateau depuis Derawan', status: 'prévu',
+        note: "Méduses sans piqûre. Vérifier l'ouverture et les restrictions d'accès avant de réserver." },
+      { name: 'Sangalaki / Maratua (excursions)', type: 'Snorkeling', prix: '~60–110€ la journée en partage', dispo: 'À vérifier', transport: 'Bateau privé ou partagé', status: 'optionnel',
+        note: 'Mantas à Sangalaki ; à garder seulement si le budget le permet.' },
+    ],
+    pratique: [
+      { label: 'Transfert', val: "Berau (aéroport) → Derawan en voiture 3–3h30, ~900 000 IDR par voiture (~50€, jusqu'à 3 personnes) — à partager si possible ; départ avant 13h pour prendre le bateau final." },
+      { label: 'Budget', val: "~65–90€/nuit hors excursions premium. Pas de distributeur fiable sur l'île : retirer du liquide à Berau." },
+    ],
+  },
+
+  58: {
+    country: '🇮🇩 Indonésie',
+    title: 'Transit Berau → Lombok ❓',
+    nights: '1 nuit',
+    intro: "❓ PROVISOIRE — plan A' en doute, dépend du budget restant en juin 2027. Retour de Derawan vers Berau (3–3h30) puis vol vers Lombok via un hub (Surabaya, Makassar ou Balikpapan). La nuit tampon absorbe un retard : si le plan Derawan saute, elle disparaît.",
+    lieux: [
+      { name: 'Vol Berau → Lombok via hub', type: 'Vol', prix: '{{booking:flight-bej-lop:price}}', dispo: 'À vérifier', transport: 'Aéroport Kalimarau (BEJ)', status: 'prévu',
+        note: "Itinéraire à vérifier ; ne jamais réserver sans marge si l'enchaînement est serré." },
+    ],
+    pratique: [
+      { label: 'Hébergement', val: "Hôtel près de l'aéroport du hub ou de Berau selon les horaires." },
+    ],
+  },
+
+  59: {
+    country: '🇮🇩 Indonésie',
+    title: 'Lombok 🏍️ — Rinjani & sud ❓',
+    nights: '9 nuits',
+    intro: "❓ PROVISOIRE — plan A' en doute, dépend du budget restant en juin 2027. Fin de Phase 1 : volcan Rinjani, plages du sud, îles de snorkeling plus calmes que Gili Trawangan, rizières, villages sasak. Rythme plus lent pour récupérer, scooter sur place.",
+    lieux: [
+      { name: 'Trek du Rinjani 2J/1N', type: 'Trek', prix: '~90–130€ tout compris (guide, porteurs, repas)', dispo: "Ouvert en saison sèche (avr.–oct.) — fermé en début d'année", transport: 'Départ Senaru ou Sembalun', status: 'prévu',
+        note: "Montée au bord du cratère (3 726 m sans le sommet) ou jusqu'au sommet en 2J/1N selon l'opérateur. Niveau soutenu, froid la nuit. Fermeture possible pour raisons météo ou sécurité : vérifier avant de réserver." },
+      { name: 'Sud de Lombok (Kuta, Tanjung Aan, Selong Belanak)', type: 'Plages', prix: 'Gratuit', dispo: "Toute l'année", transport: 'Scooter ~4–6€/j + essence ~1–3€/j', status: 'prévu',
+        note: 'Belles plages, surf à Gerupuk, ambiance détendue.' },
+      { name: 'Gili Asahan / Gili Nanggu', type: 'Snorkeling', prix: '~30–60€ la journée en bateau', dispo: "Toute l'année (mer plus calme en saison sèche)", transport: 'Bateau depuis Tanjung Luar ou Sekotong', status: 'prévu',
+        note: 'Alternative plus tranquille que Gili Trawangan : eau claire, tortues possibles.' },
+      { name: 'Tetebatu & Sade', type: 'Culture + nature', prix: 'Gratuit / dons', dispo: "Toute l'année", transport: 'Scooter', status: 'optionnel',
+        note: 'Rizières, cascades, village sasak traditionnel.' },
+    ],
+    pratique: [
+      { label: 'Scooter', val: "~4–6€/j (60–100 000 IDR/j, −30 à 40 % à la semaine) + essence ~1–3€/j. Vérifier freins et pneus. Rappel : pas de catégorie moto sur le permis, clause deux-roues de l'assurance AVA à vérifier." },
+      { label: 'Sortie', val: "Vol Lombok → Kuala Lumpur le 26 juin ({{booking:flight-lop-kul:price}}), direct à confirmer, sinon via Bali ou Jakarta. Le VoA de 30 jours court jusqu'au ~4 juillet : marge de 8 jours." },
+      { label: 'Option +4 nuits', val: "Si le budget reste confortable : Bali (Nusa Penida, snorkeling mantas) ou prolonger Lombok — c'est le premier bloc à sacrifier sinon." },
+    ],
+  },
+
 };
 
 function openDestModal(stepNum) {
@@ -4556,10 +4643,10 @@ const BUDGET_RATES = {
 const BUDGET_NOTES = {
   'taïwan':      'Transport train excellent inclus. Hébergement légèrement plus cher qu\'ASE. Taipei confirmé : 155€/4 nuits (~39€/nuit, dortoir Backpackers Hostel Ximen). Fourchette relevée (09/10/26) : à ~39€/nuit à Taipei, repas et transport portent le jour à 55€+.',
   'laos':        'Très bon marché. Peu d\'ATM en zone rurale — prévoir cash USD/EUR.',
-  'cambodge':    'Pass Angkor 37$/j. Mondolkiri/Ratanakiri très peu cher (~25€/j).',
+  'cambodge':    'Pass Angkor 37$/j. Mondolkiri/Ratanakiri un peu moins cher (~30–40€/j).',
   'vietnam':     'Sens HCMC→Nord. Ha Giang Loop + train Reunification Express inclus. Fourchette relevée (09/10/26) : médiane solo 40€ (tourdumondiste).',
   'philippines': 'Croisière El Nido↔Coron 250–400€ (voir Transports, en plus du quotidien). Vols internes 60–120€ chacun (voir Transports). Fourchette relevée (09/10/26) : médiane solo 45€, îles plus chères.',
-  'indonésie':   'Road trip Lombok→Flores (~30€ ferries). Bali légèrement plus cher. Fourchette relevée (09/10/26) : médiane solo 50€ (tourdumondiste) ; Komodo ~13€/j.',
+  'indonésie':   '❓ Plan A\' provisoire (Kalimantan + Lombok, 21 nuits) : dépend du budget restant début juin. Règle : ≥ ~11 000€ restants → A\' complet ; 9 500–11 000€ → sans Derawan ; < 9 500€ → Lombok seul. Médiane solo 50€ (tourdumondiste).',
 };
 
 // Leviers d'économie identifiés par pays — affichés via badge cliquable dans le tableau Budget
@@ -4692,6 +4779,23 @@ function renderBudget() {
   // Totals
   const grandNightsCountries = countries.reduce((a, c) => a + c.nights, 0);
   const months = grandNightsCountries / 30; // durée Phase 1 dérivée des nuits totales
+
+  // Suppléments Indonésie (plan A' provisoire) : klotok Tanjung Puting, trek Rinjani, bateaux Derawan —
+  // non couverts par le tarif quotidien.
+  countries.push({
+    country: '🌿 Indonésie — suppléments A\' ❓',
+    nights: 0,
+    durLabel: 'provisoire',
+    daily: '—',
+    total: '400–540€',
+    totalLow: 400,
+    totalHigh: 540,
+    visa: '—',
+    visaNote: '',
+    notes: 'Klotok Tanjung Puting 3j/2n (~250–300€ net de l\'hébergement), trek Rinjani 2J/1N (~90–130€), bateaux Derawan/Kakaban (~60–110€). ❓ Supprimé avec Derawan si le budget restant < 11 000€ début juin.',
+    matchKey: 'supplements-id',
+    isFixedCost: true,
+  });
 
   // Vols en avion — estimation lue dans GLOBAL_STATS.transportBookings (source unique).
   // Ligne dédiée : recoupe en partie le transport du quotidien (voir note).
@@ -4874,7 +4978,7 @@ function bookingAddDays(date, n) {
   return d;
 }
 
-const TB_MODE_ICONS = { flight: '✈️', train: '🚂', bus: '🚌', boat: '🚢' };
+const TB_MODE_ICONS = { flight: '✈️', train: '🚂', bus: '🚌', boat: '🚢', car: '🚗' };
 const TB_CONF_LABELS = { 'élevée': '●●●', 'moyenne': '●●○', 'faible': '●○○' };
 const TRANSPORT_RISK_LABELS = {
   low: '1 départ/jour — réserver la veille',
@@ -5004,8 +5108,8 @@ const CHECKLIST_DATA = [
   {
     title: '💉 Santé & Vaccins',
     items: [
-      'Hépatite A — à confirmer',
-      'Hépatite B — à confirmer',
+      'Hépatite A — fait ✅',
+      'Hépatite B — fait ✅',
       'Typhoïde — à confirmer',
       'Rage — fait ✅',
       'Antipaludéen (Laos / Cambodge rural)',
@@ -5444,11 +5548,11 @@ const MAP_STEPS = [
   { num:52, city:'Camiguin',           lat:9.173,   lng:124.713, country:'philippines' },
   { num:53, city:'Siargao',            lat:9.848,   lng:126.045, country:'philippines' },
   // Indonésie
-  { num:54, city:'Bali',               lat:-8.340,  lng:115.092, country:'indonesie' },
-  { num:55, city:'Lombok',             lat:-8.650,  lng:116.324, country:'indonesie' },
-  { num:56, city:'Sumbawa',            lat:-8.700,  lng:118.000, country:'indonesie' },
-  { num:57, city:'Komodo',             lat:-8.543,  lng:119.489, country:'indonesie' },
-  { num:58, city:'Labuan Bajo/Flores', lat:-8.520,  lng:119.889, country:'indonesie' },
+  { num:54, city:'Jakarta',            lat:-6.200,  lng:106.846, country:'indonesie' },
+  { num:55, city:'Tanjung Puting',     lat:-2.850,  lng:111.850, country:'indonesie' },
+  { num:56, city:'Berau (transit)',    lat:2.155,   lng:117.490, country:'indonesie' },
+  { num:57, city:'Derawan / Kakaban',  lat:2.290,   lng:118.240, country:'indonesie' },
+  { num:59, city:'Lombok',             lat:-8.650,  lng:116.324, country:'indonesie' },
 ];
 
 // Synchronise les dates de chaque marqueur carte sur ITINERARY (source unique) —
