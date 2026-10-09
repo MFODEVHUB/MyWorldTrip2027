@@ -1264,7 +1264,7 @@
     </table>
   </div>
   <div class="mobile-cards" id="budget-cards"></div>
-  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort (fourchettes révisées le 09/10/2026). Hors vols internationaux.</p>
+  <p style="margin-top:1rem; font-size:12px; color:var(--muted);">* Estimations basées sur profil backpacker budget/confort (fourchettes révisées le 09/10/2026). Vols en avion inclus (ligne dédiée, recoupe en partie le transport du quotidien) ; hors transits terrestres, activités premium, eSIM et visas.</p>
 </div>
 
 <!-- ===== TAB: CHECKLIST ===== -->
@@ -1709,7 +1709,7 @@
 </main>
 
 <footer>
-  <span>v3.7</span>
+  <span>v3.8</span>
   <span id="last-updated">Dernière mise à jour : 9 octobre 2026</span>
 </footer>
 
@@ -4140,7 +4140,7 @@ const DEST_DETAILS = {
         note: 'Petite ville portuaire en plein développement. Base pour le parc Komodo. Nombreux opérateurs de plongée et day trips. Vols vers Bali quotidiens (~50€, ~1h30).' },
     ],
     pratique: [
-      { label: 'Location scooter', val: 'Lombok (Senggigi) — guesthouses ou agences locales. ~2–3€/j pour un scooter automatique correct. Vérifier freins, pneus, rétroviseurs avant de partir pour 10 jours.' },
+      { label: 'Location scooter', val: 'Lombok (Senggigi) — guesthouses ou agences locales. ~4–6€/j pour un scooter automatique correct (60–100 000 IDR/j, −30 à 40 % à la semaine) + essence ~1–3€/j selon les km. Vérifier freins, pneus, rétroviseurs avant de partir pour 10 jours.' },
       { label: 'Ferries', val: '3 traversées : Lombok→Sumbawa (Kayangan→Poto Tano, 2h), Sumbawa→Lombok Sape→Labuan Bajo (8h, overnight possible). Scooter embarqué sur tous les ferries.' },
       { label: 'Sumbawa timing', val: 'Prendre le premier ferry de Lombok (~7h00). Traverser Sumbawa de bout en bout (400km, ~6–7h de route) pour attraper le dernier ferry vers Flores. Pas de marge.' },
       { label: 'Niveau moto', val: 'Débutant OK pour les routes principales (toutes asphaltées). Quelques chemins de terre pour accéder aux plages. Rien de technique.' },
@@ -4705,11 +4705,32 @@ function renderBudget() {
     isFixedCost: true,
   });
 
+  // Vols en avion — estimation lue dans GLOBAL_STATS.transportBookings (source unique).
+  // Ligne dédiée : recoupe en partie le transport du quotidien (voir note).
+  const flightBookings = GLOBAL_STATS.transportBookings.filter(b => b.mode === 'flight');
+  const flightsLow  = flightBookings.reduce((a, b) => a + b.price.low, 0);
+  const flightsHigh = flightBookings.reduce((a, b) => a + b.price.high, 0);
+  const flightsBooked = flightBookings.filter(b => b.booked).length;
+  countries.push({
+    country: '✈️ Vols en avion (estimation)',
+    nights: 0,
+    durLabel: `${flightBookings.length} vols`,
+    daily: '—',
+    total: `${flightsLow.toLocaleString('fr-FR')}–${flightsHigh.toLocaleString('fr-FR')}€`,
+    totalLow: flightsLow,
+    totalHigh: flightsHigh,
+    visa: '—',
+    visaNote: '',
+    notes: `Détail dans Voyage › Transports (${flightsBooked} déjà réservé). Le prix du vol Paris → Taipei reste une estimation tant que le prix réel n'est pas saisi. Recoupe en partie le transport du quotidien. Hors vols Phase 2 et sortie d'Indonésie (non planifiés).`,
+    matchKey: 'vols',
+    isFixedCost: true,
+  });
+
   const grandLow  = countries.reduce((a, c) => a + c.totalLow, 0);
   const grandHigh = countries.reduce((a, c) => a + (c.totalHigh || 0), 0);
   const BUDGET_MAX = GLOBAL_STATS.budgetMax;
   const fmt = n => n.toLocaleString('fr-FR');
-  const envNote = `Phase 1 : ${fmt(grandLow)}–${fmt(grandHigh)}€ = ${Math.round(grandLow/TOTAL_BUDGET*100)}–${Math.round(grandHigh/TOTAL_BUDGET*100)}% de l'enveloppe 1 (${fmt(TOTAL_BUDGET)}€). Reste sur le budget max : ${fmt(BUDGET_MAX-grandHigh)}–${fmt(BUDGET_MAX-grandLow)}€ pour la Phase 2, les vols internationaux, transits, eSIM et visas.`;
+  const envNote = `Phase 1 : ${fmt(grandLow)}–${fmt(grandHigh)}€ = ${Math.round(grandLow/TOTAL_BUDGET*100)}–${Math.round(grandHigh/TOTAL_BUDGET*100)}% de l'enveloppe 1 (${fmt(TOTAL_BUDGET)}€). Reste sur le budget max : ${fmt(BUDGET_MAX-grandHigh)}–${fmt(BUDGET_MAX-grandLow)}€ pour la Phase 2, les vols Phase 2, les transits terrestres, l'eSIM et les visas.`;
   const grandNights = grandNightsCountries;
 
   body.innerHTML = countries.map(d => {
@@ -4721,7 +4742,7 @@ function renderBudget() {
     return `
       <tr>
         <td style="font-weight:500;white-space:nowrap">${d.country}</td>
-        <td style="color:var(--muted);font-family:var(--mono);white-space:nowrap">${d.isFixedCost ? `${months.toFixed(1)} mois` : `${d.nights} nuits`}</td>
+        <td style="color:var(--muted);font-family:var(--mono);white-space:nowrap">${d.durLabel || (d.isFixedCost ? `${months.toFixed(1)} mois` : `${d.nights} nuits`)}</td>
         <td style="font-family:var(--mono);white-space:nowrap">${d.daily}</td>
         <td style="font-family:var(--mono);font-weight:500;color:var(--accent2);white-space:nowrap">${d.total}</td>
         <td style="font-family:var(--mono);color:var(--muted);white-space:nowrap">${d.visa}</td>
@@ -4738,7 +4759,7 @@ function renderBudget() {
         <td style="color:var(--muted)">—</td>
         <td style="font-family:var(--mono);font-weight:700;color:var(--accent);white-space:nowrap">${grandLow.toLocaleString('fr-FR')}€ min</td>
         <td style="color:var(--muted)">—</td>
-        <td style="color:var(--muted);font-size:12px">Hors vols internationaux et activités premium</td>
+        <td style="color:var(--muted);font-size:12px">Vols en avion inclus (ligne dédiée) · hors activités premium</td>
         <td>
           <div style="font-size:11px;color:var(--accent);font-family:var(--mono);font-weight:700">${Math.round(grandLow/TOTAL_BUDGET*100)}% env. 1</div>
         </td>
@@ -4766,7 +4787,7 @@ function renderBudget() {
       return `<div class="mcard">
           <div class="mcard-top">
             <div class="mcard-title">${d.country}</div>
-            <span class="nights-badge">${d.isFixedCost ? `${months.toFixed(1)} mois` : `${d.nights} n.`}</span>
+            <span class="nights-badge">${d.durLabel || (d.isFixedCost ? `${months.toFixed(1)} mois` : `${d.nights} n.`)}</span>
           </div>
           <div class="mcard-row"><span class="mcard-label">Coût/jour</span><span class="mcard-val budget-cell">${d.daily}</span></div>
           <div class="mcard-row"><span class="mcard-label">Total est.</span><span class="mcard-val" style="font-family:var(--mono);font-weight:500;color:var(--accent2);">${d.total}</span></div>
@@ -4778,7 +4799,7 @@ function renderBudget() {
           <div class="mcard-top"><div class="mcard-title" style="font-weight:600;">TOTAL Phase 1</div><span class="nights-badge">${grandNights} n.</span></div>
           <div class="mcard-row"><span class="mcard-label">Total min.</span><span class="mcard-val" style="font-family:var(--mono);font-weight:700;color:var(--accent);">${grandLow.toLocaleString('fr-FR')}€</span></div>
           <div class="mcard-row"><span class="mcard-label">Part enveloppe 1</span><span class="mcard-val" style="color:var(--accent);font-weight:700;">${Math.round(grandLow/TOTAL_BUDGET*100)}%</span></div>
-          <div class="mcard-notes">Hors vols internationaux et activités premium</div>
+          <div class="mcard-notes">Vols en avion inclus (ligne dédiée) · hors activités premium</div>
         </div><div class="mcard" style="border-color:var(--border2);">
           <div class="mcard-top"><div class="mcard-title" style="font-weight:600;">Budget max (2 enveloppes)</div></div>
           <div class="mcard-row"><span class="mcard-label">Total</span><span class="mcard-val" style="font-family:var(--mono);font-weight:700;color:var(--accent2);">${fmt(TOTAL_BUDGET)} + ${fmt(GLOBAL_STATS.budgetSecond)} = ${fmt(BUDGET_MAX)}€</span></div>
@@ -4961,7 +4982,7 @@ const CHECKLIST_DATA = [
       'Hépatite A — à confirmer',
       'Hépatite B — à confirmer',
       'Typhoïde — à confirmer',
-      'Rage — optionnel ❓',
+      'Rage — fait ✅',
       'Antipaludéen (Laos / Cambodge rural)',
       'Trousse de premiers secours complète',
       'Répulsif DEET 50% (dengue)',
