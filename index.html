@@ -981,6 +981,34 @@
     .tb-risk-row { grid-template-columns: 1fr; gap: 0.25rem; }
   }
 
+  /* ===== ALERTES VOYAGE ===== */
+  .alert-badge { cursor: pointer; display: inline-block; margin-left: 2px; }
+  .alert-critique { background: var(--red-bg); color: #f87171; }
+  .alert-important { background: var(--orange-bg); color: #fb923c; }
+  .alert-info { background: rgba(34,211,238,0.14); color: #22d3ee; }
+  .alerts-panel { border: 1px solid var(--border); border-radius: 10px; background: var(--bg2); margin: 0 0 1.2rem; }
+  .alerts-panel summary { cursor: pointer; padding: 0.7rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; font-weight: 600; color: var(--text); }
+  .alerts-counts { display: flex; gap: 0.4rem; flex-wrap: wrap; font-weight: 500; }
+  .alert-chip { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+  .alerts-list { padding: 0 1rem 1rem; display: grid; gap: 0.6rem; }
+  .alert-item { border: 1px solid var(--border); border-left-width: 4px; border-radius: 8px; padding: 0.6rem 0.8rem; background: var(--surface, transparent); margin-bottom: 0.5rem; }
+  .alerts-list .alert-item { margin-bottom: 0; }
+  .alert-item-critique { border-left-color: #f87171; }
+  .alert-item-important { border-left-color: #fb923c; }
+  .alert-item-info { border-left-color: #22d3ee; }
+  .alert-item-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+  .alert-item-title { font-weight: 600; color: var(--text); font-size: 13px; flex: 1; }
+  .alert-item-lvl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .alert-item-text { font-size: 12px; color: var(--muted); line-height: 1.55; }
+  .alert-steps { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+  .alert-step { font-size: 11px; padding: 1px 7px; border-radius: 8px; background: rgba(128,128,128,0.12); color: var(--text); }
+  .alert-todo { font-size: 11px; color: var(--muted); margin-top: 0.35rem; }
+  .alerts-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 2147483646; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .alerts-modal { background: var(--bg, #111); color: var(--text); border: 1px solid var(--border); border-radius: 12px; max-width: 560px; width: 100%; max-height: 80vh; overflow: hidden; display: flex; flex-direction: column; }
+  .alerts-modal-head { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .alerts-modal-head button { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; }
+  .alerts-modal-body { padding: 14px 16px; overflow-y: auto; }
+
   /* ===== MOBILE CARDS (tables -> cartes en dessous de 760px) ===== */
   .mobile-cards { display: none; flex-direction: column; gap: 0.6rem; }
 
@@ -1146,6 +1174,8 @@
 
   <div class="section-title">Vue d'ensemble — frise chronologique</div>
   <div class="timeline-wrap" id="timeline-container"></div>
+
+  <div id="travel-alerts"></div>
 
   <div class="section-title">Détail étape par étape</div>
   <div class="legend legend-meteo" style="justify-content:flex-end;">
@@ -1709,8 +1739,8 @@
 </main>
 
 <footer>
-  <span>v4.2</span>
-  <span id="last-updated">Dernière mise à jour : 9 octobre 2026</span>
+  <span>v4.3</span>
+  <span id="last-updated">Dernière mise à jour : 12 octobre 2026</span>
 </footer>
 
 <script>
@@ -1811,6 +1841,11 @@ const GLOBAL_STATS = {
       where:'Vietnam Railways (billetterie en ligne) ou revendeurs (Baolau, 12Go)',
       note:'Trajet ~7h20–8h. Fenêtre d\'ouverture 30 à 60 jours selon la ligne (12Go) ; Baolau annonce 2–3 mois. Alternative : bus (~7h).',
       confidence:'moyenne', source:'12Go FAQ, Baolau, Omio (2026)' },
+    { id:'flight-dli-dad', mode:'flight', route:'Vol Đà Lạt (DLI) → Đà Nẵng (DAD)', stepNum:28,
+      window:{ from:42, to:14, kind:'conseil' }, price:{ low:40, high:75 },
+      where:'Vietjet Air, Vietnam Airlines (comparateurs : Skyscanner, Google Flights)',
+      note:'Remplace le bus de ~11h (accidents de car plus probables la nuit — décision du 12/10/2026). Vol direct d\u2019environ 1h10 ; surveiller les bagages en soute (supplément).',
+      confidence:'moyenne', source:'Skyscanner et Vietnam Airlines (consultés le 12/10/2026)' },
     { id:'flight-han-mnl', mode:'flight', route:'Vol Hanoï (HAN) → Manille (MNL)', stepNum:'T4',
       window:{ from:56, to:28, kind:'conseil' }, price:{ low:60, high:120 },
       where:'AirAsia, Cebu Pacific, Philippine Airlines',
@@ -1870,6 +1905,105 @@ const GLOBAL_STATS = {
 };
 GLOBAL_STATS.budgetMax = GLOBAL_STATS.budgetTotal + GLOBAL_STATS.budgetSecond;   // budget max (2 enveloppes) — ne pas modifier ici
 GLOBAL_STATS.transitionTaiwanLaos = Math.round((GLOBAL_STATS.transitionTaiwanLaosRange.low + GLOBAL_STATS.transitionTaiwanLaosRange.high) / 2);
+
+// ============================================================
+// ALERTES VOYAGE — source unique (AGENT_RULES §7). Rendu : renderTravelAlerts() (panneau),
+// badges sur les étapes (travelAlertBadge) et bloc dans les fiches (travelAlertsBlock).
+// level : 'critique' | 'important' | 'info' ; steps : numéros d'étapes d'ITINERARY (texte sans montant ni date en dur).
+// todo = id de la tâche liée dans la checklist de l'app (checklist-voyage.json).
+// Origine : fiches pays du 12/10/2026 (gov.uk, France Diplomatie) — détail et sources dans le dépôt privé.
+// ============================================================
+const TRAVEL_ALERTS = [
+  { id:'ph-prolongation', level:'critique', steps:[47], todo:'visa.philippines-marge-sortie',
+    title:"Philippines : séjour supérieur à l'exemption",
+    text:"Le séjour prévu dépasse l'exemption de 30 jours. Prolonger au Bureau of Immigration (jusqu'à 59 jours au total) avant l'expiration, par exemple à Cebu. Décidé le 12/10/2026." },
+  { id:'ph-billet-sortie', level:'important', steps:['T4'], todo:'ph.billet-sortie',
+    title:"Philippines : billet de sortie à l'embarquement",
+    text:"Compagnies et immigration peuvent exiger un billet de sortie dans les 30 jours d'exemption. Prévoir un billet remboursable ou la preuve de prolongation (connaissance générale, non sourcée)." },
+  { id:'ph-mindanao-siargao', level:'important', steps:[52,53], todo:'ph.decider-route-siargao',
+    title:"Siargao : éviter la traversée de Mindanao",
+    text:"Camiguin et Siargao sont exemptées de l'avertissement Mindanao (gov.uk), pas le trajet terrestre entre les deux. Préférer un vol via Cebu et rouler de jour." },
+  { id:'ph-bus-nuit-banaue', level:'important', steps:[40,41], todo:'ph.decider-transport-banaue',
+    title:"Bus de nuit Manille ↔ Banaue",
+    text:"Attaques à main armée signalées dans bus et jeepneys ; conduite de nuit déconseillée. Préférer des trajets de jour." },
+  { id:'ph-malapascua-seisme', level:'important', steps:[48], todo:'ph.verifier-malapascua',
+    title:"Nord de Cebu : séisme de 2025",
+    text:"Séisme de magnitude 6,9 près de Bogo le 30/09/2025. Vérifier l'état des routes, ferries et hébergements avant Malapascua." },
+  { id:'vn-vol-dalat-hoian', level:'info', steps:[28], todo:'vn.decider-transport-dalat-hoian',
+    title:"Đà Lạt → Hội An : vol retenu",
+    text:"Décision du 12/10/2026 : vol de 1h10 plutôt que le bus d'environ 11h (accidents de car plus probables la nuit). Vol à réserver (onglet Transports)." },
+  { id:'vn-permis-international', level:'important', steps:[33], todo:'vn.verifier-format-permis',
+    title:"Hà Giang Loop : format du permis international",
+    text:"Le Vietnam cite le permis international au format 1968 (gov.uk), plus un permis adapté à la cylindrée ; casque et assurance obligatoires. Vérifier le format du permis et la clause deux-roues AVA." },
+  { id:'id-brumes-kalimantan', level:'critique', steps:[55,56,57], todo:'id.verifier-brumes-kalimantan',
+    title:"Kalimantan : saison des feux de forêt",
+    text:"Feux de tourbe et brume d'avril à novembre, vols perturbés. Masque FFP2, marge sur les vols et billets modifiables." },
+  { id:'id-billet-sortie', level:'important', steps:[59], todo:'id.billet-sortie',
+    title:"Indonésie : billet de sortie",
+    text:"Un vol de sortie d'Indonésie est exigé à l'embarquement (et à l'arrivée) : à réserver avant le départ des Philippines." },
+  { id:'kh-marge-visa', level:'important', steps:[25,'T3'],
+    title:"Cambodge : visa de 30 jours, marge d'environ 2 jours",
+    text:"La sortie par Siem Reap → Hô Chi Minh-Ville est impérative à la date prévue. Aucune rallonge sans prolonger le visa sur place." },
+  { id:'paludisme-zones', level:'important', steps:[22,23,42,43,44,45,55,56,57,59], todo:'health.antipaludeens',
+    title:"Paludisme : zones forestières ou rurales",
+    text:"Mondolkiri et Ratanakiri (Cambodge), Palawan (Philippines), Kalimantan et Lombok (Indonésie) sont citées dans les conseils aux voyageurs. À confirmer avec le médecin." },
+  { id:'la-bus-nuit-thakhek', level:'important', steps:[14], todo:'la.decider-transport-thakhek',
+    title:"Laos : bus de nuit déconseillé",
+    text:"France Diplomatie déconseille de voyager de nuit (routes, animaux, accidents). Le bus de nuit Vientiane → Thakhek est à remplacer par un départ de jour." },
+  { id:'la-xaisomboun', level:'important', steps:[13], todo:'la.verifier-xaisomboun',
+    title:"Laos : province de Xaisomboun",
+    text:"Province voisine de Vang Vieng signalée à risque d'attaques armées en 2021, statut actuel non confirmé. Vérifier avant de retenir l'option Nola Guest House." },
+];
+function alertsForStep(num) {
+  return TRAVEL_ALERTS.filter(a => a.steps.some(x => String(x) === String(num)));
+}
+const ALERT_LEVELS = { critique:{ icon:'🚨', label:'Critique', rank:0 }, important:{ icon:'⚠️', label:'Important', rank:1 }, info:{ icon:'ℹ️', label:'Info', rank:2 } };
+function travelAlertBadge(num) {
+  const list = alertsForStep(num);
+  if (!list.length) return '';
+  const top = list.slice().sort((a, b) => ALERT_LEVELS[a.level].rank - ALERT_LEVELS[b.level].rank)[0];
+  const tip = list.map(a => ALERT_LEVELS[a.level].icon + ' ' + a.title).join('\n');
+  return `<span class="risk-badge alert-badge alert-${top.level}" title="${tip.replace(/"/g, '&quot;')}" onclick="openStepAlerts('${num}')">${ALERT_LEVELS[top.level].icon}${list.length > 1 ? list.length : ''}</span>`;
+}
+function travelAlertItemHtml(a, withSteps) {
+  const L = ALERT_LEVELS[a.level];
+  const stepsTxt = withSteps ? a.steps.map(n => {
+    const st = ITINERARY.flatMap(g => g.steps).find(x => String(x.num) === String(n));
+    return st ? `<span class="alert-step">${st.flag} ${n} · ${String(st.city).replace(/\s*[❓💎🌀🏍️🏄🐢🦧🏝️🚢]+/gu, '')}</span>` : '';
+  }).join('') : '';
+  return `<div class="alert-item alert-item-${a.level}">
+      <div class="alert-item-head"><span class="alert-item-icon">${L.icon}</span><span class="alert-item-title">${a.title}</span><span class="alert-item-lvl">${L.label}</span></div>
+      <div class="alert-item-text">${a.text}</div>
+      ${stepsTxt ? `<div class="alert-steps">${stepsTxt}</div>` : ''}
+      ${a.todo ? `<div class="alert-todo">☐ Tâche liée : <code>${a.todo}</code></div>` : ''}
+    </div>`;
+}
+function travelAlertsBlock(num) {
+  const list = alertsForStep(num).sort((a, b) => ALERT_LEVELS[a.level].rank - ALERT_LEVELS[b.level].rank);
+  if (!list.length) return '';
+  return `<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;">Alertes</div>${list.map(a => travelAlertItemHtml(a, false)).join('')}<div style="height:14px"></div>`;
+}
+function openStepAlerts(num) {
+  const st = ITINERARY.flatMap(g => g.steps).find(x => String(x.num) === String(num));
+  const existing = document.getElementById('alerts-modal-overlay');
+  if (existing) existing.remove();
+  const ov = document.createElement('div');
+  ov.id = 'alerts-modal-overlay';
+  ov.className = 'alerts-overlay';
+  ov.innerHTML = `<div class="alerts-modal"><div class="alerts-modal-head"><b>${st ? st.flag + ' ' + st.city : 'Étape ' + num}</b><button type="button" onclick="document.getElementById('alerts-modal-overlay').remove()">✕</button></div><div class="alerts-modal-body">${travelAlertsBlock(num)}</div></div>`;
+  ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+}
+function renderTravelAlerts() {
+  const el = document.getElementById('travel-alerts');
+  if (!el) return;
+  const sorted = TRAVEL_ALERTS.slice().sort((a, b) => ALERT_LEVELS[a.level].rank - ALERT_LEVELS[b.level].rank);
+  const n = lvl => TRAVEL_ALERTS.filter(a => a.level === lvl).length;
+  el.innerHTML = `<details class="alerts-panel">
+      <summary><span>🚨 Alertes voyage</span><span class="alerts-counts"><span class="alert-chip alert-critique">${n('critique')} critique${n('critique') > 1 ? 's' : ''}</span><span class="alert-chip alert-important">${n('important')} importantes</span><span class="alert-chip alert-info">${n('info')} info</span></span></summary>
+      <div class="alerts-list">${sorted.map(a => travelAlertItemHtml(a, true)).join('')}</div>
+    </details>`;
+}
 
 // G=green, Y=yellow, O=orange, R=red, X=not concerned
 // Météo qualitative par étape × 12 mois (Jan→Déc)
@@ -1968,7 +2102,7 @@ const ITINERARY = [
       meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3], dateIn:'15 mar 2027', dateOut:'18 mar 2027'},
     { num:27, city:'Đà Lạt', flag:'🇻🇳', nights:2, transport:'🚌 Bus · ~7h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['G','G','G','G','G','Y','Y','Y','Y','O','G','G'], active:[3], dateIn:'18 mar 2027', dateOut:'20 mar 2027'},
-    { num:28, city:'Hội An', flag:'🇻🇳', nights:3, transport:'🚌 Bus · ~11h ou ✈️ vol Đà Lạt→Đà Nẵng 1h10', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
+    { num:28, city:'Hội An', flag:'🇻🇳', nights:3, transport:'✈️ Vol Đà Lạt → Đà Nẵng · 1h10', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'20 mar 2027', dateOut:'23 mar 2027'},
     { num:29, city:'Huế (journée)', flag:'🇻🇳', nights:1, transport:'🚌 Bus · ~3h', visa:'Exemption 45j', budget:'40–50€', health:['dengue'],
       meteo:['O','O','G','G','G','G','G','G','Y','O','R','O'], active:[3], dateIn:'23 mar 2027', dateOut:'24 mar 2027'},
@@ -4316,6 +4450,7 @@ function openDestModal(stepNum) {
         <button onclick="document.getElementById('dest-modal-overlay').remove();document.documentElement.style.overflow='';document.body.style.overflow='';" style="flex-shrink:0;background:rgba(128,128,128,0.1);border:none;border-radius:8px;width:32px;height:32px;font-size:16px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;margin-top:2px;">✕</button>
       </div>
       <div style="overflow-y:auto;padding:18px 22px;flex:1;">
+        ${travelAlertsBlock(stepNum)}
         <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Lieux &amp; Activités</div>
         ${lieuxHtml}
         ${logementsHtml ? `<div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;margin-top:18px;">🏨 Logement</div>${logementsHtml}` : ''}
@@ -4415,6 +4550,7 @@ function renderItinerary() {
               step.transportRisk === 'medium' ? '<span class="risk-badge risk-medium" title="Transport délicat — correspondance ou peu fréquent">⚡</span>' :
               step.transportRisk === 'low'    ? '<span class="risk-badge risk-low" title="1 départ/jour — réserver la veille">⏱</span>' : ''}
             ${step.climateRisk === 'typhon' ? '<span class="risk-badge risk-typhoon" title="Dates en saison des typhons (juin–nov.) — vérifier météo/flexibilité avant réservation">🌀</span>' : ''}
+            ${travelAlertBadge(step.num)}
           </td>
           <td><span class="visa-pill ${visaClass}">${step.visa}</span></td>
           <td class="budget-cell">${step.budget}</td>
@@ -4433,7 +4569,7 @@ function renderItinerary() {
             <div class="mcard-title"><span class="step-num" style="margin-right:6px;">${step.num}</span>${cardCityCell}</div>
             <span class="nights-badge">${step.nights > 0 ? step.nights + ' n.' : 'Transit'}</span>
           </div>
-          <div class="mcard-row"><span class="mcard-label">Transport</span><span class="mcard-val">${step.transport}${riskBadge}${climateBadge}</span></div>
+          <div class="mcard-row"><span class="mcard-label">Transport</span><span class="mcard-val">${step.transport}${riskBadge}${climateBadge} ${travelAlertBadge(step.num)}</span></div>
           <div class="mcard-row"><span class="mcard-label">Visa</span><span class="mcard-val"><span class="visa-pill ${visaClass}">${step.visa}</span></span></div>
           <div class="mcard-row"><span class="mcard-label">Budget</span><span class="mcard-val budget-cell">${step.budget}</span></div>
         </div>`;
@@ -5479,6 +5615,7 @@ initTheme();
 renderTimeline();
 syncVisaLabels();   // doit tourner avant renderItinerary() : aligne les libellés visa sur VISAS
 renderItinerary();
+renderTravelAlerts();   // panneau d'alertes + badges (TRAVEL_ALERTS)
 renderVisas();
 renderBudget();
 renderGlobalStats(); // header + onglets Budget/Assurance/eSIM — lit GLOBAL_STATS
